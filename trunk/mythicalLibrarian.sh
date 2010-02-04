@@ -164,15 +164,15 @@
  #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled
  Notify=Enabled
  #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)
- NotifyUserName="USERNAME"
+ NotifyUserName="adam" #<------THIS VALUE MUST BE SET-------
  #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled
  XBMCUpdate=Enabled
  #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled
  XBMCClean=Enabled
  #Send Notifications to XBMC UI when library is updated Enabled|Disabled
  XBMCNotify=Enabled
- #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080 192.168.1.111:8080 XBOX:8080" )
- XBMCIPs=( "192.168.1.110:8080" "XBOX:8080" ) 
+ #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )
+ XBMCIPs=( "192.168.1.110:8080" "XBOX:8080" ) #<------THIS VALUE MUST BE SET-------
  #########################USER SETTINGS########################## 
  
  ################################################################
@@ -181,12 +181,13 @@
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
   
  #####DEFINE ENVIRONMENT AND VARIABLES#####
+ MyUserName=`whoami`
  #make our working dir if it does not exist
  if [ ! -d "$mythicalLibrarian" ]; then 
  	mkdir $mythicalLibrarian
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
- 
+
  #Set episode name, dir, extension, and showname from the input parameters.
  ShowName=$1
  epn=`echo $2|sed 's/;.*//'|tr -d [:punct:]`
@@ -228,7 +229,7 @@
  #tests.  the result will be $TMoveDirWritable as a 1 or a 0 for writable or not.
  checkpermissions () { 
  TMoveDirWritable=0
- if [ ! -z $2 ] && [ ! -z "$1" ] && [ $1 -lt $2 ]; then
+ if [ "$2" != "" ] && [ "$1" != "" ] && [ $1 -lt $2 ]; then
  	echo "Testing write permission on $3">$3/arbitraryfile.ext 
  	if [ -f "$3/arbitraryfile.ext" -a -s "$3/arbitraryfile.ext" ]; then
  		rm -f "$3/arbitraryfile.ext"
@@ -322,6 +323,9 @@ echo $showname
  	OriginalAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select originalairdate from recorded where basename like '$FileBaseName' ; "|sed -n "2p"|replace "originalairdate" ""`
  	test "$OriginalAirDate" = "0000-00-00" && OriginalAirDate="$null"
  
+ #get DataType
+   	XMLTVGrabber=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select xmltvgrabber from videosource ; "|replace "xmltvgrabber" ""|sed -n "2p"|replace " " ""`
+ 
  #get year for movies 
  	MovieAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select airdate from recordedprogram where programid like '$ProgramID' and chanid like '$ChanID' ; "|replace "airdate" ""|sed -n "2p"|replace " " ""`
  
@@ -352,13 +356,12 @@ echo $showname
  ProcessSchedulesDirect () {
  
  #Check for database permissions
- 	test "$ChanID"="" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
+ 	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
  
  #Get rating from Stars
   	rating=`printf "%0.f\n" $stars`
- 	echo $stars
   	test $rating != "" && let rating=$rating*2
- 	test $rating = "" && rating="1"
+ 	test $rating = "" && rating=1
  
  #Create MV/EP/SH Identification Type from ProgramID
 	mythicalLibrarianProgramIDCheck=${ProgramID:0:2}
@@ -483,7 +486,7 @@ echo $showname
  		FileToCheckOriginalDirName=`dirname "$FileToCheck"`
  		FileToCheckBaseName="${FileToCheck##*/}"
  		FileToCheckBaseName="${FileToCheckBaseName%.*}"
- 		if [ "$FileToCheck" != "" ] && [ -d $FileToCheckOriginalDirName ]; then
+ 		if [ "$FileToCheck" != "" ] && [ -d "$FileToCheckOriginalDirName" ]; then
  			FileToCheckLS=`ls "$FileToCheckOriginalDirName"|grep "$FileToCheckBaseName."|sed -n 2p`
  	 		if [ "$FileToCheckLS" != "" ]; then
  				if [ -d "$FileToCheckOriginalDirName" ]; then
@@ -586,13 +589,10 @@ echo $showname
  		serieslinenumber=$MatchedSeriesLineNumber
  	else
  
- #Go to fuzzy logic matching
- 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION">>"$mythicalLibrarian"/output.log
- 		test "$DEBUG" = "Enabled" && echo "ZAP2IT ID NOT FOUND. ADD TVDB INFO OR DISABLE DATABASE">>"$mythicalLibrarian"/output.log
-   	 	echo "No direct Zap2it match found. Please update TheTvDb.com"	>>"$mythicalLibrarian"/output.log
-   	 	echo "No direct Zap2it match found. Please update TheTvDb.com"	
- 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION"
- 
+ #when no match is found:
+ 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION Please update TheTvDb.com">>"$mythicalLibrarian"/output.log
+ 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION Please update TheTvDb.com"
+
  #Use fuzzy logic to make the best match of the show name as a last resort
  	 	FuzzySeriesMatch
  		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
@@ -703,13 +703,13 @@ echo $showname
  #####DEBUG MODE OUTPUT BLOCK#####
  if [ $DEBUGMODE = "Enabled" ]; then
  	echo "###################DEBUG MODE ENABLED####################">>"$mythicalLibrarian"/output.log
+ 	echo "MY USER NAME:$MyUserName-">>"$mythicalLibrarian"/output.log
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
  	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify DEBUG MODE:$DEBUGMODE-">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$1- LOCAL SHOW NAME TRANSLATION:$showtranslation- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
-       echo  "SENT TVDB SHOW NAME:$tvdbshowname-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$2- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize'kB'">>"$mythicalLibrarian"/output.log 
@@ -717,7 +717,7 @@ echo $showname
  	echo "MOVEDIR:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB""- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
  	echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
  	if [ "$Database" = "Enabled"	]; then
- 		echo "DATABASE INFORMATION">>"$mythicalLibrarian"/output.log
+ 		echo "DATABASE TYPE:$XMLTVGrabber-">>"$mythicalLibrarian"/output.log
 		echo " RECSTART:$ShowStartTime- MOVIE YEAR:$MovieAirDate- ORIGINAL SERIES DATE:$OriginalAirDate-">>"$mythicalLibrarian"/output.log
  		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory-">>"$mythicalLibrarian"/output.log
  		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$stars RATING:$rating">> "$mythicalLibrarian"/output.log
