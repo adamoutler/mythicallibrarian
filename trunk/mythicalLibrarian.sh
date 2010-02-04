@@ -121,7 +121,7 @@
  #Internet access Timeout in seconds: Default Timeout=50 (seconds)
  Timeout=50
  #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='84000' (1 day)
- UpdateDatabase=84000
+ UpdateDatabase=1
  #mythicalLibrarian working file dir: Default=~/mythicalLibrarian (home/username/mythicalLibraian)
  mythicalLibrarian=~/mythicalLibrarian
  #FailSafe mode will enable symlinks to be formed in FailSafeDir if the move or symlink operation fails. Enabled|Disabled
@@ -382,6 +382,8 @@ echo $showname
   		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  		exit 0
  	fi
+ 	
+ 	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
  }
 
  #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
@@ -397,7 +399,7 @@ echo $showname
  echo "SEARCH FOUND:""$NewShowName" "ID#:" $seriesid >>"$mythicalLibrarian"/output.log
  
  #If series ID is obtained, then get show information.
- if [ $seriesid != "" ] ; then
+ if [ "$seriesid" != "" ] ; then
  
  #####GET SERIES INFORMATION#####
  #Get current server time
@@ -437,7 +439,7 @@ echo $showname
  #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
  		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
  #Get Zap2it ID
-			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"|replace "  <zap2it_id>" ""|replace "</zap2it_id>" "">"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
+			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"|replace "  <zap2it_id>" ""|replace "</zap2it_id>" ""| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'|replace "&amp;" "&"|tr -d '`"<>:!\|/"'"'">"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
