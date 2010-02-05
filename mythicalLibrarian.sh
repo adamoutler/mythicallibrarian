@@ -1,4 +1,7 @@
 #! /bin/bash
+
+# ***** WELCOME! Scroll further down to set the user settings. *****
+
  #mythicalLibrarian by Adam Outler
  #Wed, 30Jan2010 1023
  #email: outleradam@hotmail.com
@@ -284,12 +287,13 @@ echo $showname
  #Send notification to XBMC, Update Library, Clean Library
  for XBMCIP in ${XBMCIPs[@]}
  do
+echo $XBMCIP
  	test "$XBMCNotify" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%20$tvdbshowname%20to%20library))" > /dev/null 2>&1
  	test "$XBMCUpdate" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
  	test "$XBMCClean" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary)" > /dev/null 2>&1
  done
  }
- 
+
 
  #####MYTHTV DATABASE#####
  #This function gathers information from the mythtv database for use in the program
