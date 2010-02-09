@@ -176,6 +176,10 @@
  XBMCNotify=Enabled
  #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )
  XBMCIPs=( "192.168.1.110:8080" "XBOX:8080" ) #<------THIS VALUE MUST BE SET-------
+ #Command to be run on sucessful job
+ FailedJob="echo failed"
+ #Command to be run on Failed job
+ SucessfulJob="echo Sucessful"
  #########################USER SETTINGS########################## 
  
  ################################################################
@@ -197,7 +201,7 @@
  originalext=`echo "${3#*.}"`
  originaldirname=`dirname "$3"`
  FileBaseName=${3##*/}  
- 
+ FileName="$3"
  #Check for show translations relating to the show in question.
  if [ -f $mythicalLibrarian/showtranslations ]; then 
  	showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
@@ -280,7 +284,11 @@ echo $showname
  			fi
  		done <"$mythicalLibrarian/markupstop.txt"
  }
+ 
+ 
 
+ 
+ 
  #####XBMC COMMUNICATIONS#####
  #Function XBMC Automate handles all communication with XBMC  
  XBMCAutomate () {
@@ -353,7 +361,28 @@ echo $XBMCIP
  		GenComSkip
  	fi
 
-}
+ }
+ 
+ #####REMOVE ENTRIES FROM LIBRARY#####
+ # myth-remove-from-library.sh - Use to remove a sym-linked mythtv recording and it's database entries.  Thanks to barney_1.
+ SYMLINKDisabled () {
+ 
+ #Make sure we got input arguments and file is valid
+ 	if [ -f "$3" ]; then
+ 		echo "DATABASE ENTRIES COULD NOT BE DELETED- FILE STILL EXISTS">>"$mythicalLibrarian"/output.log
+ 	else "$originaldirname" "$FileBaseName"
+ 	
+ #Remove recording entry from 'mythconverg' mysql database
+ 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
+  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
+		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
+ 
+ #Remove symbolink file and thumbnails
+ 		rm -f "$originaldirname/$FileBaseName"
+ 		rm -f "$originaldirname/$FileBaseName".*	
+ 	fi 
+ }
+ 
  
  #####PROCESS DATABASE INFORMATION#####
  #Function ProcessSchedulesDirect processes Zap2it/SchedulesDirect/Tribune data for use in the program
@@ -384,6 +413,8 @@ echo $XBMCIP
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $1 $ProgramIDType" utilities-system-monitor
   		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
+ 		runjob=`$SucessfulJob`	
+ 		echo $runjob	
  		exit 0
  	fi
  	
@@ -667,7 +698,6 @@ echo $XBMCIP
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$1"
  
- 
  ######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$3" ]; then
@@ -746,6 +776,8 @@ echo $XBMCIP
  	if [ $Notify = Enabled ]; then
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
  	fi
+ 	runjob=`$FailedJob`
+ 	echo $runjob
   	exit 1 
  fi
  
@@ -789,6 +821,8 @@ echo $XBMCIP
  
  	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
  	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
+  	runjob=`$FailedJob`
+	echo $runjob
  	exit 1 
  fi
  
@@ -802,6 +836,8 @@ echo $XBMCIP
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
+ 	runjob=`$FailedJob`
+	echo $runjob		
  	exit 0
  fi
   
@@ -879,13 +915,15 @@ echo $XBMCIP
  				echo CREATING SYMLINK IN MOVE MODE
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$3"
   			fi
- 
+  			 test [ "$SYMLINK" = "Disabled" ] && SYMLINKDisabled 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
  	
  #Send notification to daily report log
  			dailyreport "$ShowFileName"
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
+ 			runjob=`$SucessfulJob`
+ 			echo $runjob	
    			exit 0
  #if file was not moved, then fail  
  		elif [ ! -s "$MoveDir/$ShowFileName.$originalext" ]; then
@@ -895,6 +933,8 @@ echo $XBMCIP
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%WROTE 0 LENGTH FILE%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			runjob=`$FailedJob`
+			echo $runjob
  			exit 0
  		fi
  	elif [ ! -f "$MoveDir/$ShowFileName.$originalext" ]; then
@@ -931,6 +971,8 @@ echo $XBMCIP
  		fi
  		echo "#"$mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  		dailyreport "$ShowFileName"
+ 		runjob=`$SucessfulJob`
+		echo $runjob
  		exit 0
  
  #If link failure, send notification and fail
@@ -943,6 +985,8 @@ echo $XBMCIP
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
  		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	fi
+ 	runjob=`$FailedJob`
+	echo $runjob
  	exit 1
  fi 
  
@@ -962,4 +1006,6 @@ echo $XBMCIP
  #send notification if enabled
  test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "mythicalLibrarian operation failed See "$mythicalLibrarian"/output.log for more information" error
  echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
+ runjob=`$FailedJob`
+ echo $runjob
  exit 1
