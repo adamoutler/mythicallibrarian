@@ -364,21 +364,18 @@ echo $XBMCIP
  }
  
  #####REMOVE ENTRIES FROM LIBRARY#####
- # myth-remove-from-library.sh - Use to remove a sym-linked mythtv recording and it's database entries.  Thanks to barney_1.
+ #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
  SYMLINKDisabled () {
  
  #Make sure we got input arguments and file is valid
- 	if [ -f "$3" ]; then
- 		echo "DATABASE ENTRIES COULD NOT BE DELETED- FILE STILL EXISTS">>"$mythicalLibrarian"/output.log
- 	else "$originaldirname" "$FileBaseName"
+ 	if [ ! -f "$3" ]; then
  	
- #Remove recording entry from 'mythconverg' mysql database
+ #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
   		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
  
- #Remove symbolink file and thumbnails
- 		rm -f "$originaldirname/$FileBaseName"
+ #Remove thumbnails
  		rm -f "$originaldirname/$FileBaseName".*	
  	fi 
  }
