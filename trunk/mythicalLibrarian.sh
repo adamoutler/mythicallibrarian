@@ -176,10 +176,14 @@
  XBMCNotify=Enabled
  #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )
  XBMCIPs=( "192.168.1.110:8080" "XBOX:8080" ) #<------THIS VALUE MUST BE SET-------
- #Command to be run on sucessful job
- FailedJob="echo failed"
+ #Commands to be run on sucessful job
+ FailedJob () {
+ 	echo FAILED
+ }
  #Command to be run on Failed job
- SucessfulJob="echo Sucessful"
+ SucessfulJob () {
+ 	echo SUCESS
+ }
  #########################USER SETTINGS########################## 
  
  ################################################################
@@ -410,7 +414,7 @@ echo $XBMCIP
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $1 $ProgramIDType" utilities-system-monitor
   		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
- 		runjob=`$SucessfulJob`	
+ 		SucessfulJob	
  		echo $runjob	
  		exit 0
  	fi
@@ -773,7 +777,7 @@ echo $XBMCIP
  	if [ $Notify = Enabled ]; then
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
  	fi
- 	runjob=`$FailedJob`
+ 	FailedJob
  	echo $runjob
   	exit 1 
  fi
@@ -818,7 +822,7 @@ echo $XBMCIP
  
  	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
  	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
-  	runjob=`$FailedJob`
+  	FailedJob
 	echo $runjob
  	exit 1 
  fi
@@ -833,7 +837,7 @@ echo $XBMCIP
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
- 	runjob=`$FailedJob`
+ 	FailedJob
 	echo $runjob		
  	exit 0
  fi
@@ -919,7 +923,7 @@ echo $XBMCIP
  #Send notification to daily report log
  			dailyreport "$ShowFileName"
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
- 			runjob=`$SucessfulJob`
+ 			SucessfulJob
  			echo $runjob	
    			exit 0
  #if file was not moved, then fail  
@@ -930,7 +934,7 @@ echo $XBMCIP
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%WROTE 0 LENGTH FILE%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			runjob=`$FailedJob`
+ 			FailedJob
 			echo $runjob
  			exit 0
  		fi
@@ -968,7 +972,7 @@ echo $XBMCIP
  		fi
  		echo "#"$mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  		dailyreport "$ShowFileName"
- 		runjob=`$SucessfulJob`
+ 		SucessfulJob
 		echo $runjob
  		exit 0
  
@@ -982,7 +986,7 @@ echo $XBMCIP
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
  		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	fi
- 	runjob=`$FailedJob`
+ 	FailedJob
 	echo $runjob
  	exit 1
  fi 
@@ -1003,6 +1007,6 @@ echo $XBMCIP
  #send notification if enabled
  test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "mythicalLibrarian operation failed See "$mythicalLibrarian"/output.log for more information" error
  echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
- runjob=`$FailedJob`
+ FailedJob
  echo $runjob
  exit 1
