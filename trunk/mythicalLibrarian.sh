@@ -35,7 +35,7 @@
  # 
  #Output-Files
  # mythicalLibrarian will create several files in it's working folder.  This is a list of the files and their functions.
- # -comskiplog.tracking-keeps track of created comskip.txt files so they can be deleted in the future if their video file
+ # -created.tracking-keeps track of created comskip.txt and NFO files so they can be deleted in the future if their video file
  # is deleted.
  # -doover.sh is designed to keep track of failed jobs.  It is designed to be executable.  #Commented commands are 
  # those which are determined to be questionable.  This file can be made executable and ran after a problem is corrected
@@ -297,13 +297,17 @@ echo $showname
  #Function XBMC Automate handles all communication with XBMC  
  XBMCAutomate () {
  #Send notification to XBMC, Update Library, Clean Library
- for XBMCIP in ${XBMCIPs[@]}
- do
-echo $XBMCIP
- 	test "$XBMCNotify" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%20$tvdbshowname%20to%20library))" > /dev/null 2>&1
- 	test "$XBMCUpdate" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
- 	test "$XBMCClean" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary)" > /dev/null 2>&1
- done
+ 
+ if [ "$XBMCNotify" = "Enabled" ] || [ "$XBMCUpdate" = "Enabled" ] || [ "$XBMCClean" = "Enabled" ]; then
+ 
+ 	for XBMCIP in ${XBMCIPs[@]}
+ 	do
+ 		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
+ 		test "$XBMCNotify" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%20$tvdbshowname%20to%20library))" > /dev/null 2>&1
+ 		test "$XBMCUpdate" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
+ 		test "$XBMCClean" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary)" > /dev/null 2>&1
+ 	done
+ fi
  }
 
 
@@ -430,7 +434,7 @@ echo $XBMCIP
  #Create folder for database if it does not exist
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
  	mkdir $mythicalLibrarian/"$NewShowName"
- 	echo "creating home mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
+ 	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
  fi
  echo "SEARCH FOUND:""$NewShowName" "ID#:" $seriesid >>"$mythicalLibrarian"/output.log
  
@@ -510,11 +514,25 @@ echo $XBMCIP
  	fi
  fi
  }
-
+ 
+ #####GENERATE tvshow.nfo#####
+ TVShowNFO () {
+ 	echo"<tvshow>">"$MoveDir"/tvshow.nfo
+ 	echo"	<title>$NewShowName</title>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<rating>$rating/rating>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<season>-1</season>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<episode>0</episode>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<displayseason>-1</displayseason>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<displayepisode>-1</displayepisode>">>"$MoveDir"/tvshow.nfo
+ 	echo"	<genre>$category<genre>">>"$MoveDir"/tvshow.nfo
+ 	echo"</tvshow>">>"$MoveDir"/tvshow.nfo
+ } 
+ 
+ 
  
  #####MAINTENANCE#####
  #Loop through the list of created comskip files from comskip.tracking and remove orphans.
- if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/comskiplog.tracking" ]; then
+ if [ "$CommercialMarkupCleanup" = "#DEBUG" -a -f "$mythicalLibrarian/comskip.tracking" ]; then
  	mythicalLibrarianCounter=0
  	echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
  	while read line
@@ -599,7 +617,7 @@ echo $XBMCIP
  
  
  ######DOWNLOAD/PARSE/IDENTIFICATION OF SHOW NAME######
- if [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
+ if [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	mythicalLibrarianCounter=0
  
  #loop through all show names received by TheTvDb and match Zap2it ID.
@@ -636,7 +654,7 @@ echo $XBMCIP
  		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
  		DownloadAndParse
  	fi
- elif [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$2" != "" ]; then
+ elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$2" != "" ]; then
  
  #If no zap2it ID is present, then use fuzzy logic to do show tranlation
   	FuzzySeriesMatch
@@ -644,7 +662,7 @@ echo $XBMCIP
  	DownloadAndParse
  fi
  
- if [ "$seriesid" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then 
+ if [ "$seriesid" != "" ] ; then 
  
  
  #####PROCESS SHOW INFORMATION##### 	
@@ -668,7 +686,7 @@ echo $XBMCIP
   			fi
  		fi
  
- #Remove no match found
+ #Remove no match found, "-1" = ""
  		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=$null
  	fi
  	echo "DEFINED ABSOLOUTE EPISODE NUMBER: $absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
@@ -891,7 +909,7 @@ echo $XBMCIP
  
  #####MOVE MODE HANDLING#####
  #If symlink is not in LINK mode, Move and rename the file.
- if [ $SYMLINK != "LINK" ]; then
+ if [ "$SYMLINK" != "LINK" ]; then
  
  #Send notifications, Move the file and rename
  	echo "MOVING FILE: $3 to $MoveDir/$ShowFileName.$originalext">>"$mythicalLibrarian"/output.log
@@ -908,15 +926,15 @@ echo $XBMCIP
  #Create Commercial skip data with file
  			if [ "$CommercialMarkup" = "Created" ]; then
  				mv "$mythicalLibrarian/markupframes.txt" "$MoveDir/$ShowFileName.txt"
- 				echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/comskiplog.tracking
+ 				echo "'$MoveDir/$ShowFileName.txt'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
  			fi
  
  #Make symlink back to original file
- 			if [ $SYMLINK = "MOVE" ]; then
+ 			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$3"
   			fi
-  			 test [ "$SYMLINK" = "Disabled" ] && SYMLINKDisabled 
+  			 test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
  	
@@ -949,7 +967,7 @@ echo $XBMCIP
  
  #####LINK MODE HANDLING#####
  #If symlink is in LINK mode then create symlink
- elif [ $SYMLINK = "LINK" ]; then
+ elif [ "$SYMLINK" = "LINK" ]; then
  	echo "CREATING LINK IN LINK MODE"
  
  	ln -s "$3" "$MoveDir/$ShowFileName.$originalext"     
@@ -968,7 +986,7 @@ echo $XBMCIP
  #Move comskip data
   	 	if [ "$CommercialMarkup" = "Created" ]; then
  			mv "$mythicalLibrarian"/markupframes.txt "$MoveDir/$ShowFileName.txt"
- 			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/comskiplog.tracking
+ 			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
  		echo "#"$mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  		dailyreport "$ShowFileName"
