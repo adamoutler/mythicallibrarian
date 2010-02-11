@@ -109,8 +109,8 @@
  
  #######################USER SETTINGS##########################
  ###Stand-alone mode values###
- #SYMLINK has 3 modes.  MOVE|LINK|Disabled  Default=MOVE
- #Create symlink in original dir from file after MOVE | Do not move just LINK original in MoveDir(overrides moving) | Simlinking Disabled 
+ #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE
+ #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'
  SYMLINK=MOVE
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  MoveDir="/home/mythtv/NAS/Video/Episodes"  #<------THIS VALUE MUST BE SET-------
@@ -532,32 +532,31 @@ echo $showname
  
  #####MAINTENANCE#####
  #Loop through the list of created comskip files from comskip.tracking and remove orphans.
- if [ "$CommercialMarkupCleanup" = "#DEBUG" -a -f "$mythicalLibrarian/comskip.tracking" ]; then
+ if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
  	mythicalLibrarianCounter=0
  	echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
  	while read line
  	do
  		(( ++$mythicalLibrarianCounter ))
- 		FileToCheck=$line
- 		FileToCheckOriginalDirName=`dirname "$FileToCheck"`
- 		FileToCheckBaseName="${FileToCheck##*/}"
- 		FileToCheckBaseName="${FileToCheckBaseName%.*}"
- 		if [ "$FileToCheck" != "" ] && [ -d "$FileToCheckOriginalDirName" ]; then
- 			FileToCheckLS=`ls "$FileToCheckOriginalDirName"|grep "$FileToCheckBaseName."|sed -n 2p`
- 	 		if [ "$FileToCheckLS" != "" ]; then
- 				if [ -d "$FileToCheckOriginalDirName" ]; then
- 					rm -f "$FileToCheck"
- 					echo "ORPHAN FOUND $FileToCheck">>"$mythicalLibrarian"/output.log
- 				elif [ ! -d "$FileToCheckOriginalDirName" ]; then
- 					echo "$FileToCheck">>"$mythicalLibrarian/comskiplog.tracking2"
- 				fi
- 			elif [ "$FileToCheckLS" != "" ]; then
- 				echo "$FileToCheck">>"$mythicalLibrarian/comskiplog.tracking2"
+ 		SupportFile=`echo $line|cut -d"'" -f2`
+ 	 	MainFile=`echo $line|cut -d"'" -f4`
+ 		ls "$MainFile" > /dev/null 2>&1
+ 		if [ "$?" != "0" ]; then
+  			if [ -d "`dirname $SupportFile`" ]; then
+ 				echo "REMOVING ORPHAN $SupportFile"
+ 				echo "REMOVING ORPHAN $SupportFile">>"$mythicalLibrarian"/output.log
+ 				rm -f "$SupportFile"
+ 			else
+ 				echo "FOLDER DISCONNECTED:"`dirname "$SupportFile`"
+ 				echo "FOLDER DISCONNECTED:"`dirname "$SupportFile`">>"$mythicalLibrarian"/output.log
+ 			 	echo "$line" >> "$mythicalLibrarian/created.tracking2"	
  			fi
- 		fi
- 	done <"$mythicalLibrarian/comskiplog.tracking"
-  	rm -f "$mythicalLibrarian/comskiplog.tracking"
-  	mv "$mythicalLibrarian/comskiplog.tracking2" "$mythicalLibrarian/comskiplog.tracking"
+ 		else 
+ 			echo "$line" >> "$mythicalLibrarian/created.tracking2"
+  		fi
+ 	done <"$mythicalLibrarian/created.tracking"
+  	test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
+  	mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
 
  fi
 
