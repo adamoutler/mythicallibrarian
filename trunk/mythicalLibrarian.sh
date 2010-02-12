@@ -547,8 +547,8 @@ echo $showname
  				echo "REMOVING ORPHAN $SupportFile">>"$mythicalLibrarian"/output.log
  				rm -f "$SupportFile"
  			else
- 				echo "FOLDER DISCONNECTED:"`dirname "$SupportFile`"
- 				echo "FOLDER DISCONNECTED:"`dirname "$SupportFile`">>"$mythicalLibrarian"/output.log
+ 				echo "FOLDER DISCONNECTED:"`dirname $SupportFile`
+ 				echo "FOLDER DISCONNECTED:"`dirname $SupportFile`>>"$mythicalLibrarian"/output.log
  			 	echo "$line" >> "$mythicalLibrarian/created.tracking2"	
  			fi
  		else 
