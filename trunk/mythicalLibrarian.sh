@@ -728,8 +728,8 @@ echo $showname
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- test "$Database" = "Enabled" && "$PrimaryMovieDir" != "" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
- test "$Database" = "Enabled" && "$AlternateMovieDir" != "" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ test "$Database" = "Enabled" -a"$PrimaryMovieDir" != "" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ test "$Database" = "Enabled" -a "$AlternateMovieDir" != "" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
  OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'` 
  WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
  
@@ -738,10 +738,10 @@ echo $showname
  MoveDirWritable=$TMoveDirWritable
  checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
  AlternateMoveDirWritable=$TMoveDirWritable
- test "$Database" = "Enabled" && "$PrimaryMovieDir" != "" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
- test "$Database" = "Enabled" && "$PrimaryMovieDir" != "" && PrimaryMovieDirWritable=$TMoveDirWritable
- test "$Database" = "Enabled" && "$AlternateMovieDir" != "" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
- test "$Database" = "Enabled" && "$AlternateMovieDir" != "" && AlternateMovieDirWritable=$TMoveDirWritable
+ test "$Database" = "Enabled" -a "$PrimaryMovieDir" != "" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ test "$Database" = "Enabled" -a "$PrimaryMovieDir" != "" && PrimaryMovieDirWritable=$TMoveDirWritable
+ test "$Database" = "Enabled" -a "$AlternateMovieDir" != "" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ test "$Database" = "Enabled" -a "$AlternateMovieDir" != "" && AlternateMovieDirWritable=$TMoveDirWritable
  checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
  OriginalDirWritable=$TMoveDirWritable
  checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
