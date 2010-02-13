@@ -556,7 +556,7 @@ echo $showname
   		fi
  	done <"$mythicalLibrarian/created.tracking"
   	test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
-  	mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
+  	test -f "$mythicalLibrarian/created.tracking2" && mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
 
  fi
 
@@ -580,7 +580,7 @@ echo $showname
 
  	done < "$mythicalLibrarian"/dir.tracking
   	rm -f "$mythicalLibrarian/dir.tracking"
-  	mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
+  	test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
  fi 	 
   
  
