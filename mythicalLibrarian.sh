@@ -728,7 +728,7 @@ echo $showname
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- test "$Database" = "Enabled" -a"$PrimaryMovieDir" != "" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ test "$Database" = "Enabled" -a "$PrimaryMovieDir" != "" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
  test "$Database" = "Enabled" -a "$AlternateMovieDir" != "" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
  OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'` 
  WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
