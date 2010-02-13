@@ -189,8 +189,6 @@
  ################################################################
  ############Adept personel only beyond this point###############
  ################################################################
- echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
-  
  #####DEFINE ENVIRONMENT AND VARIABLES#####
  MyUserName=`whoami`
  #make our working dir if it does not exist
@@ -198,6 +196,8 @@
  	mkdir $mythicalLibrarian
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
+
+ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
 
  #Set episode name, dir, extension, and showname from the input parameters.
  ShowName=$1
