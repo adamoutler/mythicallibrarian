@@ -561,7 +561,7 @@ echo $showname
  fi
 
  #Check if folders are empty and remove dir if needed and it was created by mythicalLibrarian
- if [ "$DirTracking" = "Enabled" ]; then
+ if [ "$DirTracking" = "Enabled" -a -f "$mythicalLibrarian/dir.tracking" ]; then
  	while read line
  	do
  		DirToCheck=$line
@@ -728,20 +728,20 @@ echo $showname
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` 
- AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`
- OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
- WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
+ test "$Database" = "Enabled" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ test "$Database" = "Enabled" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'` 
+ WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
  
  #Call permissions check from function.  Write small file, delete, get results
  checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
  MoveDirWritable=$TMoveDirWritable
  checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
  AlternateMoveDirWritable=$TMoveDirWritable
- checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
- PrimaryMovieDirWritable=$TMoveDirWritable
- checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
- AlternateMovieDirWritable=$TMoveDirWritable
+ test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
+ test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
  checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
  OriginalDirWritable=$TMoveDirWritable
  checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
