@@ -613,7 +613,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  		seriesid=`echo $seriesid|tr -d "<seriesid>"|tr -d "</seriesid>"`
  
  #Download information from server
- 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
+ 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
  
  #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
  		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
@@ -671,7 +671,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  GenShowNFO () {
  	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "<tvshow>">$mythicalLibrarian/NFOFILE.NFO
  	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <title>$ShowName</title>">>"$mythicalLibrarian"/NFOFILE.NFO
- 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$language.zip<episodeguide>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.zip<episodeguide>">>"$mythicalLibrarian"/NFOFILE.NFO
  	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <rating>$rating</rating>">>"$mythicalLibrarian"/NFOFILE.NFO
  	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <plot>$plot</plot>">>"$mythicalLibrarian"/NFOFILE.NFO
  	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <genre>$ShowCategory</genre>">>"$mythicalLibrarian"/NFOFILE.NFO
