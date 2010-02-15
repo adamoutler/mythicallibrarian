@@ -136,7 +136,7 @@
  #the following line contains the API key from www.TheTvDb.Com. Default project code: 6DF511BB2A64E0E9
  APIkey=6DF511BB2A64E0E9
  #Language setting
- Language=EN
+ Language=en
   
  ###Database settings### 
  #MythTV MYSQL access allows addition of movies, comskip data, and improves accuracy of episode recognition.
