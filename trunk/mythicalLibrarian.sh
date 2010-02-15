@@ -367,97 +367,99 @@ generaterss() {
 #DEBUG.  Bad procedure to call functions from within functions
 test -d $rssDir && rssDirFreeSpace=`df -P "$rssDir"|sed -n 2p|awk '{print $4}'` 
 test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
-
+	if [ "$TMoveDirWritable" = "1" ]; then
+ 
 #script settings
-	OLDrssFile="rss.xml"
-	TEMPrssFile="rss.temp"
+		OLDrssFile="rss.xml"
+		TEMPrssFile="rss.temp"
 
 #HTML line break code for nice formatting
-	lineBreak="&lt;br /&gt;"	
+		lineBreak="&lt;br /&gt;"	
 
 #test if rssFile directory is writeable
-	if [ ! -w "$rssDir" ]; then
-	       	echo -e "RSS generation failed:\nDirectory not writeable ($rssDir)"
-	       	return 5
-	fi
-
-#test if rssFile is writeable
-	if [ -e "$rssDir/$OLDrssFile" ] && [ ! -w "$rssDir/$OLDrssFile" ]; then
-		echo -e "RSS generation failed:\nFile exists but is not writeable: $rssDir/$OLDrssFile"
-		return 6
-	fi
-
-#Setup the rss file
-	echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
-	echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
-	echo -e '<channel>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
-
-#write current recording information to first item.
-	echo -e "\t\t<item>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<title>$NewShowName</title>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<link>http://PUT_SOMETHING_HERE</link>">>$rssDir/$TEMPrssFile 		#TODO: fix this
-#TODO: use episode link as GUID - IMPORTANT
-#echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tProgram: $NewShowName$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
-
-#If there is an old RSS file
-	if [ -e "$rssDir/$OLDrssFile" ]; then
-
-#test for number of </item> tags using grep
-		RssItemCount=$(grep -c "</item>" "$rssDir/$OLDrssFile")
-
-#if $maxItems is greater than this number
-		if [ $maxItems -gt $RssItemCount ]; then
-#set a variable to track this number + 1 for the new entry
-			itemLimit=$(($RssItemCount+1))
-		else
-#set tracking variable to $maxItems
-			itemLimit=$maxItems
+		if [ ! -w "$rssDir" ]; then
+		       	echo -e "RSS generation failed:\nDirectory not writeable ($rssDir)"
+		       	return 5
 		fi
 
+#test if rssFile is writeable
+		if [ -e "$rssDir/$OLDrssFile" ] && [ ! -w "$rssDir/$OLDrssFile" ]; then
+			echo -e "RSS generation failed:\nFile exists but is not writeable: $rssDir/$OLDrssFile"
+			return 6
+		fi
+
+#Setup the rss file
+		echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
+		echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
+		echo -e '<channel>' >> $rssDir/$TEMPrssFile
+		echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
+		echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
+		echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
+
+#write current recording information to first item.
+		echo -e "\t\t<item>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t<title>$NewShowName</title>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t<link>http://PUT_SOMETHING_HERE</link>">>$rssDir/$TEMPrssFile 		#TODO: fix this
+#TODO: use episode link as GUID - IMPORTANT
+#echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t\tProgram: $NewShowName$lineBreak">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
+		echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
+		echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
+
+#If there is an old RSS file
+		if [ -e "$rssDir/$OLDrssFile" ]; then
+
+#test for number of </item> tags using grep
+			RssItemCount=$(grep -c "</item>" "$rssDir/$OLDrssFile")
+	
+#if $maxItems is greater than this number
+			if [ $maxItems -gt $RssItemCount ]; then
+#set a variable to track this number + 1 for the new entry
+				itemLimit=$(($RssItemCount+1))
+			else
+#set tracking variable to $maxItems
+				itemLimit=$maxItems
+			fi
+
 #get the line number for the first <item> tag
-		firstLine=$(grep -n -m 1 "<item>" "$rssDir/$OLDrssFile" | cut -d ":" -f 1)
+			firstLine=$(grep -n -m 1 "<item>" "$rssDir/$OLDrssFile" | cut -d ":" -f 1)
 #get the line number for our last </item> tag
-		lastLine=$(grep -n -m $(($itemLimit-1)) "</item>" "$rssDir/$OLDrssFile" | tail -n1 | cut -d ":" -f 1)
+			lastLine=$(grep -n -m $(($itemLimit-1)) "</item>" "$rssDir/$OLDrssFile" | tail -n1 | cut -d ":" -f 1)
 #set IFS to use line break as a delineator
- 		OLDIFS=$IFS
-		IFS='
+ 			OLDIFS=$IFS
+			IFS='
 '
 #Read in the old RSS file
-		declare -a old_rss_data=( $(cat "$rssDir/$OLDrssFile") )
-		arrayLen=${#old_rss_data[@]}
+			declare -a old_rss_data=( $(cat "$rssDir/$OLDrssFile") )
+			arrayLen=${#old_rss_data[@]}
 #iterate through the array
-		for index in $(seq $((firstLine-1)) $((lastLine-1)))
-		do
-			echo "${old_rss_data[$index]}" >> $rssDir/$TEMPrssFile
-		done
+			for index in $(seq $((firstLine-1)) $((lastLine-1)))
+			do
+				echo "${old_rss_data[$index]}" >> $rssDir/$TEMPrssFile
+			done
 			#copy line from old to new
 			#if copied line is </item>
 				#increment counter
 			#if counter is great than tracking variable
 				#break
-	fi
+		fi
 
 #close the file.
-	echo -e '\t</channel>' >> $rssDir/$TEMPrssFile
-	echo -e '</rss>' >> $rssDir/$TEMPrssFile
+		echo -e '\t</channel>' >> $rssDir/$TEMPrssFile
+		echo -e '</rss>' >> $rssDir/$TEMPrssFile
 
 #move fully formed temp file on top of the old file
-	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
-	echo "RSS file successfully created: $rssDir/$TEMPrssFile"
- 	IFS=$OLDIFS
-	return 0
+		mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
+		echo "RSS file successfully created: $rssDir/$TEMPrssFile"
+ 		IFS=$OLDIFS
+		return 0
+	fi
 }
 
 
