@@ -364,9 +364,14 @@ generaterss() {
 	rssDir="/var/www/mythical-rss"
 	maxItems=8	#maximum number of items to read into the feed
 
+#DEBUG.  Bad procedure to call functions from within functions
+test -d $rssDir && rssDirFreeSpace=`df -P "$rssDir"|sed -n 2p|awk '{print $4}'` 
+test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
+
 #script settings
 	OLDrssFile="rss.xml"
 	TEMPrssFile="rss.temp"
+
 #HTML line break code for nice formatting
 	lineBreak="&lt;br /&gt;"	
 
@@ -505,11 +510,11 @@ generaterss() {
  #Set up counter, remove old markup data and generate new markup file from markupstart and stop
  	if [ "$CommercialMarkup" = "Enabled" ]; then	
  #Remove old and generate a comskip Start list
- 		echo $null >$mythicalLibrarian/markupstart.txt
+ 		echo "">$mythicalLibrarian/markupstart.txt
 	 	mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "4" ; " |replace "mark" ""|replace " " "">>$mythicalLibrarian/markupstart.txt
  
  #Remove old and generate comskip Stop list
- 		echo $null >$mythicalLibrarian/markupstop.txt
+ 		echo "">$mythicalLibrarian/markupstop.txt
  		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "5" ; " |replace "mark" ""|replace " " "">>$mythicalLibrarian/markupstop.txt
 
  		GenComSkip
@@ -910,7 +915,7 @@ generaterss() {
  	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify DEBUG MODE:$DEBUGMODE-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT SHOW NAME:$1- LOCAL SHOW NAME TRANSLATION:$showtranslation- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
+ 	echo "INPUT SHOW NAME:$1- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$2- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize'kB'">>"$mythicalLibrarian"/output.log 
@@ -923,7 +928,7 @@ generaterss() {
  		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory-">>"$mythicalLibrarian"/output.log
  		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$stars RATING:$rating">> "$mythicalLibrarian"/output.log
  		echo " ZAP2IT SERIES ID:$Zap2itSeriesID- MATCHED TVDB SERIES ID:$MatchedSeriesID-" >>"$mythicalLibrarian"/output.log
-              echo PLOT: "$plot"
+                echo PLOT: "$plot" >>"$mythicalLibrarian"/output.log
  	fi
  	echo "####################END OF DEBUG LOG#####################">>"$mythicalLibrarian"/output.log
   fi
