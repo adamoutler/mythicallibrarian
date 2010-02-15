@@ -620,7 +620,7 @@ generaterss() {
  }
  
  #####GENERATE tvshow.nfo#####
- TVShowNFO () {
+ tvshowNFO () {
  	echo"<tvshow>">"$MoveDir"/tvshow.nfo
  	echo"	<title>$NewShowName</title>">>"$MoveDir"/tvshow.nfo
  	echo"	<rating>$rating/rating>">>"$MoveDir"/tvshow.nfo
@@ -632,6 +632,21 @@ generaterss() {
  	echo"</tvshow>">>"$MoveDir"/tvshow.nfo
  } 
  
+#Create an NFO file based upon extracted information
+ GenShowNFO () {
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "<tvshow>">$mythicalLibrarian/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <title>$ShowName</title>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/en.zip<episodeguide>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <rating>$rating</rating>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <plot>$plot</plot>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <genre>$ShowCategory</genre>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <premiered>$OriginalAirDate<aired>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "      <recordstart>$ShowStartTime</recordstart>">>"$mythicalLibrarian"/NFOFILE.NFO
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" && echo "</tvshow>">>"$mythicalLibrarian"/NFOFILE.NFO
+  }
+
+
+
  
  
  #####MAINTENANCE#####
