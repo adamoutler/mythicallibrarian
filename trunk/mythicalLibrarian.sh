@@ -244,19 +244,23 @@
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
 
  #Set episode name, dir, extension, and showname from the input parameters.
- ShowName=$1
- epn=`echo $2|sed 's/;.*//'|tr -d [:punct:]`
- originalext=`echo "${3#*.}"`
- originaldirname=`dirname "$3"`
- FileBaseName=${3##*/}  
- FileName="$3"
+ InputTitle=$1
+ InputSubtitle=$2
+ InputPath=$3
+
+ ShowName=$InputTitle
+ epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d [:punct:]`
+ originalext=`echo "${InputPath#*.}"`
+ originaldirname=`dirname "$InputPath"`
+ FileBaseName=${InputPath##*/}  
+ FileName="$InputPath"
  #Check for show translations relating to the show in question.
  if [ -f $mythicalLibrarian/showtranslations ]; then 
  	showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
  	if [ "$showtranslation" != "$null" ];then 
  		ShowName=$showtranslation
- 		echo "USER TRANSLATION: $1 = $ShowName">>"$mythicalLibrarian"/output.log
- 	elif [ "$showtranslation" = "$null" ];then
+ 		echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
+ 	elif [ "$showtranslation" = "" ];then
  		showtranslation="Inactive"
  	fi
  fi
@@ -274,7 +278,7 @@
  		test ! -d "$mythicalLibrarian/DailyReport" && mkdir "$mythicalLibrarian/DailyReport" 
  		reportfilename=`date +%Y-%m-%d`
  		reporttime=`date +%T`
-     		echo "$reporttime "$1>>"$mythicalLibrarian/DailyReport/$reportfilename"
+     		echo "$reporttime "$InputTitle>>"$mythicalLibrarian/DailyReport/$reportfilename"
  	fi
  }
   
@@ -353,114 +357,122 @@ echo $showname
  	done
  fi
  }
-
-
-#####GENERATE RSS ENTRY#####
-#This function generates an RSS feed for use on the web server.  This can be used in /home/xbmc/.xbmc/userdata/RssFeeds.xml
-#replace the feeds.feedburner.com link with <feed updateinterval="30">http://[youripaddress]/mythical-rss/rss.xml</feed>  
-#Big thanks to barney_1!
-
-generaterss() {
-
-#user settings:
-	rssDir="/var/www/mythical-rss"
-	maxItems=8	#maximum number of items to read into the feed
-
+ 
+ 
+ #####GENERATE RSS ENTRY#####
+ #This function generates an RSS feed for use on the web server.  This can be used in /home/xbmc/.xbmc/userdata/RssFeeds.xml
+ #replace the feeds.feedburner.com link with <feed updateinterval="30">http://[youripaddress]/mythical-rss/rss.xml</feed>  
+ #Big thanks to barney_1!
+ 
+ generaterss() {
+ 
+ #user settings:
+ 	rssDir="/var/www/mythical-rss"
+ 	maxItems=8	#maximum number of items to read into the feed
+ 
 #DEBUG.  Bad procedure to call functions from within functions
 test -d $rssDir && rssDirFreeSpace=`df -P "$rssDir"|sed -n 2p|awk '{print $4}'` 
 test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
-
-#script settings
-	OLDrssFile="rss.xml"
-	TEMPrssFile="rss.temp"
-
-#HTML line break code for nice formatting
-	lineBreak="&lt;br /&gt;"	
-
-#test if rssFile directory is writeable
-	if [ ! -w "$rssDir" ]; then
-	       	echo -e "RSS generation failed:\nDirectory not writeable ($rssDir)"
-	       	return 5
-	fi
-
-#test if rssFile is writeable
-	if [ -e "$rssDir/$OLDrssFile" ] && [ ! -w "$rssDir/$OLDrssFile" ]; then
-		echo -e "RSS generation failed:\nFile exists but is not writeable: $rssDir/$OLDrssFile"
-		return 6
-	fi
-
-#Setup the rss file
-	echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
-	echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
-	echo -e '<channel>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
-
+ 
+ #script settings
+ 	OLDrssFile="rss.xml"
+ 	TEMPrssFile="rss.temp"
+ 
+ #HTML line break code for nice formatting
+ 	lineBreak="&lt;br /&gt;"	
+ 
+ #test if rssFile directory is writeable
+ 	if [ ! -w "$rssDir" ]; then
+ 	       	echo -e "RSS generation failed:\nDirectory not writeable ($rssDir)"
+ 	       	return 5
+ 	fi
+ 
+ #test if rssFile is writeable
+ 	if [ -e "$rssDir/$OLDrssFile" ] && [ ! -w "$rssDir/$OLDrssFile" ]; then
+ 		echo -e "RSS generation failed:\nFile exists but is not writeable: $rssDir/$OLDrssFile"
+ 		return 6
+ 	fi
+ 
+ #Setup the rss file
+ 	echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
+ 	echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
+ 	echo -e '<channel>' >> $rssDir/$TEMPrssFile
+ 	echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
+ 	echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
+ 	echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
+ 
 #write current recording information to first item.
-	echo -e "\t\t<item>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<title>$NewShowName</title>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<link>http://PUT_SOMETHING_HERE</link>">>$rssDir/$TEMPrssFile 		#TODO: fix this
-#TODO: use episode link as GUID - IMPORTANT
-#echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tProgram: $NewShowName$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
-	echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
-	echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
-
-#If there is an old RSS file
-	if [ -e "$rssDir/$OLDrssFile" ]; then
-
-#test for number of </item> tags using grep
-		RssItemCount=$(grep -c "</item>" "$rssDir/$OLDrssFile")
-
-#if $maxItems is greater than this number
-		if [ $maxItems -gt $RssItemCount ]; then
-#set a variable to track this number + 1 for the new entry
-			itemLimit=$(($RssItemCount+1))
-		else
-#set tracking variable to $maxItems
-			itemLimit=$maxItems
-		fi
-
-#get the line number for the first <item> tag
-		firstLine=$(grep -n -m 1 "<item>" "$rssDir/$OLDrssFile" | cut -d ":" -f 1)
-#get the line number for our last </item> tag
-		lastLine=$(grep -n -m $(($itemLimit-1)) "</item>" "$rssDir/$OLDrssFile" | tail -n1 | cut -d ":" -f 1)
-#set IFS to use line break as a delineator
- 		OLDIFS=$IFS
-		IFS='
-'
-#Read in the old RSS file
-		declare -a old_rss_data=( $(cat "$rssDir/$OLDrssFile") )
-		arrayLen=${#old_rss_data[@]}
-#iterate through the array
-		for index in $(seq $((firstLine-1)) $((lastLine-1)))
-		do
-			echo "${old_rss_data[$index]}" >> $rssDir/$TEMPrssFile
-		done
-			#copy line from old to new
-			#if copied line is </item>
-				#increment counter
-			#if counter is great than tracking variable
-				#break
+ 	echo -e "\t\t<item>">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t<title>$NewShowName</title>">>$rssDir/$TEMPrssFile
+  	
+	if [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
+ 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$seriesid</link>">>$rssDir/$TEMPrssFile 
+	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
+ 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$showname</link>">>$rssDir/$TEMPrssFile 
+ 	else
+ 		tvdotcomshowname=`echo $ShowName|replace " " "%20"`
+ 		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&stype=all&tag=search%3Bfrontdoor&qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
 	fi
-
-#close the file.
-	echo -e '\t</channel>' >> $rssDir/$TEMPrssFile
-	echo -e '</rss>' >> $rssDir/$TEMPrssFile
-
-#move fully formed temp file on top of the old file
-	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
-	echo "RSS file successfully created: $rssDir/$TEMPrssFile"
+ #TODO: use episode link as GUID - IMPORTANT
+ #echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tProgram: $NewShowName$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
+ 
+ #If there is an old RSS file
+ 	if [ -e "$rssDir/$OLDrssFile" ]; then
+ 
+ #test for number of </item> tags using grep
+ 		RssItemCount=$(grep -c "</item>" "$rssDir/$OLDrssFile")
+ 
+ #if $maxItems is greater than this number
+ 		if [ $maxItems -gt $RssItemCount ]; then
+ #set a variable to track this number + 1 for the new entry
+ 			itemLimit=$(($RssItemCount+1))
+ 		else
+ #set tracking variable to $maxItems
+ 			itemLimit=$maxItems
+ 		fi
+ 
+ #get the line number for the first <item> tag
+ 		firstLine=$(grep -n -m 1 "<item>" "$rssDir/$OLDrssFile" | cut -d ":" -f 1)
+ #get the line number for our last </item> tag
+ 		lastLine=$(grep -n -m $(($itemLimit-1)) "</item>" "$rssDir/$OLDrssFile" | tail -n1 | cut -d ":" -f 1)
+ #set IFS to use line break as a delineator
+ 		OLDIFS=$IFS
+ 		IFS='
+'
+ #Read in the old RSS file
+ 		declare -a old_rss_data=( $(cat "$rssDir/$OLDrssFile") )
+ 		arrayLen=${#old_rss_data[@]}
+ #iterate through the array
+ 		for index in $(seq $((firstLine-1)) $((lastLine-1)))
+ 		do
+ 			echo "${old_rss_data[$index]}" >> $rssDir/$TEMPrssFile
+ 		done
+ 			#copy line from old to new
+ 			#if copied line is </item>
+ 				#increment counter
+ 			#if counter is great than tracking variable
+ 				#break
+ 	fi
+ 
+ #close the file.
+ 	echo -e '\t</channel>' >> $rssDir/$TEMPrssFile
+ 	echo -e '</rss>' >> $rssDir/$TEMPrssFile
+ 
+ #move fully formed temp file on top of the old file
+ 	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
+ 	echo "RSS file successfully created: $rssDir/$TEMPrssFile"
  	IFS=$OLDIFS
-	return 0
-}
+ 	return 0
+ }
 
 
 
@@ -529,7 +541,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  SYMLINKDisabled () {
  
  #Make sure we got input arguments and file is valid
- 	if [ ! -f "$3" ]; then
+ 	if [ ! -f "$InputPath" ]; then
  	
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
@@ -752,9 +764,9 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
   
  
  #####SEARCH FOR SHOW NAME#####
- if [ "$2" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
+ if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $epn">>"$mythicalLibrarian"/output.log
- 	echo "FILE NAME: $3">>"$mythicalLibrarian"/output.log
+ 	echo "FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
  
  #Format Show name for Sending to www.TheTvDb.com
  	tvdbshowname=`echo $ShowName|replace " " "%20"` 
@@ -765,7 +777,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" "">$mythicalLibrarian/shn.txt
  
  elif [ -z "$MovieAirDate" ]; then
- 	NewShowName=$1
+ 	NewShowName=$InputTitle
  fi
  
  
@@ -807,7 +819,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
  		DownloadAndParse
  	fi
- elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$2" != "" ]; then
+ elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$InputSubtitle" != "" ]; then
  
  #If no zap2it ID is present, then use fuzzy logic to do show tranlation
   	FuzzySeriesMatch
@@ -860,7 +872,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  
  #if series id is not obtained send failure message
  elif [ -z "$seriesid" ]; then 
- 	echo "series was not found the tvdb or this is a movie may be down try renaming $1">>"$mythicalLibrarian"/output.log
+ 	echo "series was not found the tvdb or this is a movie may be down try using a showtranslation for $InputTitle">>"$mythicalLibrarian"/output.log
   	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
  		exx=$null
@@ -868,17 +880,17 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  fi
  
  #If it's a movie, give it a name.
- test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$1"
+ test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
  
  ######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
- if [ -L "$3" ]; then
+ if [ -L "$InputPath" ]; then
  	echo "FILE IS A LINK ACTIVATING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log
  	SYMLINK=LINK
  fi
  
  #Get file size and free space
- MoveFileSize=`stat -c %s "$3"`
+ MoveFileSize=`stat -c %s "$InputPath"`
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
@@ -917,9 +929,9 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify DEBUG MODE:$DEBUGMODE-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT SHOW NAME:$1- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
+ 	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT EPISODE NAME:$2- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
+ 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize'kB'">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB""- WORKINGDIR:$WorkingDirWritable Free:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
  	echo "MOVEDIR:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB""- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
@@ -938,7 +950,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  
  #####FILE HANDLING AND ID TYPE DECISSION#####
  #If file to be moved does not exist, then report
- if [ ! -f "$3" ]; then
+ if [ ! -f "$InputPath" ]; then
  	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%INPUT FILE NAME NON EXISTANT CHECK FILE NAME AND PERMISSIONS%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -979,9 +991,9 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
 
  
  ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ]; then
- 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $1. TheTvDb is incomplete" web-browser
- 	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $1, $2">>"$mythicalLibrarian"/output.log
+ if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ]; then
+ 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+ 	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
   	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1027,7 +1039,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
  		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
  		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
- 		ln -s "$3" "$FailSafeDir/$ShowFileName.$originalext"
+ 		ln -s "$InputPath" "$FailSafeDir/$ShowFileName.$originalext"
  		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
  		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
  	fi
@@ -1064,12 +1076,12 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  #####SH Identification Type Handling #####
  #if the ProgramID does not meet criteria, then end the program
  	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
- 		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $1, $2">>"$mythicalLibrarian"/output.log
+ 		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
- 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $1 $ProgramIDType" utilities-system-monitor
+ 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
   		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
   		jobtype=GenericShow
  		RunJob
@@ -1079,9 +1091,9 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  if [ "$SYMLINK" != "LINK" ]; then
  
  #Send notifications, Move the file and rename
- 	echo "MOVING FILE: $3 to $MoveDir/$ShowFileName.$originalext">>"$mythicalLibrarian"/output.log
+ 	echo "MOVING FILE: $InputPath to $MoveDir/$ShowFileName.$originalext">>"$mythicalLibrarian"/output.log
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Moving" "Moving and renaming $ShowFileName" drive-harddisk
- 	mv "$3" "$MoveDir/$ShowFileName.$originalext"
+ 	mv "$InputPath" "$MoveDir/$ShowFileName.$originalext"
  
  #Check and report if file was moved
  	if [ -f "$MoveDir/$ShowFileName.$originalext" ]; then
@@ -1099,7 +1111,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  #Make symlink back to original file
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
- 				ln -s  "$MoveDir/$ShowFileName.$originalext" "$3"
+ 				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
   			fi
   			 test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
  #Send notification of completion and exit
@@ -1140,7 +1152,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  elif [ "$SYMLINK" = "LINK" ]; then
  	echo "CREATING LINK IN LINK MODE"
  
- 	ln -s "$3" "$MoveDir/$ShowFileName.$originalext"     
+ 	ln -s "$InputPath" "$MoveDir/$ShowFileName.$originalext"     
  
  #if file was created
  	if [ -L "$MoveDir/$ShowFileName.$originalext" ]; then	
@@ -1182,8 +1194,8 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  #####GENERIC UNSPECIFIED ERROR#####
  #if no match is found then send error messages
  if [ "$exx" = "" ]; then 
- 	echo "NO MATCH FOUND.  TROUBLESHOOTING: Check www.TheTvDb TO SEE IF $1 EXISTS. ">>"$mythicalLibrarian"/output.log
- 	echo "CHECK EPISODE NAME $2. CHECK INTERNET CONNECTION. CHECK API KEY.">>"$mythicalLibrarian"/output.log
+ 	echo "NO MATCH FOUND.  TROUBLESHOOTING: Check www.TheTvDb TO SEE IF $InputTitle EXISTS. ">>"$mythicalLibrarian"/output.log
+ 	echo "CHECK EPISODE NAME $InputSubtitle. CHECK INTERNET CONNECTION. CHECK API KEY.">>"$mythicalLibrarian"/output.log
  	echo "NOT ENOUGH INFORMATION PULLED FROM DATABASE TO IDENTIFY FILE AS MOVIE OR EPISODE">>"$mythicalLibrarian"/output.log
  	echo "CHECK www.TheTvDb.com  RUN mythicalLibrarian LINK COMMAND PROMPT.">>"$mythicalLibrarian"/output.log
  	echo "FOR MORE INFORMATION SEE http://xbmc.org/wiki/index.php?title=mythicalLibrarian">>"$mythicalLibrarian"/output.log
