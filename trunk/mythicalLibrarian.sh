@@ -177,20 +177,60 @@
  #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )
  XBMCIPs=( "192.168.1.110:8080" "XBOX:8080" ) #<------THIS VALUE MUST BE SET-------
  #Commands to be run on sucessful job
- FailedJob () {
- 	echo FAILED
- 	generaterss
+
+ #########################USER SETTINGS##########################
+ ########################## USER JOBS############################
+ RunJob () {
+ 	case $jobtype in
+ #Sucessful Completion of mythicalLibrarian
+ 		LinkModeSucessful|MoveModeSucessful)
+ 			echo "SUCESSFUL COMPLETEION TYPE: $jobtype"
+ 			#Insert Custom User Job here 
+ 			
+ 			#
+ 			exit 0
+ 			;;
+ #File system error occoured
+ 		PermissionError0Length|NoFileNameSupplied|PermissionErrorWhileMoving|FailSafeModeComplete|LinkModeFailed)
+ 			echo "FILE SYSTEM ERROR:$jobtype"
+ 			#Insert Custom User Job here 
+ 			
+ 			#
+   			exit 1
+ 			;;
+ 
+ #Information error occoured
+ 		TvDbIsIncomplete|GenericShow)
+ 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"
+  			#Insert Custom User Job here 
+ 			
+ 			#
+  			exit 2
+ 			;;
+ #Generic error occoured
+  		GenericUnspecifiedError)
+  			echo "UNKNOWN ERROR OCCOURED:$jobtype"
+  			#Insert Custom User Job here  
+ 			
+ 			#
+  			exit 3 
+ 			;;
+  esac
+ #Custom exit point may be set anywhere in program by typing RunJob on any new line
+ #Insert Custom User Job here 
+ 
+ #
+ exit 4
+
  }
- #Command to be run on Failed job
- SucessfulJob () {
- 	echo SUCESS
- 	generaterss 
- }
- #########################USER SETTINGS########################## 
+ 
+ ########################## USER JOBS############################
  
  ################################################################
  ############Adept personel only beyond this point###############
  ################################################################
+		
+
  #####DEFINE ENVIRONMENT AND VARIABLES#####
  MyUserName=`whoami`
  #make our working dir if it does not exist
@@ -227,7 +267,7 @@
   
 
  ######DAILY REPORT#####
- dailyreport() {
+ dailyreport () {
  	if [ $DailyReport = Enabled ]; then
  		test ! -d "$mythicalLibrarian/DailyReport" && mkdir "$mythicalLibrarian/DailyReport" 
  		reportfilename=`date +%Y-%m-%d`
@@ -346,9 +386,9 @@ generaterss() {
 	echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
 	echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
 	echo -e '<channel>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<title>Myhtical Librarian</title>' >> $rssDir/$TEMPrssFile
+	echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
 	echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
-	echo -e '\t<description>Mythical Library Daily Report Information</description>' >> $rssDir/$TEMPrssFile
+	echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
 
 #write current recording information to first item.
 	echo -e "\t\t<item>">>$rssDir/$TEMPrssFile
@@ -386,6 +426,7 @@ generaterss() {
 #get the line number for our last </item> tag
 		lastLine=$(grep -n -m $(($itemLimit-1)) "</item>" "$rssDir/$OLDrssFile" | tail -n1 | cut -d ":" -f 1)
 #set IFS to use line break as a delineator
+ 		OLDIFS=$IFS
 		IFS='
 '
 #Read in the old RSS file
@@ -410,6 +451,7 @@ generaterss() {
 #move fully formed temp file on top of the old file
 	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
 	echo "RSS file successfully created: $rssDir/$TEMPrssFile"
+ 	IFS=$OLDIFS
 	return 0
 }
 
@@ -513,20 +555,6 @@ generaterss() {
 	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
  
- #if the ProgramID does not meet criteria, then end the program
- 	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
- 		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $1, $2">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
- 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $1 $ProgramIDType" utilities-system-monitor
-  		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
- 		SucessfulJob	
- 		echo $runjob	
- 		exit 0
- 	fi
- 	
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
  }
 
@@ -913,9 +941,8 @@ generaterss() {
  	if [ $Notify = Enabled ]; then
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
  	fi
- 	FailedJob
- 	echo $runjob
-  	exit 1 
+  	jobtype=NoFileNameSupplied
+ 	RunJob
  fi
  
  FailSafeState=0
@@ -942,26 +969,7 @@ generaterss() {
  	exx="Movie"
  fi
  
- #####FAILSAFE HANDLING#####
- #If failsafe state is set then create link in FailSafeMode
- if [ $FailSafeState = "1" ]; then
-  	echo "FAILSAFE FLAG WAS SET CHECK PERMISSIONS AND FOLDERS">>"$mythicalLibrarian"/output.log
- 	echo "FAILSAFE FLAG WAS SET"
- 	if [ $FailSafeMode = "Enabled" ]; then
- 		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
- 		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
- 		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
- 		ln -s "$3" "$FailSafeDir/$ShowFileName.$originalext"
- 		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
- 		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
- 	fi
- 
- 	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
- 	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
-  	FailedJob
-	echo $runjob
- 	exit 1 
- fi
+
  
  ######PRE-NAMING CHECKS#####
  if [ "$exx" = "" ]; then
@@ -973,9 +981,8 @@ generaterss() {
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
- 	FailedJob
-	echo $runjob		
- 	exit 0
+ 	jobtype=TvDbIsIncomplete
+ 	RunJob
  fi
   
  #check to see if output folder exists
@@ -1004,7 +1011,25 @@ generaterss() {
  		MoveDir=$FailSafeDir
  	fi
  fi
- 	
+ #####FAILSAFE HANDLING#####
+ #If failsafe state is set then create link in FailSafeMode
+ if [ $FailSafeState = "1" ]; then
+  	echo "FAILSAFE FLAG WAS SET CHECK PERMISSIONS AND FOLDERS">>"$mythicalLibrarian"/output.log
+ 	echo "FAILSAFE FLAG WAS SET"
+ 	if [ $FailSafeMode = "Enabled" ]; then
+ 		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
+ 		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
+ 		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
+ 		ln -s "$3" "$FailSafeDir/$ShowFileName.$originalext"
+ 		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
+ 		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
+ 	fi
+ 
+ 	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
+ 	echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
+  	jobtype=FailSafeModeComplete
+ 	RunJob
+ fi
  
  #####ANTI-CLOBBER#####	
  #If file exists then make a new name for it
@@ -1028,7 +1053,20 @@ generaterss() {
 
  #For debugging purposes only
  test "`basename $3`" = "testfile.ext" && exit 0
-
+ 
+ #####SH Identification Type Handling #####
+ #if the ProgramID does not meet criteria, then end the program
+ 	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
+ 		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $1, $2">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
+ 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $1 $ProgramIDType" utilities-system-monitor
+  		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
+  		jobtype=GenericShow
+ 		RunJob
+ 	fi
  #####MOVE MODE HANDLING#####
  #If symlink is not in LINK mode, Move and rename the file.
  if [ "$SYMLINK" != "LINK" ]; then
@@ -1063,9 +1101,10 @@ generaterss() {
  #Send notification to daily report log
  			dailyreport "$ShowFileName"
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
- 			SucessfulJob
- 			echo $runjob	
-   			exit 0
+			generaterss 
+  			jobtype=MoveModeSucessful		
+ 			RunJob
+
  #if file was not moved, then fail  
  		elif [ ! -s "$MoveDir/$ShowFileName.$originalext" ]; then
  			rm -f "$MoveDir/$ShowFileName.$originalext"
@@ -1074,9 +1113,9 @@ generaterss() {
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%WROTE 0 LENGTH FILE%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			FailedJob
-			echo $runjob
- 			exit 0
+ 			jobtype=PermissionError0Length
+ 			RunJob
+
  		fi
  	elif [ ! -f "$MoveDir/$ShowFileName.$originalext" ]; then
   		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1084,6 +1123,8 @@ generaterss() {
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
+ 	  	jobtype=PermissionErrorWhileMoving
+ 		RunJob
  	fi
  
  
@@ -1112,9 +1153,9 @@ generaterss() {
  		fi
  		echo "#"$mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  		dailyreport "$ShowFileName"
- 		SucessfulJob
-		echo $runjob
- 		exit 0
+ 		generaterss
+   		jobtype=LinkModeSucessful		
+ 		RunJob
  
  #If link failure, send notification and fail
  	elif [ ! -L "$MoveDir/$ShowFileName.$originalext" ]; then
@@ -1126,9 +1167,9 @@ generaterss() {
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
  		echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
  	fi
- 	FailedJob
-	echo $runjob
- 	exit 1
+ 	jobtype=LinkModeFailed
+	RunJob
+
  fi 
  
  #####GENERIC UNSPECIFIED ERROR#####
@@ -1147,6 +1188,7 @@ generaterss() {
  #send notification if enabled
  test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "mythicalLibrarian operation failed See "$mythicalLibrarian"/output.log for more information" error
  echo $mythicalLibrarian'/mythicalLibrarian.sh "'$1'" "'$2'" "'$3'"'>>$mythicalLibrarian/doover.sh
- FailedJob
- echo $runjob
- exit 1
+ jobtype=GenericUnspecifiedError
+ RunJob
+
+Exit 2 
