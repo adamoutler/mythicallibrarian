@@ -340,10 +340,6 @@ echo $showname
  	rssDir="/var/www/mythical-rss"
  	maxItems=8	#maximum number of items to read into the feed
  
-#DEBUG.  Bad procedure to call functions from within functions
-test -d $rssDir && rssDirFreeSpace=`df -P "$rssDir"|sed -n 2p|awk '{print $4}'` 
-test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
- 
  #script settings
  	OLDrssFile="rss.xml"
  	TEMPrssFile="rss.temp"
@@ -381,7 +377,7 @@ test -d $rssDir && checkpermissions "40" "$rssDirFreeSpace" "$rssDir"
  		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$showname</link>">>$rssDir/$TEMPrssFile 
  	else
  		tvdotcomshowname=`echo $ShowName|replace " " "%20"`
- 		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&stype=all&tag=search%3Bfrontdoor&qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
+ 		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&amp;stype=all&amp;tag=search%3Bfrontdoor&amp;qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
 	fi
  #TODO: use episode link as GUID - IMPORTANT-may be handled by using 
     	#test $Database=Enabled &&test which ifconfig && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
