@@ -718,21 +718,39 @@ echo $showname
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
  		exit 1 
 	fi
- 	ls -1 $scanpath/*.$checkext>$mythicalLibrarian/scan.temp
-echo $scanpath $checkext
-  	while read line
- 	do
-	mythicalLibrarian "$line"	
- 	done<"$mythicalLibrarian/scan.temp"
- 	rm "$mythicalLibrarian/scan.temp"
- 	exit 0
- 
+ 	echo "--You have entered scan Mode."
+	echo " mythicalLibrarian will conduct a scan of the folder:"
+ 	echo " $scanpath"
+ 	echo " searching for file types:$checkext. Each file will be"
+	echo " processed through mythicalLibrarian. This mode will" 
+	echo " only work when database access functional."
+ 	echo " please scan a single file to test capabilities before"
+	echo " running the scan mode of operation using the following"
+	echo " eg. mythicalLibrarian /path/to/file.ext"
+	echo " This operation can be reversed using the following command:"
+ 	echo " sudo mythicalLibrarian --undo"
+ 	echo " Data loss can occour if this operation is interupted."
+	read -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
+ 	test "$yesorno" = "" && yesorno="y"
+ 	if [ "$yesorno" = "y" ]; then
+	 	ls -1 $scanpath/*.$checkext>$mythicalLibrarian/scan.temp
+ 		echo $scanpath $checkext
+  		while read line
+ 		do
+			mythicalLibrarian "$line"	
+ 		done<"$mythicalLibrarian/scan.temp"
+ 		rm "$mythicalLibrarian/scan.temp"
+ 		exit 0
+ 	else
+ 	 	echo "you must press 'y' to scan"
+ 		exit 0
+ 	fi
 }
  mythicalDiagnostics () {
 
  	echo "--You have entered diagnostic mode"
  	echo "mythicalLibrarian will now conduct a series of tests."
-	read -p "press any key to verify installed packages"
+	read -p "press any key to verify installed packages..."
  	
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
@@ -745,7 +763,7 @@ echo $scanpath $checkext
 		echo "Installed packages check ***FAILED***" 
  		echo "Please run 'apt-get install $checkc$checkd$checke' or equivalant"
 	fi
- 	read -p "Press any key to perform Desktop Message test."
+ 	read -p "Press any key to perform Desktop Message test..."
  	echo "Performing librarian-notify-send test"
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
  	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
@@ -755,7 +773,7 @@ echo $scanpath $checkext
  	XBMCcomm=`curl -s "http://"192.168.1.110:8080"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
  	test $XBMCcomm = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
- 	read -p "Press any key to test file system permissions"
+ 	read -p "Press any key to test file system permissions..."
  	echo "Testing file system permissions"
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
@@ -782,11 +800,10 @@ echo $scanpath $checkext
  	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
  	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
- 	read -p "press any key for final results"
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILED***"
  	echo 
  	if [ "$overallchecks" = "***PASSED***" ]; then
- 	
+ 	read -p "press any key to test mythicalLibrarian..."
 	mythicalLibrarian testfile.ext "mister" "Show 1332"
  	test "$?" = "0" && mythicaltest="***PASSED***" || overallchecks=failed
  	else
@@ -883,7 +900,7 @@ echo $scanpath $checkext
 	--scan|-s)
  		mythicalScan		
  	;;
-	--mythicalDiagnostic|-m)
+	--mythicalDiagnostics|-m)
        		mythicalDiagnostics
   	;;
 	--doover|-d)
