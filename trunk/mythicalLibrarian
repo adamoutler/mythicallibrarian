@@ -821,7 +821,7 @@ echo $scanpath $checkext
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  	 	chmod +x "$mythicalLibrarian/doover.sh"
-		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
+		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
 		exit 0
 	else
 	 	echo "You must press y to execute doover"
@@ -838,7 +838,7 @@ echo $scanpath $checkext
  		echo "eg. 'sudo mythicalLibrarian --undo'"
  		exit 1
  	fi
- 	echo "--You have entered doover mode."
+ 	echo "--You have entered undo mode."
 	echo " In this mode of operation, mythicalLibrarian will reverse"
  	echo " file changes created by the current user while running."
  	echo " mythicalLibrarian. It is important that this process is"
@@ -847,7 +847,7 @@ echo $scanpath $checkext
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  	 	chmod +x "$mythicalLibrarian/undo.sh"
-		sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
+		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
 		exit 0
 	else
 	 	echo "You must press y to execute undo"
