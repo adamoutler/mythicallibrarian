@@ -169,7 +169,7 @@
  #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled
  Notify=Enabled
  #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)
- NotifyUserName="adam" #<------THIS VALUE MUST BE SET-------
+ NotifyUserName="xbmc" #<------THIS VALUE MUST BE SET-------
  #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled
  XBMCUpdate=Enabled
  #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled
@@ -557,6 +557,9 @@ echo $showname
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
  
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
+ 	
+ 	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
+ 	seasonyear=`echo "${ShowStartTime:0:4}"`
  	return 0 
  }
 
@@ -664,6 +667,19 @@ echo $showname
  return 0 
  } 
  
+ #Get show translations if the showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
+ ShowTranslations () {
+ 	if [ -f $mythicalLibrarian/showtranslations ]; then 
+ 		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
+ 		if [ "$showtranslation" != "" ];then 
+ 			ShowName=$showtranslation
+ 			echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
+ 		elif [ "$showtranslation" = "" ];then
+ 			showtranslation="Inactive"
+ 		fi
+ 	fi
+ }
+
 #Create an NFO file based upon extracted information
  GenerateEpisodeNFO () {
  	if [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
@@ -680,10 +696,173 @@ echo $showname
   	fi
  	return 0
  }
-
  
+ #This function will scan a folder and process the entire library
+ mythicalScan () {
+ 	checkext=$InputTitle
+	if [ "$checkext" = "" ]; then
+	 	echo "Cannot process blank file extensions"
+		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+		exit 1
+	elif [ "${checkext:0:2}" = "./" ]; then
+ 		echo "please specify the full path to the file"
+ 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+ 		exit 1
+	fi
+ 	scanpath=$InputSubtitle
+ 	if [ "$scanpath" = "" ]; then
+		echo "please supply a path"
+ 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+ 		exit 1 
+	fi
+ 	ls -1 $scanpath/*.$checkext>$mythicalLibrarian/scan.temp
+echo $scanpath $checkext
+  	while read line
+ 	do
+	mythicalLibrarian "$line"	
+ 	done<"$mythicalLibrarian/scan.temp"
+ 	rm "$mythicalLibrarian/scan.temp"
+ 	exit 0
+ 
+}
+ mythicalDiagnostics () {
+
+ 	echo "--You have entered diagnostic mode"
+ 	echo "mythicalLibrarian will now conduct a series of tests."
+	read -p "press any key to verify installed packages"
+ 	
+	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
+	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
+	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin"	
+	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
+ 		packagecheck="***PASSED***"
+		echo "Installed packages check ***PASSED***"
+	else
+ 		packagecheck="***FAILED***"
+		echo "Installed packages check ***FAILED***" 
+ 		echo "Please run 'apt-get install $checkc$checkd$checke' or equivalant"
+	fi
+ 	read -p "Press any key to perform Desktop Message test."
+ 	echo "Performing librarian-notify-send test"
+ 	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
+ 	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
+ 	echo "Desktop Notifications test $notifytest"
+ 	read -p "Press any key to perform XBMC Notification test..."
+	echo "Performing XBMC Notifications test"
+ 	XBMCcomm=`curl -s "http://"192.168.1.110:8080"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
+ 	test $XBMCcomm = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
+ 	echo "XBMC Communications $XBMCcomm"
+ 	read -p "Press any key to test file system permissions"
+ 	echo "Testing file system permissions"
+ 	MoveFileSize="10000"
+ 	MoveFileSize=$((MoveFileSize/1024))
+ 	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
+ 	AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
+ 	test "$Database" = "Enabled" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
+ 	checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
+ 	MoveDirWritable=$TMoveDirWritable
+ 	checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
+ 	AlternateMoveDirWritable=$TMoveDirWritable
+ 	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ 	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
+ 	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ 	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
+ 	checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+	WorkingDirWritable=$TMoveDirWritable
+ 	echo "USER SETTING     |FLAG|Folder name"
+	echo "MoveDir          |$MoveDirWritable   |$MoveDir "
+	echo "AlternateMoveDir |$AlternateMoveDirWritable   |$AlternateMoveDir"
+	echo "PrimaryMovieDir  |$PrimaryMovieDirWritable   |$PrimaryMovieDir"
+	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
+ 	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
+ 	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
+ 	echo "Critical Filesystem checks $folderchecks"
+ 	read -p "press any key for final results"
+ 	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILED***"
+ 	echo 
+ 	if [ "$overallchecks" = "***PASSED***" ]; then
+ 	
+	mythicalLibrarian testfile.ext "mister" "Show 1332"
+ 	test "$?" = "0" && mythicaltest="***PASSED***" || overallchecks=failed
+ 	else
+ 		echo OVERALL FAILURE
+ 		mythicaltest="COULD NOT COMPLETE"
+ 	fi
+	read -p "press any key to continue on to the final results..."	
+	echo "  All tests complete            RESULTS"
+	echo "  Installed Packages:        $packagecheck $checkc$checkd$checke"
+ 	echo "  Notifications Test:        $notifytest"
+	echo "  XBMC Communications:       $XBMCcomm"
+	echo "  File System Checks:        $folderchecks"
+ 	echo "  mythicalTesting:           $mythicaltest"
+ 	echo "  Overall mythicalReadiness: $overallchecks"
+  	exit 0
+ }
+ 
+ 
+ executeDoOver () {
+ 	if [ "$(id -u)" != "0" ]; then
+ 		echo "You do not have sufficient privlidges to run this script."
+ 		echo "--doover must be executed with the sudo command"
+ 		echo "eg. 'sudo mythicalLibrarian --doover'"
+ 		exit 1
+ 	fi
+ 	echo "--You have entered doover mode."
+	echo " In this mode of operation, mythicalLibrarian will rerun"
+ 	echo " mythicalLibrarain against all files which failed on the"
+ 	echo " first run of mythicalLibrarian. It is important that this"
+ 	echo " process does not get interupted or data loss may occour."
+ 	read -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
+ 	test "$yesorno" = "" && yesorno="y"
+ 	if [ "$yesorno" = "y" ]; then
+ 	 	chmod +x "$mythicalLibrarian/doover.sh"
+		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
+		exit 0
+	else
+	 	echo "You must press y to execute doover"
+		exit 0
+	fi
+
+ }
+ 
+ 
+ executeUndo () {
+ 	if [ "$(id -u)" != "0" ]; then
+ 		echo "You do not have sufficient privlidges to run this script."
+ 		echo "--doover must be executed with the sudo command"
+ 		echo "eg. 'sudo mythicalLibrarian --undo'"
+ 		exit 1
+ 	fi
+ 	echo "--You have entered doover mode."
+	echo " In this mode of operation, mythicalLibrarian will reverse"
+ 	echo " file changes created by the current user while running."
+ 	echo " mythicalLibrarian. It is important that this process is"
+	echo " not interupted or data loss may occour"
+ 	read -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
+ 	test "$yesorno" = "" && yesorno="y"
+ 	if [ "$yesorno" = "y" ]; then
+ 	 	chmod +x "$mythicalLibrarian/undo.sh"
+		sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
+		exit 0
+	else
+	 	echo "You must press y to execute undo"
+		exit 0
+	fi
+
+ }
+
+
+
+
  ########## END FUNCTIONS HERE ##########
  ########## BEGIN PROGRAM HERE ##########
+ 
+ 
  
  
  
@@ -694,13 +873,34 @@ echo $showname
  	mkdir $mythicalLibrarian
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
-
- echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
- showcheck="Enabled"
  #Set episode name, dir, extension, and showname from the input parameters.
  InputTitle=$2
  InputSubtitle=$3
  InputPath=$1
+
+ #check for command line switches
+ case $InputPath in 
+	--scan|-s)
+ 		mythicalScan		
+ 	;;
+	--mythicalDiagnostic|-m)
+       		mythicalDiagnostics
+  	;;
+	--doover|-d)
+ 		executeDoOver
+	;;
+ 	--undo|-u)
+ 		executeUndo
+	;;
+ esac
+
+ #Initial log entry 
+ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
+ showcheck="Enabled"
+
+ 
+
+
  InputFileBasename=`basename $InputPath`
  GrabTitleAndSubtitle
  ShowName=$InputTitle
@@ -709,16 +909,9 @@ echo $showname
  originaldirname=`dirname "$InputPath"`
  FileBaseName=${InputPath##*/}  
  FileName="$InputPath"
+
  #Check for show translations relating to the show in question.
- if [ -f $mythicalLibrarian/showtranslations ]; then 
- 	showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
- 	if [ "$showtranslation" != "" ];then 
- 		ShowName=$showtranslation
- 		echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
- 	elif [ "$showtranslation" = "" ];then
- 		showtranslation="Inactive"
- 	fi
- fi
+ ShowTranslations
  
  #Check for Use Original Dir Parameter
  test "$UseOriginalDir" = "Enabled" && MoveDir="$originaldirname"
@@ -743,13 +936,13 @@ echo $showname
  	 	MainFile=`echo $line|cut -d"'" -f4`
  		ls "$MainFile" > /dev/null 2>&1
  		if [ "$?" != "0" ]; then
-  			if [ -d "`dirname $SupportFile`" ]; then
+  			if [ -d "`dirname "$SupportFile"`" ]; then
  				echo "REMOVING ORPHAN $SupportFile"
  				echo "REMOVING ORPHAN $SupportFile">>"$mythicalLibrarian"/output.log
  				rm -f "$SupportFile"
  			else
- 				echo "FOLDER DISCONNECTED:"`dirname $SupportFile`
- 				echo "FOLDER DISCONNECTED:"`dirname $SupportFile`>>"$mythicalLibrarian"/output.log
+ 				echo "FOLDER DISCONNECTED:"`dirname ""$SupportFile""`
+ 				echo "FOLDER DISCONNECTED:"`dirname ""$SupportFile""`>>"$mythicalLibrarian"/output.log
  			 	echo "$line" >> "$mythicalLibrarian/created.tracking2"	
  			fi
  		else 
@@ -986,7 +1179,7 @@ echo $showname
  
  #####FILE HANDLING AND ID TYPE DECISSION#####
  #If file to be moved does not exist, then report
- if [ ! -f "$InputPath" ]; then
+ if [ ! -f "$InputPath" ] && [ "$InputPath" != "testfile.ext" ]; then
  	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%INPUT FILE NAME NON EXISTANT CHECK FILE NAME AND PERMISSIONS%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1008,36 +1201,6 @@ echo $showname
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
  
-
- #####OUTPUT FILE NAME FORMATTING#####
-
- #Format Shows
- epn=`echo $epn| tr -d [:punct:]`
- NewShowName=`echo $NewShowName|tr -d [:punct:]`
- Showname=`echo $ShowName|tr -d [:punct:]`
- seasonyear=`date +%Y`
- datehour=echo "`date +%Y%m%d%H%M`"
- #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
- if [ ! -z "$exx" ]; then
- 	 ShowFileName=`echo "$NewShowName.$sxx$exx ($epn)"`
-
-
-
- #Format Movies
- elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
-  	ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
- 	MoveDir="$PrimaryMovieDir"
- 	exx="Movie"
-
- #Format generic Shows
- elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
- 	ShowFileName=`echo "$ShowName.S$seasonyear""E00 (Recorded $datehour)"`
-	NewShowName=`echo $ShowName|tr -d [:punct:]`
-  	exx="Generic"
- 	echo wootw
- fi
- 
-
  
  ######PRE-NAMING CHECKS#####
  if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ]; then
@@ -1052,6 +1215,35 @@ echo $showname
   	jobtype=TvDbIsIncomplete
  	RunJob
  fi
+ 
+ 
+ #####OUTPUT FILE NAME FORMATTING#####
+
+ #Format Shows
+ epn=`echo $epn| tr -d [:punct:]`
+ NewShowName=`echo $NewShowName|tr -d [:punct:]`
+ Showname=`echo $ShowName|tr -d [:punct:]`
+ 
+ #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
+ if [ ! -z "$exx" ]; then
+ 	 ShowFileName=`echo "$NewShowName.$sxx$exx ($epn)"`
+
+ #Format Movies
+ elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
+  	ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
+ 	MoveDir="$PrimaryMovieDir"
+ 	exx="Movie"
+
+ #Format generic Shows
+ elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
+ 	ShowFileName=`echo "$ShowName.S$seasonyear""E00 (Recorded $datehour on $ChanID)"`
+	NewShowName=`echo $ShowName|tr -d [:punct:]`
+  	exx="Generic"
+ fi
+ 
+
+ 
+
  #check to see if output folder exists
  test -d "$MoveDir" && echo "SET TARGET DIR AS: $MoveDir"
  
@@ -1160,6 +1352,8 @@ echo $showname
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
+ 				test ! -f "$mythicalLibrarian"/undo.sh && echo "rm $mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh"
+ 				echo  "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'" >>"$mythicalLibrarian/undo.sh"
  				if [ ! -f  "$InputPath" ] ; then
  					test ! -f "$mythicalLibrarian"/undo.sh && echo "rm $mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh"
  					echo  "mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
@@ -1172,13 +1366,15 @@ echo $showname
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
  			GenerateTVShowNFO  
- 			GenerateEpisodeNFO 
+ 			test "$ProgramIDType" = "Generic Episode With No Data" && GenerateEpisodeNFO 
+ 			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
+			echo "mv '$MoveDir/$ShowFileName.$originalext' '$MoveDir/$ShowFileName.$originalext'"
  			dailyreport "$ShowFileName"
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
-			generaterss 
+ 			generaterss 
   			jobtype=MoveModeSucessful		
  			RunJob
-
+ 
  #if file was not moved, then fail  
  		elif [ ! -s "$MoveDir/$ShowFileName.$originalext" ]; then
  			rm -f "$MoveDir/$ShowFileName.$originalext"
@@ -1228,7 +1424,8 @@ echo $showname
  			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
  		echo "#mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
-
+ 		test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
+		echo "rm '$MoveDir/$ShowFileName.$originalext'"
  		dailyreport "$ShowFileName"
  		generaterss
    		jobtype=LinkModeSucessful		
