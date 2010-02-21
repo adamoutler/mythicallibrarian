@@ -67,6 +67,7 @@ if [ "$DownloadML" = "0" ]; then
  	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian" -O "./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
+	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
