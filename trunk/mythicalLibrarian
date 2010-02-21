@@ -1167,7 +1167,7 @@ echo $showname
  echo "ALTMOVIEDIR FREE SPACE: $AlternateMovieDirFreeSpace"kB"- WRITABLE:$AlternateMovieDirWritable"
  
  #####DEBUG MODE OUTPUT BLOCK#####
- if [ $DEBUGMODE = "Enabled" ]; then
+ if [ "$DEBUGMODE" = "Enabled" ]; then
  	echo "###################DEBUG MODE ENABLED####################">>"$mythicalLibrarian"/output.log
  	echo "MY USER NAME:$MyUserName-">>"$mythicalLibrarian"/output.log
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
