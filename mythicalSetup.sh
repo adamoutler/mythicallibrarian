@@ -84,7 +84,7 @@ if [ "$DownloadML" = "0" ]; then
 
 fi
 
-test -f ./librarian && rm -f ./librarian
+test -f ./mythicalSetup && rm -f ./mythicalSetup
 echo "#! /bin/bash">./mythicalSetup
 echo " #######################USER SETTINGS##########################">>./mythicalSetup
 echo " ###Stand-alone mode values###">>./mythicalSetup
@@ -380,7 +380,7 @@ echo ' ################################################################'>> ./myt
 test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
-chmod 1755 ./mythicalLibrarian
+
 nuser=`who -m | awk '{print $1;}' | grep -m1 ^`
  echo $nuser
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
@@ -400,6 +400,7 @@ echo "mythicalLibrarian will now conduct fuzzy logic testing"
 echo "please note any errors.   All 'DIR' flags should say 'WRITABLE:1'"
 echo "Press any key to continue to testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
+chmod 1755 ./mythicalLibrarian
 ./mythicalLibrarian -m
 test "$?" = "0" && cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian || echo "mythicalDiagnostics failed.  Please rerun setup"
 
