@@ -1223,7 +1223,7 @@ echo $showname
  
  
  ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext"; then
+ if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" = "testfile.ext"; then
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
  	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
