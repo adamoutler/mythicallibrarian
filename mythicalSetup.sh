@@ -134,7 +134,8 @@ echo "DirTracking=Enabled">>./mythicalSetup
 
 echo " #the following line contains the API key from www.TheTvDb.Com. Default project code: 6DF511BB2A64E0E9">> ./mythicalSetup
 echo "APIkey=6DF511BB2A64E0E9">>./mythicalSetup
-
+echo " #Language setting">>./mythicalSetup
+echo "Language=en">>./mythicalSetup
 
 echo " ###Database Settings###">>./mythicalSetup
 if [ "$mythtv" = "1" ]; then
