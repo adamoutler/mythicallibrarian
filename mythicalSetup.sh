@@ -386,10 +386,9 @@ cat ./librarian >>./mythicalLibrarian
 nuser=`who -m | awk '{print $1;}' | grep -m1 ^`
  echo $nuser
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
-test ! -d "/var/lib/mythicalLibrarian" && mkdir "/var/lib/mythicalLibrarian"
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
-test ! -d ~/mythicalLibrarian && mkdir ~/mythicalLibrarian
+test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
 test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
 test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
@@ -398,14 +397,14 @@ test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/
 test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
 cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
-echo "mythicalLibrarian will now conduct fuzzy logic testing"
-echo "please note any errors.   All 'DIR' flags should say 'WRITABLE:1'"
+echo "mythicalLibrarian will now conduct mythicalDiagnostics"
 read -p "Press any key to continue to online testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
-chmod 1755 ./mythicalLibrarian
+chmod 1755 "./mythicalLibrarian"
 ./mythicalLibrarian -m
 
 
-test -d $movedir && chown -R "$SUDO_USER:$SUDO_USER" ~/mythicalLibrarian
+test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
+test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && rm -f "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 
-echo $SUDO_USER
+exit 0
