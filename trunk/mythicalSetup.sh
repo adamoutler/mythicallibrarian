@@ -77,7 +77,7 @@ if [ "$DownloadML" = "0" ]; then
  		fi
   	done <./mythicalLibrarian.sh
  
- 	wget "http://downloads.sourceforge.net/project/mythicallibrari/mythicalLibrarianBeta/mythicalSetup.sh" -O "./mythicalSetup.sh"
+ 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh" -O "./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
  	./mythicalSetup.sh
 	exit 0
@@ -402,8 +402,9 @@ echo "mythicalLibrarian will now conduct fuzzy logic testing"
 echo "please note any errors.   All 'DIR' flags should say 'WRITABLE:1'"
 echo "Press any key to continue to testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
+./mythicalLibrarian -m
 test "$?" = "0" && cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian || echo "mythicalDiagnostics failed.  Please rerun setup"
-./mythicalLibrarian ./mythicalLibrarian -m
+
 test -d $movedir && chown -R "$SUDO_USER:$SUDO_USER" ~/mythicalLibrarian
 
 echo $SUDO_USER
