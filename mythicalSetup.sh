@@ -353,7 +353,7 @@ echo ' 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"'>> ./mythicalSet
 echo '  			#Insert Custom User Job here '>> ./mythicalSetup
 echo ' 			'>> ./mythicalSetup
 echo ' 			#'>> ./mythicalSetup
-echo '  			exit 2'>> ./mythicalSetup
+echo '  			exit 0'>> ./mythicalSetup
 echo ' 			;;'>> ./mythicalSetup
 echo ' #Generic error occoured'>> ./mythicalSetup
 echo '  		GenericUnspecifiedError)'>> ./mythicalSetup
