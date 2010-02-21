@@ -806,7 +806,7 @@ echo $showname
  	read -p "press any key to test mythicalLibrarian..."
 	mythicalLibrarian testfile.ext "mister" "Show 1332"
  	echo $?
- 	test "$?" = "0"	 mythicaltest="***PASSED***"
+ 	test "$?" = "0" && mythicaltest="***PASSED***"
  	else
  		echo OVERALL FAILURE
  		mythicaltest="COULD NOT COMPLETE"
