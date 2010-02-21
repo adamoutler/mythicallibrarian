@@ -64,7 +64,7 @@ dialog --title "Update Core?" --yesno "Have you updated recently?" 8 25
  	test $? = 0 && DownloadML=1 || DownloadML=0
 if [ "$DownloadML" = "0" ]; then
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
- 	test -f ./librarian && rm -f ./librarian
+
 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian" -O "./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
@@ -72,7 +72,6 @@ if [ "$DownloadML" = "0" ]; then
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
- 			test -f "./librarian" && rm "./librarian"
  			echo -E ${line} >> ./librarian
   	echo $startwrite
  		fi
@@ -85,10 +84,7 @@ if [ "$DownloadML" = "0" ]; then
 
 fi
 
-
-
-
-
+test -f ./librarian && rm -f ./librarian
 echo "#! /bin/bash">./mythicalSetup
 echo " #######################USER SETTINGS##########################">>./mythicalSetup
 echo " ###Stand-alone mode values###">>./mythicalSetup
