@@ -72,6 +72,7 @@ if [ "$DownloadML" = "0" ]; then
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
+ 			test -f "./librarian" && rm "./librarian"
  			echo -E ${line} >> ./librarian
   	echo $startwrite
  		fi
@@ -327,8 +328,8 @@ echo " #DailyReport provides a local log of shows added to your library per day.
 echo "DailyReport=Enabled">> ./mythicalSetup
 echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled
 echo "DEBUGMODE=Enabled" >> ./mythicalSetup
-echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss.  
-echo "maxItems=8"
+echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss. " >> ./mythicalSetup 
+echo "maxItems=8" >>  " >> ./mythicalSetup
 echo "#########################USER SETTINGS########################## ">> ./mythicalSetup
 echo '########################## USER JOBS############################'>> ./mythicalSetup
 echo ' RunJob () {'>> ./mythicalSetup
