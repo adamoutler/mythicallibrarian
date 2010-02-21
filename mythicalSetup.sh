@@ -395,14 +395,14 @@ test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$Alternat
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
-
+cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 echo "mythicalLibrarian will now conduct fuzzy logic testing"
 echo "please note any errors.   All 'DIR' flags should say 'WRITABLE:1'"
-echo "Press any key to continue to testing...."
+read -p "Press any key to continue to online testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
 chmod 1755 ./mythicalLibrarian
 ./mythicalLibrarian -m
-test "$?" = "0" && cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian || echo "mythicalDiagnostics failed.  Please rerun setup"
+
 
 test -d $movedir && chown -R "$SUDO_USER:$SUDO_USER" ~/mythicalLibrarian
 
