@@ -54,7 +54,7 @@ if ! which librarian-notify-send>/dev/null; then
 fi
 
 if [ ! -f "./mythicalLibrarian.sh" ]; then
- 	DownloadML=0
+ 	DownloadML=1
 else
 	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian?" 8 25
  		test $? = 0 && DownloadML=1 || DownloadML=0
