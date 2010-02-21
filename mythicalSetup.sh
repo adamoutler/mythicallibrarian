@@ -65,7 +65,7 @@ dialog --title "Update Core?" --yesno "Have you updated recently?" 8 25
 if [ "$DownloadML" = "0" ]; then
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	test -f ./librarian && rm -f ./librarian
-	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian.sh" -O "./mythicalLibrarian.sh"
+	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian" -O "./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
  	while read line
@@ -77,7 +77,7 @@ if [ "$DownloadML" = "0" ]; then
  		fi
   	done <./mythicalLibrarian.sh
  
- 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh" -O "./mythicalSetup.sh"
+ 	wget "http://downloads.sourceforge.net/project/mythicallibrari/mythicalLibrarianBeta/mythicalSetup.sh" -O "./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
  	./mythicalSetup.sh
 	exit 0
