@@ -388,7 +388,7 @@ test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
 test ! -d "/var/lib/mythicalLibrarian" && mkdir "/var/lib/mythicalLibrarian"
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
-test ! -d ~mythicalLibrarian && mkdir ~/mythicalLibrarian
+test ! -d ~/mythicalLibrarian && mkdir ~/mythicalLibrarian
 test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
 test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
