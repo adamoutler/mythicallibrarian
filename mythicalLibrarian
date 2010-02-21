@@ -935,14 +935,20 @@ echo $showname
  	echo " Desktop Notifications, XBMC notificatons, XBMC library updates"
  	echo " MythTV Database settings, and various operational modes."
  	read -p " Do you wish to continue? y/(n) >" yesorno
+ 	read -p " Do you wish to continue? y/(n) >" yesorno
  	test "$yesorno" != "y" && exit 0
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
-  	cd "$mythicalLibrarian/mythicalSetup"
+	echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
+ 	if [ ! -f ../output.log ]; then 
+	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
+		exit 1
+ 	fi
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
-      	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalsetup.sh"
- 	chmod +x ./mythicalSetup.sh
-	./mythicalSetup.sh
-	exit $?
+      	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
+ 	sudo chmod +x ./mythicalSetup.sh
+ 	./mythicalSetup.sh
+ 	exit $?
+ 	exit 0
  }
 
   		
