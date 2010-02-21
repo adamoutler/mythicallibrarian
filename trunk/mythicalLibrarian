@@ -806,10 +806,12 @@ echo $showname
  	read -p "press any key to test mythicalLibrarian..."
 	mythicalLibrarian testfile.ext "mister" "Show 1332"
  	echo $?
- 	test "$?" = "0" && mythicaltest="***PASSED***" || overallchecks=failed
+ 	if [ "$?" = "0" ]; then
+ 	 	 mythicaltest="***PASSED***"
  	else
  		echo OVERALL FAILURE
  		mythicaltest="COULD NOT COMPLETE"
+ 		overallchecks=failed
  	fi
 	read -p "press any key to continue on to the final results..."	
 	echo "  All tests complete            RESULTS"
