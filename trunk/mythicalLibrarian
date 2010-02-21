@@ -1331,6 +1331,7 @@ echo $showname
 
 
  #For debugging purposes only
+ test "$InputPath" = "testfile.ext" && return 0
  test "$InputPath" = "testfile.ext" && exit 0
  
  #####SH Identification Type Handling #####
