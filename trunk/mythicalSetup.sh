@@ -77,7 +77,7 @@ if [ "$DownloadML" = "0" ]; then
  		fi
   	done <./mythicalLibrarian.sh
  
- 	wget "http://downloads.sourceforge.net/project/mythicallibrari/mythicalLibrarianBeta/mythicalSetup.sh" -O "./mythicalSetup.sh"
+ 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh" -O "./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
  	./mythicalSetup.sh
 	exit 0
