@@ -836,10 +836,10 @@ echo $showname
  	echo "--You have entered doover mode."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
  	echo " mythicalLibrarain against all files which failed on the"
- 	echo " first run of mythicalLibrarian. It is important that this"
- 	echo " process does not get interupted or data loss may occour."
- 	read -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
- 	test "$yesorno" = "" && yesorno="y"
+ 	echo " first run of mythicalLibrarian. There will be no indicators"
+ 	echo " while this process is running. It is important that this"
+        echo " process does not get interupted or data loss may occour."
+ 	read -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	if [ "$yesorno" = "y" ]; then
  	 	chmod +x "$mythicalLibrarian/doover.sh"
 		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
@@ -877,9 +877,76 @@ echo $showname
 
  }
 
+ mythicalHelp () {
+ 	echo " mythicalLibrarian --:invalid pattern"
+	echo ""
+ 	echo "usage: mythicalLibrarian 'path/to/file' ['title'] ['subtitle']"
+ 	echo "usage: mythicalLibrarian --mode [parameter] [parameter]"
+ 	echo " items in brackets are [context sensitve]"
 
+ 	if [ "$switchhelp" = "1" ]; then
+	 	echo ""
+ 		echo "Adam Outler: outleradam at hotmail.com"
 
+ 		echo ""
+	 	echo "-m|--mythicalDiagnostics"
+  		echo " .diagnostics: tests functions of mythicalLibrarian"
+ 		echo " .eg. mythicalLibrarian --mythicalDiagnostics"
+ 		echo ""
+ 		echo "-s|--scan filetype /path/to/folder"
+ 		echo " .eg. mythicalLibrarian --scan mpg /home/mythtv/videos"
+  		echo " .scan: creates a library from an entire folder"
+ 		echo "" 		
+ 	 	echo "-u|--update"
+ 		echo " .update: mythicalLibrarian to the current version"
+ 		echo " .eg. sudo mythicalLibrarian --update"
+ 		echo ""
+ 		echo "-d|--doover"
+  		echo " .eg. sudo mythicalLibrarian --doover"
+ 		echo " .doover: reruns previously failed jobs sequentially"
+ 		echo ""
+ 		echo "-u|--undo"
+ 		echo " .eg. sudo mythicalLibrarian --undo"
+ 		echo " .undo: returns all files to original states"
+ 		echo ""
+ 		echo "-?|-h|--help"
+ 		echo " .example: mythicalLibrarian --help"
+ 		echo "Help: displays this message"
+ 		echo "======================================================="
+ 	fi
+	echo " ensure you have set the user settings properly and run"
+ 	echo " --mythicalDiagnostics before using mythicalLibrarian"
+ 	echo " in --scan mode or a user job."
+	exit 1
+ }
+ 
+ #mythicalUpdater will download the SVN version of mythicalSetup
+ mythicalUpdater () {
+ 	if [ "$(id -u)" != "0" ]; then
+		echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
+		exit 1
+	fi
+ 	echo "--You have entered Update mode."
+	echo " mythicalSetup will now update your system to the latest revision."
+ 	echo " You will be asked a series of questions and the updater will make"
+	echo " decisions based upon your selections and your system. mythicalSetup "
+ 	echo " is designed to make updating easy and will set up the following:"
+ 	echo " Episode naming, Movie naming, local RSS feeds, local Daily Report,"
+ 	echo " Desktop Notifications, XBMC notificatons, XBMC library updates"
+ 	echo " MythTV Database settings, and various operational modes."
+ 	read -p " Do you wish to continue? y/(n) >" yesorno
+ 	test "$yesorno" != "y" && exit 0
+  	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
+  	cd "$mythicalLibrarian/mythicalSetup"
+ 	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
+      	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalsetup.sh"
+ 	chmod +x ./mythicalSetup.sh
+	./mythicalSetup.sh
+	exit $?
+ }
 
+  		
+ 	
  ########## END FUNCTIONS HERE ##########
  ########## BEGIN PROGRAM HERE ##########
  
@@ -894,11 +961,15 @@ echo $showname
  	mkdir $mythicalLibrarian
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
- #Set episode name, dir, extension, and showname from the input parameters.
+ 
+ #set up envirnoment for UseOriginalDir if enabled
+
+
  InputTitle=$2
  InputSubtitle=$3
  InputPath=$1
-
+ test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:2}" != "--" && mythicalHelp
+ test "$InputPath" = "" && mythicalHelp
  #check for command line switches
  case $InputPath in 
 	--scan|-s)
@@ -913,8 +984,15 @@ echo $showname
  	--undo|-u)
  		executeUndo
 	;;
+ 	--help|-?|-h)
+ 		switchhelp=1
+ 		mythicalHelp
+ 	;;
+ 	--update|-u)
+   		mythicalUpdater
+ 	;;
  esac
-
+ test "${InputTitle:0:2}" = "--" && mythicalHelp
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  showcheck="Enabled"
@@ -934,12 +1012,24 @@ echo $showname
  #Check for show translations relating to the show in question.
  ShowTranslations
  
- #Check for Use Original Dir Parameter
- test "$UseOriginalDir" = "Enabled" && MoveDir="$originaldirname"
- 
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
   
+ if [ "$UseOriginalDir=Enabled" ]
+ 	#MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
+ 	MoveDir="$originaldirname/Episodes" 
+ 	test ! -d "$MoveDir" && mkdir "$MoveDir" 
+	#AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
+ 	AlternateMoveDir="$originaldirname/Episodes"
+	test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
+ 	#Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
+ 	PrimaryMovieDir="$originaldirname/Movies" 
+	test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" 
+	#AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails
+ 	AlternateMovieDir="$originaldirname/Movies"
+	test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+  	#Set episode name, dir, extension, and showname from the input parameters.
+ fi	
 
 
 
@@ -1257,7 +1347,7 @@ echo $showname
 
  #Format generic Shows
  elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
- 	ShowFileName=`echo "$ShowName.S$seasonyear""E00 (Recorded $datehour on $ChanID)"`
+ 	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
 	NewShowName=`echo $ShowName|tr -d [:punct:]`
   	exx="Generic"
  fi
