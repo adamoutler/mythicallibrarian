@@ -805,6 +805,7 @@ echo $showname
  	if [ "$overallchecks" = "***PASSED***" ]; then
  	read -p "press any key to test mythicalLibrarian..."
 	mythicalLibrarian testfile.ext "mister" "Show 1332"
+ 	echo $?
  	test "$?" = "0" && mythicaltest="***PASSED***" || overallchecks=failed
  	else
  		echo OVERALL FAILURE
