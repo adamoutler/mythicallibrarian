@@ -801,18 +801,18 @@ echo $showname
  	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILED***"
- 	echo 
+
  	if [ "$overallchecks" = "***PASSED***" ]; then
  	read -p "press any key to test mythicalLibrarian..."
 	mythicalLibrarian testfile.ext "mister" "Show 1332"
  	echo $?
- 	if [ "$?" = "0" ]; then
- 	 	 mythicaltest="***PASSED***"
+ 	test "$?" = "0"	 mythicaltest="***PASSED***"
  	else
  		echo OVERALL FAILURE
  		mythicaltest="COULD NOT COMPLETE"
  		overallchecks=failed
  	fi
+ 	
 	read -p "press any key to continue on to the final results..."	
 	echo "  All tests complete            RESULTS"
 	echo "  Installed Packages:        $packagecheck $checkc$checkd$checke"
