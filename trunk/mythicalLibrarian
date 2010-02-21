@@ -814,12 +814,12 @@ echo $showname
  	fi
  	
 	read -p "press any key to continue on to the final results..."	
-	echo -e "  All tests complete\ \ \ \ \ \ \ \ \ \ \ \ RESULTS"
-	echo -e "  Installed Packages:\ \ \ \ \ \ \ \ $packagecheck $checkc$checkd$checke"
- 	echo -e "  Notifications Test:\ \ \ \ \ \ \ \ $notifytest"
-	echo -e "  XBMC Communications:\ \ \ \ \ \ \ $XBMCcomm"
-	echo -e "  File System Checks:\ \ \ \ \ \ \ \ $folderchecks"
- 	echo -e "  mythicalTesting:\ \ \ \ \ \ \ \ \ \ \ $mythicaltest"
+	echo -e "  All tests complete            RESULTS"
+	echo -e "  Installed Packages:        $packagecheck $checkc$checkd$checke"
+ 	echo -e "  Notifications Test:        $notifytest"
+	echo -e "  XBMC Communications:       $XBMCcomm"
+	echo -e "  File System Checks:        $folderchecks"
+ 	echo -e "  mythicalTesting:           $mythicaltest"
  	echo -e "  Overall mythicalReadiness: $overallchecks"
   	exit 0
  }
