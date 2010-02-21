@@ -403,6 +403,6 @@ chmod 1755 "./mythicalLibrarian"
 
 
 test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
-test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && rm -f "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
+test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 
 exit 0
