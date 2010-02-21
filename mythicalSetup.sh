@@ -322,10 +322,10 @@ fi
 
 echo " #DailyReport provides a local log of shows added to your library per day. Enabled|Disabled">> ./mythicalSetup
 echo "DailyReport=Enabled">> ./mythicalSetup
-echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled " >> ./mythicalSetup 
+echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled" >> ./mythicalSetup 
 echo "DEBUGMODE=Enabled" >> ./mythicalSetup
 echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss." >> ./mythicalSetup 
-echo "maxItems=8" >>  " >> ./mythicalSetup
+echo "maxItems=8">> ./mythicalSetup
 echo "#########################USER SETTINGS########################## ">> ./mythicalSetup
 echo '########################## USER JOBS############################'>> ./mythicalSetup
 echo ' RunJob () {'>> ./mythicalSetup
@@ -377,6 +377,7 @@ echo ' '>> ./mythicalSetup
 echo ' ################################################################'>> ./mythicalSetup
 echo ' ############Adept personel only beyond this point###############'>> ./mythicalSetup
 echo ' ################################################################'>> ./mythicalSetup
+test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 chmod 1755 ./mythicalLibrarian
