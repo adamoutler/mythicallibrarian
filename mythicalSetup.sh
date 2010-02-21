@@ -14,13 +14,6 @@ else
  	a="dialog " 
 fi
 
-if which wget >/dev/null; then
-	echo "Verified wget exists"
-else
-	echo "install package 'wget' on your system"
- 	b="wget "
-fi
-
 if which curl >/dev/null; then
 	echo "Verified curl exists"
 else
@@ -45,7 +38,7 @@ if which notify-send>/dev/null && which agrep>/dev/null && which curl>/dev/null 
 	echo "All checks complete!!!"
 else
 	echo "the proper dependencies must be installed..." 
- 	echo "Debian based users run 'apt-get install $a$b$c$d$e"
+ 	echo "Debian based users run 'apt-get install $a$c$d$e"
 	exit 1
 fi
 
@@ -55,16 +48,21 @@ if ! which librarian-notify-send>/dev/null; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
   	test $? = 0 && DownloadLNS=1 || DownloadLNS=0
  	if [ "$DownloadLNS" = "1" ]; then
- 		wget "http://mythicallibrarian.googlecode.com/files/librarian-notify-send" -O "/usr/local/bin/librarian-notify-send"
+ 		curl "http://mythicallibrarian.googlecode.com/files/librarian-notify-send">"/usr/local/bin/librarian-notify-send"
  		sudo chmod +x /usr/local/bin/librarian-notify-send
  	fi
 fi
 
-dialog --title "Update Core?" --yesno "Have you updated recently?" 8 25
- 	test $? = 0 && DownloadML=1 || DownloadML=0
-if [ "$DownloadML" = "0" ]; then
+if [ ! -f "./mythicalLibrarian.sh" ]; then
+ 	DownloadML=0
+else
+	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian?" 8 25
+ 		test $? = 0 && DownloadML=1 || DownloadML=0
+fi
+
+if [ "$DownloadML" = "1" ]; then
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
- 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian" -O "./mythicalLibrarian.sh"
+ 	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
@@ -77,7 +75,7 @@ if [ "$DownloadML" = "0" ]; then
  		fi
   	done <./mythicalLibrarian.sh
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
- 	wget "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh" -O "./mythicalSetup.sh"
+ 	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
  	./mythicalSetup.sh
 	exit 0
