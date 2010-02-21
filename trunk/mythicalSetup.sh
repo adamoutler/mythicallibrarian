@@ -137,14 +137,14 @@ echo "APIkey=6DF511BB2A64E0E9">>./mythicalSetup
 echo " #Language setting">>./mythicalSetup
 echo "Language=en">>./mythicalSetup
 
-echo " ###Database Settings###">>./mythicalSetup
 if [ "$mythtv" = "1" ]; then
 
 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalSetup
 	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'"
 	dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
 		test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalSetup || echo "SYMLINK=Disabled" >> ./mythicalSetup
-
+echo "">>./mythicalSetup
+echo " ###Database Settings###">>./mythicalSetup
 	echo " #Guide data type">> ./mythicalSetup
  	dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it" 10 25
 	test $? = 0 && database=1 || database=0
