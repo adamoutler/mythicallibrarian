@@ -402,7 +402,8 @@ echo "mythicalLibrarian will now conduct fuzzy logic testing"
 echo "please note any errors.   All 'DIR' flags should say 'WRITABLE:1'"
 echo "Press any key to continue to testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
-./mythicalLibrarian "The" "The" "./testfile.ext"
+test "$?" = "0" && cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian || echo "mythicalDiagnostics failed.  Please rerun setup"
+./mythicalLibrarian ./mythicalLibrarian -m
 test -d $movedir && chown -R "$SUDO_USER:$SUDO_USER" ~/mythicalLibrarian
-cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
+
 echo $SUDO_USER
