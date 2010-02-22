@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#This script will configure mythicalLibrarian
+#This script will generate the user settings portion of mythicalLibrarian
 echo "" > ./mythicalSetup 
 if [ "$(id -u)" != "0" ]; then
 	echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
@@ -89,16 +89,22 @@ echo " ###Stand-alone mode values###">>./mythicalSetup
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-
+dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Episodes and your/recording/directory/Movies, or would you like to specify a directory to separate Episodes and Movies?" 10 40
+	test $? = 0 && UserChoosesFolder=1
 
 test -f ./movedir && movedir1=`cat ./movedir`
 test "$movedir1" = "" && movedir1="/home/mythtv/Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
-dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 2>./movedir
-movedir=`cat ./movedir`
-test "$movedir" = "" && movedir=$movedir1
-echo $movedir > ./movedir
-echo "MoveDir=$movedir">>./mythicalSetup
+
+if [ "$UserChoosesFolder" = "0" ]; then 
+ dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 2>./movedir
+ movedir=`cat ./movedir`
+fi
+ test "$movedir" = "" && movedir=$movedir1
+ echo $movedir > ./movedir
+ echo "MoveDir=$movedir">>./mythicalSetup
+ movedir="/home/mythtv/Episodes"
+
 
 dialog --infobox "If your primary folder fails, your files will be moved to /home/mythtv/Episodes by default" 10 30 
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
@@ -108,7 +114,7 @@ echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalSetup
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalSetup
 echo " #UseOriginalDir will not separate episodes from movies. Enabled|Disabled">> ./mythicalSetup
 
-echo "UseOriginalDir=Disabled">>./mythicalSetup
+test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./mythicalSetup || echo "UseOriginalDir=Enabled">>./mythicalSetup
 echo " #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled">> ./mythicalSetup
 
 echo "UseShowNameAsDir=Enabled">>./mythicalSetup
@@ -167,8 +173,9 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "$MySQLuser">./MySQLuser
 		echo "MySQLuser=$MySQLuser">>./mythicalSetup
 
- 		echo " #MySQL Password: Default="mythtv" 	">> ./mythicalSetup	
- 		test -f ./MySQLpass && MySQLpass1=`cat ./MySQLpass`
+
+ 		echo " #MySQL Password: Default="mythtv"">> ./mythicalSetup	
+ 		test ! -f ./MySQLpass && test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
  		test "$MySQLpass1" = "" && MySQLpass1=mythtv
 	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 2>./MySQLpass
  		MySQLpass=`cat ./MySQLpass`
@@ -180,10 +187,12 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "MySQLMythDb=mythconverg">>./mythicalSetup
 
  		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"">> ./mythicalSetup 		
- 		test -f ./PrimaryMovieDir && PrimaryMovieDir1=`cat ./PrimaryMovieDir`
+ 		test ! -f ./PrimaryMovieDir && test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
  		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="/home/mythtv/Movies"
-		dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 2>./PrimaryMovieDir
- 		PrimaryMovieDir=`cat ./PrimaryMovieDir`
+ 		if [ "$UserChoosesFolder" = "0" ]; then 
+		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 2>./PrimaryMovieDir
+ 		 PrimaryMovieDir=`cat ./PrimaryMovieDir`
+		fi
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
  		echo "PrimaryMovieDir='$PrimaryMovieDir'">>./mythicalSetup
@@ -215,10 +224,12 @@ elif [ $mythtv = 0 ]; then
 	echo " #Guide data type">> ./mythicalSetup
  	echo "GuideDataType=none" >> ./mythicalSetup
 
-	echo " #MySQL User name: Default="mythtv"">> ./mythicalSetup
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
+	echo " #MySQL User name: Default="$mythtvusername"">> ./mythicalSetup
  	echo "MySQLuser=''" >> ./mythicalSetup
 
-	echo " #MySQL Password: Default="mythtv"">> ./mythicalSetup
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+	echo " #MySQL Password: Default="$mythtvpassword"">> ./mythicalSetup
  	echo "MySQLpass=''" >> ./mythicalSetup
 
 	echo " #MySQL Myth Database: Default="mythconverg"">> ./mythicalSetup
