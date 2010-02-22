@@ -309,10 +309,6 @@ if [ "$notifications" = "1" ]; then
  			 echo "XBMCNotify=Disabled"
  		  fi
 
-	echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
-	dialog --title "XBMC Popups Notifications" --yesno "Would you like mythicalLibrarian to send XBMC popup notifications?" 9 30
-		  test $? = 0 && echo "XBMCNotify=Enabled">>./mythicalSetup || echo "XBMCNotify=Disabled">>./mythicalSetup
-
 	echo " #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCClean=Disabled">>./mythicalSetup
 else
