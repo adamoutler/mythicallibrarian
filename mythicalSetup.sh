@@ -255,7 +255,7 @@ echo " ###Reporting/Communications###">>./mythicalSetup
 	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalSetup
 	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
  	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
-	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 8 40 2>./DesktopUserName
+	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 2>./DesktopUserName
  	DesktopUserName=`cat ./DesktopUserName`
  	test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
  	echo "$DesktopUserName">./DesktopUserName
