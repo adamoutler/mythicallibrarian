@@ -824,6 +824,7 @@ echo $showname
  	echo -e "  mythicalTesting:           $mythicaltest"
  	echo -e "  Overall mythicalReadiness: $overallchecks"
  	echo -e "-----End of diagnostics-----"
+ 	test "$overallchecks" = "***FAILED***" && exit 1
   	exit 0
  }
  
