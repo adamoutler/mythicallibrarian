@@ -822,6 +822,7 @@ echo $showname
 	echo -e "  File System Checks:        $folderchecks"
  	echo -e "  mythicalTesting:           $mythicaltest"
  	echo -e "  Overall mythicalReadiness: $overallchecks"
+ 	echo -e "-----End of diagnostics-----"
   	exit 0
  }
  

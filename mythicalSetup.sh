@@ -94,7 +94,8 @@ echo " ###Stand-alone mode values###">>./mythicalSetup
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Episodes and your/recording/directory/Movies, or would you like to specify a directory to separate Episodes and Movies?" 10 40
+dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Movies and your/recording/directory/Movies?
+Or would you like to choose your own directory to separate Episodes from Movies?" 10 50
 	test $? = 0 && UserChoosesFolder=1
 
 test -f ./movedir && movedir1=`cat ./movedir`
@@ -415,9 +416,10 @@ read -p "Press any key to continue to online testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
 chmod 1755 "./mythicalLibrarian"
 ./mythicalLibrarian -m
-
+test $? = "0" && passed="0" || passed="1"
 
 test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
-
+Test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+echo "Done."
 exit 0
