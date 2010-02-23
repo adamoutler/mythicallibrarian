@@ -76,7 +76,7 @@ if [ "$DownloadML" = "1" ]; then
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
- 			echo -e "$line \n" >> ./librarian
+ 			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
