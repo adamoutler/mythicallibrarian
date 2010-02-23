@@ -56,11 +56,13 @@ fi
 if [ ! -f "./mythicalLibrarian.sh" ]; then
  	DownloadML=1
 else
+ 	if -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
 	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian?" 8 25
  		test $? = 0 && DownloadML=1 || DownloadML=0
 fi
 
 if [ "$DownloadML" = "1" ]; then
+ 	echo `date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
@@ -97,7 +99,7 @@ test "$movedir1" = "" && movedir1="/home/mythtv/Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
 
 if [ "$UserChoosesFolder" = "0" ]; then 
- dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 2>./movedir
+ dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 "$movedir1" 2>./movedir
  movedir=`cat ./movedir`
 fi
  test "$movedir" = "" && movedir=$movedir1
@@ -167,7 +169,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo " #MySQL User name: Default="mythtv"">> ./mythicalSetup
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
  		echo "$MySQLuser1" >./MySQLuser
-	    	dialog --inputbox "Enter your MYSQL Username. Default=$MySQLuser1" 9 40 2>./MySQLuser
+	    	dialog --inputbox "Enter your MYSQL Username. Default=$MySQLuser1" 9 40 "$MySQLuser1" 2>./MySQLuser
 		MySQLuser=`cat ./MySQLuser`
  		test "$MySQLuser" = "" && MySQLuser="$MySQLuser1"
  		echo "$MySQLuser">./MySQLuser
@@ -178,7 +180,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
  		test ! -f "./MySQLpass" && echo "$MySQLpass1">./MySQLpass
-	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 2>./MySQLpass
+	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 "$MySQLpass1" 2>./MySQLpass
  		MySQLpass=`cat ./MySQLpass`
  		test "$MySQLpass" = "" && MySQLpass="$MySQLpass1"
  		echo "$MySQLpass">./MySQLpass
@@ -193,7 +195,7 @@ echo " ###Database Settings###">>./mythicalSetup
 
 
  		if [ "$UserChoosesFolder" = "0" ]; then 
-		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 2>./PrimaryMovieDir
+		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 "$PrimaryMovieDir1" 2>./PrimaryMovieDir
  		 PrimaryMovieDir=`cat ./PrimaryMovieDir`
 		fi
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
@@ -258,7 +260,7 @@ echo " ###Reporting/Communications###">>./mythicalSetup
 	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalSetup
 	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
  	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
-	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 2>./DesktopUserName
+	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
  	DesktopUserName=`cat ./DesktopUserName`
  	test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
  	echo "$DesktopUserName">./DesktopUserName
@@ -291,7 +293,7 @@ if [ "$notifications" = "1" ]; then
 	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./mythicalSetup
 		  xbmcips1=`cat ./xbmcips` 
  		  test "$xbmcips1" = "" && xbmcips1="'192.168.1.100:8080'"
-   	dialog --inputbox "Enter your XBMC IP Addresses and port in single quotes. eg. '192.168.1.110:8080' 'XBOX:8080' Default=$xbmcips1" 10 50 2>./xbmcips
+   	dialog --inputbox "Enter your XBMC IP Addresses and port in single quotes. eg. '192.168.1.110:8080' 'XBOX:8080' Default=$xbmcips1" 10 50 "$xbmcips1" 2>./xbmcips
                 xbmcips=`cat ./xbmcips`
  		  test "$xbmcips" = "" && xbmcips=$xbmcips1
  		  echo "$xbmcips">./xbmcips
