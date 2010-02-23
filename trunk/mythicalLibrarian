@@ -800,7 +800,7 @@ echo $showname
  	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
  	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
- 	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILED***"
+ 	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILURE***"
 
  	if [ "$overallchecks" = "***PASSED***" ]; then
  	 read -p "press any key to test mythicalLibrarian..."
