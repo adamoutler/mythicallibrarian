@@ -814,6 +814,9 @@ echo $showname
  		mythicaltest="COULD NOT COMPLETE"
  	 	overallchecks="***FAILURE***"
  	 fi
+	else
+ 		echo "OVERALL FAILURE"
+ 		mythicaltest="COULD NOT COMPLETE" 
  	fi
 	read -p "press any key to continue on to the final results..."	
 	echo -e "  All tests complete            RESULTS"
