@@ -97,7 +97,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
 
 dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Episodes and your/recording/directory/Movies?
 Or would you like to choose your own directory to separate Episodes from Movies?" 10 50
-	test $? = 0 && UserChoosesFolder=1
+	test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
 
 test -f ./movedir && movedir1=`cat ./movedir`
 test "$movedir1" = "" && movedir1="/home/mythtv/Episodes"
