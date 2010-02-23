@@ -425,7 +425,7 @@ test -d "~/.mythicalLibrarian" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythic
 sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d "~/.mythicalLibrarian" && sudo chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian"
-test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
+test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
 echo "permissions were set for user: $SUDO_USER"
