@@ -420,7 +420,7 @@ test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/
 test "$mythtv" = "1" && chown -hR "mythtv":"mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 
 test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-
+chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
 chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian"
 sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
