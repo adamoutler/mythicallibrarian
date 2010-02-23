@@ -403,6 +403,8 @@ test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
 test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
+chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
+chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
 test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
@@ -419,8 +421,8 @@ cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && chown -hR "mythtv":"mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test -d ~/.mythicalLibrarian && chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
-test -d ~/.mythicalLibrarian && chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
+
+
 sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
