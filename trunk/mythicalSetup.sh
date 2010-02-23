@@ -406,9 +406,7 @@ test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
 test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
 test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
-test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+
 test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
 cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 echo "mythicalLibrarian will now conduct mythicalDiagnostics"
@@ -421,5 +419,9 @@ test $? = "0" && passed="0" || passed="1"
 test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 echo "Done."
+
 exit 0
