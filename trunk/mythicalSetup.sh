@@ -43,7 +43,6 @@ else
 	exit 1
 fi
 
-echo "Press any key to continue into setup..."; read X
 
 if ! which librarian-notify-send>/dev/null; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
@@ -54,7 +53,7 @@ if ! which librarian-notify-send>/dev/null; then
  	fi
 fi
 
-if [ ! -f "./mythicalLibrarian.sh" ]; then
+if [ ! -f "./librarian" ]; then
  	DownloadML=1
 else
  	test -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
