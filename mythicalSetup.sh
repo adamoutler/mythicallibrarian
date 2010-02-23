@@ -66,9 +66,9 @@ fi
 
 if [ "$DownloadML" = "1" ]; then
  	echo `date`>"./lastupdated"
- 	test -f ./.mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
+ 	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./.mythicalLibrarian.sh" | replace \\ \\\\ >"./.mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
@@ -78,7 +78,7 @@ if [ "$DownloadML" = "1" ]; then
  			echo -E ${line} >> ./librarian
   	echo $startwrite
  		fi
-  	done <./.mythicalLibrarian.sh
+  	done <./mythicalLibrarian.sh
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
