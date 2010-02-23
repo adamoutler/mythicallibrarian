@@ -95,7 +95,7 @@ echo " ###Stand-alone mode values###">>./mythicalSetup
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Movies and your/recording/directory/Movies?
+dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Episodes and your/recording/directory/Movies?
 Or would you like to choose your own directory to separate Episodes from Movies?" 10 50
 	test $? = 0 && UserChoosesFolder=1
 
