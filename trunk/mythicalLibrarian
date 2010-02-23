@@ -775,7 +775,7 @@ echo $showname
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
 		XBMCcomm=`curl -s "http://"192.168.1.110:8080"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
  	done
- 	test $XBMCcomm = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
+ 	test "$XBMCcomm" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
  	read -p "Press any key to test file system permissions..."
  	echo "Testing file system permissions"
@@ -1031,6 +1031,10 @@ echo $showname
  #Check for show translations relating to the show in question.
  ShowTranslations
  
+ #Format Show name for Sending to www.TheTvDb.com and XBMC
+ tvdbshowname=`echo $ShowName|replace " " "%20"`
+
+
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
   
@@ -1108,7 +1112,7 @@ echo $showname
   	test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
  fi 	 
   
- 
+
  #####GATHER INFORMATION FROM  DATABASE#####
   #Get information if database is enabled
  if [ "$Database" = "Enabled" ]; then 
@@ -1127,8 +1131,7 @@ echo $showname
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $epn">>"$mythicalLibrarian"/output.log
  	echo "FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
  
- #Format Show name for Sending to www.TheTvDb.com
- 	tvdbshowname=`echo $ShowName|replace " " "%20"` 
+ 
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
