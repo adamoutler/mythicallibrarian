@@ -295,13 +295,12 @@ dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to
 if [ "$notifications" = "1" ]; then
 
  		
-	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./mythicalSetup
+	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( '192.168.1.110:8080' '192.168.1.111:8080' 'XBOX:8080' )">> ./mythicalSetup
 		  xbmcips1=`cat ./xbmcips` 
  		  test "$xbmcips1" = "" && xbmcips1="'192.168.1.100:8080'"
    	dialog --inputbox "Enter your XBMC IP Addresses and port in single quotes. eg. '192.168.1.110:8080' 'XBOX:8080' Default=$xbmcips1" 10 50 "$xbmcips1" 2>./xbmcips
                 xbmcips=`cat ./xbmcips`
- 		  test "$xbmcips" = "" && xbmcips=$xbmcips1
- 		  echo "$xbmcips">./xbmcips
+  		  echo "$xbmcips">./xbmcips
  		  echo "XBMCIPs=( $xbmcips )">>./mythicalSetup
 		  
 	dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to update your library?" 9 30
