@@ -380,10 +380,10 @@ echo $showname
  		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&amp;stype=all&amp;tag=search%3Bfrontdoor&amp;qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
 	fi
  #TODO: use episode link as GUID - IMPORTANT-may be handled by using 
-    	#test $Database=Enabled &&test which ifconfig && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
+    	#test $Database=Enabled && test which ifconfig && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
  	#could be handled by SFTP://xbmc@$myip/path/to/file.ext
 	#ie sftp://xbmc@192.168.1.110/home/mythtv/NAS/Video/Episodes/Aqua%20Teen%20Hunger%20Force/Aqua%20Teen%20Hunger%20Force.S00E03%20%28Aqua%20Teen%20Hunger%20Force%20Colon%20Movie%20Film%20for%20Theaters%29.mpg
- #echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
+ 	#echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
