@@ -412,7 +412,8 @@ read -p "Press any key to continue to online testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
 chmod 1755 "./mythicalLibrarian"
 cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
-sudo su $SUDO_USER mythicalLibrarian -m
+
+sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 
 test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
