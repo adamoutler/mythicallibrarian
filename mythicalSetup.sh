@@ -417,14 +417,14 @@ cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 
 
 
-test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" = "1" && sudo chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" = "1" && sudo chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" != "1" && sudo chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 
-test -d "~/.mythicalLibrarian" && chown -R $SUDO_USER:$SUDO_USER "~/.mythicalLibrarian"
+test -d "~/.mythicalLibrarian" && sudo chown -R $SUDO_USER:$SUDO_USER "~/.mythicalLibrarian"
 sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
-test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
+test -d "~/.mythicalLibrarian" && sudo chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
