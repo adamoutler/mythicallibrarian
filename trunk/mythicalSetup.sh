@@ -398,8 +398,7 @@ test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 
-nuser=`who -m | awk '{print $1;}' | grep -m1 ^`
- echo $nuser
+
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
@@ -420,10 +419,9 @@ cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && chown -hR "mythtv":"mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-
-mythicalLibrarian -m
-chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
-chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian"
+test -d "~/.mythicalLibrarian" && chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
+test -d "~/.mythicalLibrarian" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian"
+sudo -u mythtv mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d "~/.mythicalLibrarian" && sudo chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian"
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
