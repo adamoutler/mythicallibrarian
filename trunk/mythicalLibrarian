@@ -812,7 +812,7 @@ echo $showname
  	 else
  		echo "OVERALL FAILURE"
  		mythicaltest="COULD NOT COMPLETE"
- 	 	overallchecks="***FAILURE***
+ 	 	overallchecks="***FAILURE***"
  	 fi
  	fi
 	read -p "press any key to continue on to the final results..."	
