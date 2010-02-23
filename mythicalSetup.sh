@@ -165,8 +165,8 @@ echo " ###Database Settings###">>./mythicalSetup
 		echo "GuideDataType=SchedulesDirect">>./mythicalSetup
 
  		echo " #MySQL User name: Default="mythtv"">> ./mythicalSetup
- 		test -f ./MySQLuser && MySQLuser1=`cat ./MySQLuser`
- 		test "$MySQLuser1" = "" && MySQLuser1=mythtv
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
+ 		echo "$MySQLuser1" >./MySQLuser
 	    	dialog --inputbox "Enter your MYSQL Username. Default=$MySQLuser1" 9 40 2>./MySQLuser
 		MySQLuser=`cat ./MySQLuser`
  		test "$MySQLuser" = "" && MySQLuser="$MySQLuser1"
@@ -175,8 +175,9 @@ echo " ###Database Settings###">>./mythicalSetup
 
 
  		echo " #MySQL Password: Default="mythtv"">> ./mythicalSetup	
- 		test ! -f ./MySQLpass && test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
- 		test "$MySQLpass1" = "" && MySQLpass1=mythtv
+ 		
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+ 		test ! -f "./MySQLpass" && echo "$MySQLpass1">./MySQLpass
 	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 2>./MySQLpass
  		MySQLpass=`cat ./MySQLpass`
  		test "$MySQLpass" = "" && MySQLpass="$MySQLpass1"
@@ -187,8 +188,10 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "MySQLMythDb=mythconverg">>./mythicalSetup
 
  		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"">> ./mythicalSetup 		
- 		test ! -f ./PrimaryMovieDir && test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+
  		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="/home/mythtv/Movies"
+
+
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 2>./PrimaryMovieDir
  		 PrimaryMovieDir=`cat ./PrimaryMovieDir`
@@ -224,11 +227,11 @@ elif [ $mythtv = 0 ]; then
 	echo " #Guide data type">> ./mythicalSetup
  	echo "GuideDataType=none" >> ./mythicalSetup
 
- 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/etc/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
 	echo " #MySQL User name: Default="$mythtvusername"">> ./mythicalSetup
  	echo "MySQLuser=''" >> ./mythicalSetup
 
- 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/etc/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
 	echo " #MySQL Password: Default="$mythtvpassword"">> ./mythicalSetup
  	echo "MySQLpass=''" >> ./mythicalSetup
 
