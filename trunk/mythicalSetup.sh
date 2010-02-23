@@ -427,6 +427,10 @@ test $? = "0" && passed="0" || passed="1"
 test -d "~/.mythicalLibrarian" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian"
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -R "$SUDO_USER:$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+
+echo "permissions were set for $SUDO_USER"
+echo "mythicalLibrarian is located in /usr/local/bin"
+echo "'mythicalLibrarian --help' for more information"
 echo "Done."
 
 exit 0
