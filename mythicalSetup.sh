@@ -422,6 +422,7 @@ test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || 
 test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test -d "~/.mythicalLibrarian" && chown -R $SUDO_USER:$SUDO_USER "~/.mythicalLibrarian"
 echo "Done."
 
 exit 0
