@@ -803,17 +803,18 @@ echo $showname
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILED***"
 
  	if [ "$overallchecks" = "***PASSED***" ]; then
- 	read -p "press any key to test mythicalLibrarian..."
-	mythicalLibrarian testfile.ext "mister" "Show 1332"
-	exitstatus=$?
-	echo "exited with status $exitstatus"
- 	test "$exitstatus" = "0" && mythicaltest="***PASSED***"
- 	else
- 		echo OVERALL FAILURE
+ 	 read -p "press any key to test mythicalLibrarian..."
+	 mythicalLibrarian testfile.ext "mister" "Show 1332"
+	 exitstatus=$?
+	 echo "exited with status $exitstatus"
+ 	 if [ "$exitstatus" = "0" ] 
+ 		mythicaltest="***PASSED***" 	 
+ 	 else
+ 		echo "OVERALL FAILURE"
  		mythicaltest="COULD NOT COMPLETE"
- 		overallchecks=failed
+ 	 	overallchecks=failed
+ 	 fi
  	fi
- 	
 	read -p "press any key to continue on to the final results..."	
 	echo -e "  All tests complete            RESULTS"
 	echo -e "  Installed Packages:        $packagecheck $checkc$checkd$checke"
