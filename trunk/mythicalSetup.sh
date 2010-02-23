@@ -57,8 +57,8 @@ if [ ! -f "./mythicalLibrarian.sh" ]; then
  	DownloadML=1
 else
  	test -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
-	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian? \
-Last updated:\
+	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian? 
+Last updated:
 $lastupdated" 8 40
  		test $? = 0 && DownloadML=1 || DownloadML=0
  	
