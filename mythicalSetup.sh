@@ -323,7 +323,7 @@ if [ "$notifications" = "1" ]; then
 else
 
 	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./mythicalSetup
-	echo "XBMCIPs=0">>./mythicalSetup
+	echo "XBMCIPs=''">>./mythicalSetup
 
 	echo " #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCUpdate=Disabled">>./mythicalSetup
