@@ -807,7 +807,7 @@ echo $showname
 	 mythicalLibrarian testfile.ext "mister" "Show 1332"
 	 exitstatus=$?
 	 echo "exited with status $exitstatus"
- 	 if [ "$exitstatus" = "0" ] 
+ 	 if [ "$exitstatus" = "0" ]; then 
  		mythicaltest="***PASSED***" 	 
  	 else
  		echo "OVERALL FAILURE"
