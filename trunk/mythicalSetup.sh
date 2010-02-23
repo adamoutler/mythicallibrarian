@@ -422,7 +422,7 @@ test "$mythtv" = "1" && chown -R "mythtv:mythtv"  "$AlternateMoveDir" "$Alternat
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" != "1" && chown -R "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test -d "~/.mythicalLibrarian" && chown -R $SUDO_USER:$SUDO_USER "~/.mythicalLibrarian"
-test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 echo "Done."
 
 exit 0
