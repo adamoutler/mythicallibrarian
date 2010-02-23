@@ -848,6 +848,7 @@ echo $showname
  	read -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	if [ "$yesorno" = "y" ]; then
  	 	chmod +x "$mythicalLibrarian/doover.sh"
+ 		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
 		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
 		exit 0
 	else
@@ -874,6 +875,7 @@ echo $showname
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  	 	chmod +x "$mythicalLibrarian/undo.sh"
+ 		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER cat "$mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh.old"
 		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
 		exit 0
 	else
@@ -932,6 +934,7 @@ echo $showname
 		echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
 		exit 1
 	fi
+ 	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
  	echo "--You have entered Update mode."
 	echo " mythicalSetup will now update your system to the latest revision."
  	echo " You will be asked a series of questions and the updater will make"
@@ -943,7 +946,8 @@ echo $showname
  	read -p " Do you wish to continue? y/(n) >" yesorno
  	test "$yesorno" != "y" && exit 0
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
-	echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
+ 	cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
+	sudo -u $SUDO_USER echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
  	if [ ! -f "../output.log" ]; then 
 	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
 		exit 1
