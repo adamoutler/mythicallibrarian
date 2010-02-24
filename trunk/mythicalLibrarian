@@ -660,8 +660,8 @@ echo $showname
 		test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
  		echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  		echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
-  		test "$ShowCategory" != "" && echo -e "\t<genre>$ShowCategory<genre>">>"$MoveDir/tvshow.nfo"
- 		
+  		test "$ShowCategory" != "" && echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/tvshow.nfo"
+ 		echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/tvshow.nfo"
  		echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	fi
  return 0 
