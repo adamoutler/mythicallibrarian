@@ -773,7 +773,7 @@ echo $showname
   	for XBMCIP in ${XBMCIPs[@]}
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
-		XBMCcomm=`curl -s "http://"192.168.1.110:8080"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
+		XBMCcomm=`curl -s "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
  	done
  	test "$XBMCcomm" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
