@@ -3,7 +3,7 @@
 # ***** WELCOME! Scroll further down to set the user settings. *****
 
  #mythicalLibrarian by Adam Outler
- #Wed, 18FEB2010 1753
+ #Wed, 23FEB2010 1104
  #email: outleradam@hotmail.com
  #Software the way it should be: Free and Open Source
  #Please contact me with any bug reports 
@@ -18,7 +18,7 @@
  #
  #Usage:
  #  mythicalLibrarian "Target File" "show name" "episode name" 
- #  eg. mythicalLibrarian "/home/mythrecordings/2308320472023429837.mpg" "South Park" "Here Comes the Neighborhood" 
+ #  eg. mythicalLibrarian "/home/myth/recordings/2308320472023429837.mpg" "South Park" "Here Comes the Neighborhood" 
  #  
  #Output-target
  # If an error occurs and the file cannot be moved, then no change will occur to the original file. If the Movedir
@@ -50,7 +50,7 @@
  #
  #Logging:
  # Log file will show information for troubleshooting. You can find the log file in the working folder
- # Log file default location: /home/mythtv/mythicalLibrarian/output.log
+ # Log file default location: /home/mythtv/.mythicalLibrarian/output.log
  #
  #Database-external:
  # This program will make 3 calls to TheTvDb for every episode.  The first one is to obtain the series ID and verify the show
@@ -98,7 +98,7 @@
  # should only be created if it is needed. Under most circumstances, the integrated fuzzy logic will be 
  # sufficient to translate the guide name to the TvDb name, however showtranslations is available to improve 
  # accuracy to 100%. The format of showtranslations is as follows:
- #Filename: /home/mythtv/mythicalLibrarian/showtranslations
+ #Filename: /home/mythtv/.mythicalLibrarian/showtranslations
  ##############################################################
  #My Guide Show Title = www.TheTvDb.com Show Title            #
  #Battlestar Gallactica = Battlestar Gallactica (2003)        #
@@ -1501,7 +1501,7 @@ echo $showname
  			GenerateTVShowNFO  
  			test "$ProgramIDType" = "Generic Episode With No Data" && GenerateEpisodeNFO 
  			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
-			echo "mv '$MoveDir/$ShowFileName.$originalext' '$MoveDir/$ShowFileName.$originalext'"
+			echo "moving '$MoveDir/$ShowFileName.$originalext' to '$MoveDir/$ShowFileName.$originalext'"
  			dailyreport "$ShowFileName"
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
  			generaterss 
