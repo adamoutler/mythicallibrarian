@@ -775,7 +775,7 @@ echo $showname
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
 		XBMCcomm=`curl -s "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
  	done
- 	test "$XBMCcomm" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
+ 	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
  	read -p "Press any key to test file system permissions..."
  	echo "Testing file system permissions"
