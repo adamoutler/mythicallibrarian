@@ -410,7 +410,7 @@ test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythic
 test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
 clear
 echo "mythicalLibrarian will now conduct mythicalDiagnostics"
-read -p "Press any key to continue to online testing...."
+read -n1 -p "Press any key to continue to online testing...."
 echo "Testing mythicalLibrarian">./testfile.ext
 chmod 1755 "./mythicalLibrarian"
 cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
