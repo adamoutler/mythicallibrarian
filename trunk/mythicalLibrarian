@@ -1486,13 +1486,9 @@ echo $showname
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
  				test ! -f "$mythicalLibrarian"/undo.sh && echo "rm $mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh"
  				echo  "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'" >>"$mythicalLibrarian/undo.sh"
- 				if [ ! -f  "$InputPath" ] ; then
- 					test ! -f "$mythicalLibrarian"/undo.sh && echo "rm $mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh"
- 					echo  "mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
- 				else 
- 					test ! -f "$mythicalLibrarian"/undo.sh && echo "rm $mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh"
- 					echo  "#mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
- 				fi
+  				echo  "test -L 	'$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/undo.sh"			
+  				echo  "mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
+ 				
   			fi
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
  #Send notification of completion and exit
