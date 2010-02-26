@@ -1243,43 +1243,51 @@ echo $showname
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
  
- ######SANITY CHECKS#####
+ #######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
- 	echo "FILE IS A LINK ACTIVATING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log
- 	SYMLINK=LINK
- fi
+ 	 echo "FILE IS A LINK ACTIVATING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log 
+ 	 SYMLINK=LINK
+ fi 
  
- #Get file size and free space
- MoveFileSize=`stat -c %s "$InputPath"`
- MoveFileSize=$((MoveFileSize/1024))
- MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
- AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- test "$Database" = "Enabled" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
- test "$Database" = "Enabled" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
- OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'` 
- WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
- 
- #Call permissions check from function.  Write small file, delete, get results
- checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
- MoveDirWritable=$TMoveDirWritable
- checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
- AlternateMoveDirWritable=$TMoveDirWritable
- test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
- test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
- test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
- test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
- checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
- OriginalDirWritable=$TMoveDirWritable
- checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
- WorkingDirWritable=$TMoveDirWritable
-  
- #report to terminal
- echo "FILE SIZE:$MoveFileSize""kB"
- echo "MOVEDIR FREE SPACE: $MoveDirFreeSpace"kB"- WRITABLE:$MoveDirWritable"
- echo "ALTMOVEDIR FREE SPACE: $AlternateMoveDirFreeSpace"kB"- WRITABLE:$AlternateMoveDirWritable"
- echo "MOVIEDIR FREE SPACE: $PrimaryMovieDirFreeSpace"kB"- WRITABLE:$PrimaryMovieDirWritable"
- echo "ALTMOVIEDIR FREE SPACE: $AlternateMovieDirFreeSpace"kB"- WRITABLE:$AlternateMovieDirWritable"
+#Get file size and free space
+MoveFileSize=`stat -c %s "$InputPath"`
+MoveFileSize=$((MoveFileSize/1024))
+MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
+AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
+
+if [ "$Database" = "Enabled" ]; then
+ 	PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ 	AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 	PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'`|| PrimaryShowDirFreeSpace=0
+ 	AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
+fi
+
+OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
+WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
+
+#Call permissions check from function.  Write small file, delete, get results
+checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
+MoveDirWritable=$TMoveDirWritable
+checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
+AlternateMoveDirWritable=$TMoveDirWritable
+
+if [ "$Database" = "Enabled" ]; then
+ 	checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ 	PrimaryMovieDirWritable=$TMoveDirWritable
+ 	checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ 	AlternateMovieDirWritable=$TMoveDirWritable
+ 	checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
+	PrimaryShowDirWritable=$TMoveDirWritable
+	checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 	AlternateShowDirWritable=$TMoveDirWritable
+fi
+
+checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
+OriginalDirWritable=$TMoveDirWritable
+checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+WorkingDirWritable=$TMoveDirWritable
+
  
  #####DEBUG MODE OUTPUT BLOCK#####
  if [ "$DEBUGMODE" = "Enabled" ]; then
@@ -1295,9 +1303,10 @@ echo $showname
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize'kB'">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB""- WORKINGDIR:$WorkingDirWritable Free:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
- 	echo "MOVEDIR:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB""- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
- 	echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
- 	if [ "$Database" = "Enabled"	]; then
+	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB""- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
+	 if [ "$Database" = "Enabled"	 ]; then
+ 		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable  FREE:$PrimaryShowDirFreeSpace""kB""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable FREE:$AlternateShowDirFreeSpace""kB"->>"$mythicalLibrarian"/output.log
+		 echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
  		echo "DATABASE TYPE:$XMLTVGrabber-">>"$mythicalLibrarian"/output.log
 		echo " RECSTART:$ShowStartTime- MOVIE YEAR:$MovieAirDate- ORIGINAL SERIES DATE:$OriginalAirDate-">>"$mythicalLibrarian"/output.log
  		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory-">>"$mythicalLibrarian"/output.log
@@ -1325,6 +1334,7 @@ echo $showname
  	RunJob
  fi
  
+ #Episode handling: Determine where File will fit
  FailSafeState=0
  test "$MoveDirWritable" != "1" && MoveDir="$AlternateMoveDir"
  test "$MoveDirWritable" != "1" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
@@ -1332,10 +1342,14 @@ echo $showname
  #Movie handling: Determine where file will fit
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
- 
+
+ #Show Handling: Determing Where File will fit
+ test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryShowDirWritable" != "1" && PrimaryShowDir="$AlternateShowDir"
+ test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
+
  
  ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ]; then
+ if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
  	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1357,7 +1371,7 @@ echo $showname
  Showname=`echo $ShowName|tr -d [:punct:]`
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
- if [ ! -z "$exx" ]; then
+ if [ "$exx" != "" ]; then
  	 ShowFileName=`echo "$NewShowName.$sxx$exx ($epn)"`
 
  #Format Movies
@@ -1371,6 +1385,7 @@ echo $showname
  	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
 	NewShowName=`echo $ShowName|tr -d [:punct:]`
   	exx="Generic"
+ 	MoveDir="$PrimaryShowDir"
  fi
  
 
@@ -1493,8 +1508,8 @@ echo $showname
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
- 			GenerateTVShowNFO  
- 			test "$ProgramIDType" = "Generic Episode With No Data" && GenerateEpisodeNFO 
+	 	 	 test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
+	 	 	 test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
  			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
 			echo "moving '$MoveDir/$ShowFileName.$originalext' to '$MoveDir/$ShowFileName.$originalext'"
  			dailyreport "$ShowFileName"
@@ -1532,8 +1547,7 @@ echo $showname
  	echo "CREATING LINK IN LINK MODE"
  
  	ln -s "$InputPath" "$MoveDir/$ShowFileName.$originalext"     
-       		GenerateTVShowNFO  
- 		GenerateEpisodeNFO 
+
 
  #if file was created
  	if [ -L "$MoveDir/$ShowFileName.$originalext" ]; then	
@@ -1542,7 +1556,8 @@ echo $showname
  		if [ "$Notify" = "Enabled" ]; then
  			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName linked to $MoveDir" info
  		fi
- 
+ 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
+	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO 
   #Send notification to XBMC, Update Library, Clean Library
  		XBMCAutomate 		
 
@@ -1552,7 +1567,7 @@ echo $showname
  			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
  		echo "#mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
- 		test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
+ 		test ! -L "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
 		echo "rm '$MoveDir/$ShowFileName.$originalext'"
  		dailyreport "$ShowFileName"
  		generaterss
