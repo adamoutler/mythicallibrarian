@@ -1036,22 +1036,27 @@ echo $showname
 
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
-  
- if [ "$UseOriginalDir=Enabled" ]; then
- 	#MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
- 	MoveDir="$originaldirname/Episodes" 
- 	test ! -d "$MoveDir" && mkdir "$MoveDir" 
-	#AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
- 	AlternateMoveDir="$originaldirname/Episodes"
-	test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
- 	#Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
- 	PrimaryMovieDir="$originaldirname/Movies" 
-	test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" 
-	#AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails
- 	AlternateMovieDir="$originaldirname/Movies"
-	test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
-  	#Set episode name, dir, extension, and showname from the input parameters.
- fi	
+
+if [ "$UseOriginalDir=Enabled" ]; then
+	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
+	 MoveDir="$originaldirname/Episodes"
+	 test ! -d "$MoveDir" && mkdir "$MoveDir"
+	 #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
+	 AlternateMoveDir="$originaldirname/Episodes"
+	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
+	 #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
+	 PrimaryMovieDir="$originaldirname/Movies"
+	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir"
+	 #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
+	 AlternateMovieDir="$originaldirname/Movies"
+ 	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+ 	 #PrimaryShowDir is where generic episodes will be placed
+	 PrimaryShowDir="$originaldirname/Showings"
+ 	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+ 	 #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
+ 	 AlternateShowDir="$originaldirname/Showings"
+ 	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
+fi	
 
 
 
