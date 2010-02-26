@@ -736,7 +736,7 @@ echo $showname
  		echo $scanpath $checkext
   		while read line
  		do
-			test ! -L "$line" && test ! -S "$line" && test ! -t "$line" && test ! -d "$line" && mythicalLibrarian "$line"	
+			test ! -L "$line" && test ! -S "$line" && test ! -d "$line" && mythicalLibrarian "$line"	
  		done<"$mythicalLibrarian/scan.temp"
  		rm "$mythicalLibrarian/scan.temp"
  		exit 0
