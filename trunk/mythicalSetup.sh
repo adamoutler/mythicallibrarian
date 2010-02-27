@@ -55,18 +55,20 @@ if ! which librarian-notify-send>/dev/null; then
 fi
 
 if [ ! -f "./librarian" ]; then
- 	DownloadML=1
+ 	DownloadML=Stable
 else
  	test -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
-	dialog --title "Update Core?" --yesno "Notice: the system wil be unstable this weekend.  Would you like to update the local copy of mythicalLibrarian?
+	dialog --title "Update Core?" --yesno "Notice: the system will be unstable this weekend.  
+Would you like to update the local copy of mythicalLibrarian and restart the setup procedure?
 Last updated:
 $lastupdated" 16 40
  		test $? = 0 && DownloadML=1 || DownloadML=0
- 	
+ DownloadML=$(dialog --menu "Would you like to update?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
 fi
 
-if [ "$DownloadML" = "1" ]; then
- 	echo `date`>"./lastupdated"
+
+if [ "$DownloadML" = "Latest" ]; then
+ 	echo "SVN "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
