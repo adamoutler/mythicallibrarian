@@ -57,13 +57,8 @@ fi
 if [ ! -f "./librarian" ]; then
  	DownloadML=Stable
 else
- 	test -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
-	dialog --title "Update Core?" --yesno "Notice: the system will be unstable this weekend.  
-Would you like to update the local copy of mythicalLibrarian and restart the setup procedure?
-Last updated:
-$lastupdated" 16 40
- 		test $? = 0 && DownloadML=1 || DownloadML=0
  DownloadML=$(dialog --menu "Would you like to update?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
+test "$?" = "1" && exit 0
 fi
 
 if [ "$DownloadML" = "Stable" ]; then
@@ -88,7 +83,7 @@ if [ "$DownloadML" = "Stable" ]; then
 	exit 0
 
 fi
-if [ "$DownloadML" = "Stable" ]; then
+if [ "$DownloadML" = "Latest" ]; then
  	echo "SVN "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
