@@ -380,10 +380,8 @@ echo $showname
  		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&amp;stype=all&amp;tag=search%3Bfrontdoor&amp;qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
 	fi
  #TODO: use episode link as GUID - IMPORTANT-may be handled by using 
-    	#test $Database=Enabled && test which ifconfig && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
- 	#could be handled by SFTP://xbmc@$myip/path/to/file.ext
-	#ie sftp://xbmc@192.168.1.110/home/mythtv/NAS/Video/Episodes/Aqua%20Teen%20Hunger%20Force/Aqua%20Teen%20Hunger%20Force.S00E03%20%28Aqua%20Teen%20Hunger%20Force%20Colon%20Movie%20Film%20for%20Theaters%29.mpg
- 	#echo -e "\t\t\t<guid>http://unique.link.here</guid>">>$rssDir/$TEMPrssFile
+    	which ifconfig >/dev/null && myip=`ifconfig  | grep 'inet addr' -m1 | cut -d: -f2 | awk '{ print $1}'`
+ 	echo -e "\t\t\t<guid>sftp://$MyUserName@$myip/$MoveDir/$ShowFileName.$originalext</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
@@ -726,12 +724,15 @@ echo $showname
  	echo " please scan a single file to test capabilities before"
 	echo " running the scan mode of operation using the following"
 	echo " eg. mythicalLibrarian /path/to/file.ext"
+ 	echo " mythicalLibrarian will first run the doovers to prevent"
+ 	echo " clobbering and creation of unnescessary links."
 	echo " This operation can be reversed using the following command:"
  	echo " sudo mythicalLibrarian --undo"
  	echo " Data loss can occour if this operation is interupted."
 	read -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
+ 		mythicalLibrarian --doover
 	 	ls -1 $scanpath/*.$checkext>$mythicalLibrarian/scan.temp
  		echo $scanpath $checkext
   		while read line
@@ -849,12 +850,14 @@ echo $showname
  	echo " while this process is running. It is important that this"
         echo " process does not get interupted or data loss may occour."
  	read -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
- 	if [ "$yesorno" = "y" ]; then
- 	 	chmod +x "$mythicalLibrarian/doover.sh"
- 		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
-		test -f "$mythicalLibrarian/doover.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
-		exit 0
-	else
+ 	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibraian/doover.sh" ]; then
+ 		chmod +x "$mythicalLibrarian/doover.sh"
+ 		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
+ 		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
+ 	fi
+	exit 0
+	
+ 	else
 	 	echo "You must press y to execute doover"
 		exit 0
 	fi
@@ -877,9 +880,16 @@ echo $showname
  	read -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
- 	 	chmod +x "$mythicalLibrarian/undo.sh"
+ 		test -f "$mythicalLibrarian/undo.sh" && cat "$mythicalLibrarian/undo.sh">>"$mythicalLibrarian/undo.sh.old"
+ 	 	test -f "$mythicalLibrarian/undo.sh" && chmod +x "$mythicalLibrarian/undo.sh"
  		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER cat "$mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh.old"
 		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
+		test -f "$mythicalLibrarian/doover.sh" && cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
+ 		test -f "$mythicalLibrarian/doover.sh" && rm -f "$mythicalLibrarian/doover.sh"
+ 		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
+ 		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
+
+ 		
 		exit 0
 	else
 	 	echo "You must press y to execute undo"
@@ -1035,7 +1045,7 @@ echo $showname
 
 
  #Check and make doover.sh if it does not exist
- test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
+ test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
 if [ "$UseOriginalDir=Enabled" ]; then
 	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
@@ -1339,11 +1349,14 @@ WorkingDirWritable=$TMoveDirWritable
  	RunJob
  fi
  
- #Episode handling: Determine where File will fit
+
  FailSafeState=0
- test "$MoveDirWritable" != "1" && MoveDir="$AlternateMoveDir"
- test "$MoveDirWritable" != "1" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
- 
+ test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
+ test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+
+ #Episode handling: Determine where File will fit
+ test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
+ test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
  #Movie handling: Determine where file will fit
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
@@ -1355,7 +1368,7 @@ WorkingDirWritable=$TMoveDirWritable
  
  ######PRE-NAMING CHECKS#####
  if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
- 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+
  	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
   	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1363,6 +1376,9 @@ WorkingDirWritable=$TMoveDirWritable
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo  "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
  	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
+ 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+ #This line is for marking Episodes as shows 
+	mythicalEpiShow=1
   	jobtype=TvDbIsIncomplete
  	RunJob
  fi
@@ -1381,16 +1397,16 @@ WorkingDirWritable=$TMoveDirWritable
 
  #Format Movies
  elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
-  	ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
- 	MoveDir="$PrimaryMovieDir"
  	exx="Movie"
+ 	MoveDir="$PrimaryMovieDir"
+  	ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
 
  #Format generic Shows
  elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
- 	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
-	NewShowName=`echo $ShowName|tr -d [:punct:]`
   	exx="Generic"
  	MoveDir="$PrimaryShowDir"
+	NewShowName=`echo $ShowName|tr -d [:punct:]`
+  	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
  fi
  
 
@@ -1475,6 +1491,7 @@ WorkingDirWritable=$TMoveDirWritable
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
   		echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+
   		jobtype=GenericShow
 		RunJob
  	fi
@@ -1513,13 +1530,13 @@ WorkingDirWritable=$TMoveDirWritable
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
-	 	 	 test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
-	 	 	 test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
+	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
+	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
  			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
 			echo "moving '$MoveDir/$ShowFileName.$originalext' to '$MoveDir/$ShowFileName.$originalext'"
  			dailyreport "$ShowFileName"
- 		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
  			generaterss 
+ 		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
   			jobtype=MoveModeSucessful		
  			RunJob
  
