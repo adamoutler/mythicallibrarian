@@ -58,9 +58,9 @@ if [ ! -f "./librarian" ]; then
  	DownloadML=1
 else
  	test -f "./lastupdated" && lastupdated=`cat ./lastupdated` || lastupdated="Never Updated"
-	dialog --title "Update Core?" --yesno "Would you like to update the local copy of mythicalLibrarian? 
+	dialog --title "Update Core?" --yesno "Notice: the system wil be unstable this weekend.  Would you like to update the local copy of mythicalLibrarian?
 Last updated:
-$lastupdated" 8 40
+$lastupdated" 16 40
  		test $? = 0 && DownloadML=1 || DownloadML=0
  	
 fi
@@ -314,7 +314,7 @@ if [ "$notifications" = "1" ]; then
 
 		 	 echo " #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCUpdate=Disabled">>./mythicalSetup
- 			 echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
+ 			 echo " #Send Nrotifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCNotify=Disabled"
  		  fi
 
