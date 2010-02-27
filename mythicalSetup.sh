@@ -59,8 +59,12 @@ if [ ! -f "./librarian" ]; then
  	echo "Stable `date`">./lastupdated
 else
  lastupdated="`cat ./lastupdated`"
- DownloadML=$(dialog --menu "Would you like to update?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
-test "$?" = "1" && exit 0
+ DownloadML=$(dialog --menu "Which version would you like to use?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
+if [ "$?" = "1" ]; then
+ 	clear
+ 	echo "mythicalLibrarian was not updated"
+ 	echo "please re-run mythicalSetup"
+fi
 fi
 
 if [ "$DownloadML" = "Stable" ]; then
