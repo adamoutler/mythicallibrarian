@@ -113,12 +113,12 @@
  #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'
  SYMLINK=MOVE
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
- MoveDir="/home/mythtv/NAS/Video/Episodes"  #<------THIS VALUE MUST BE SET-------
+ MoveDir="/home/mythtv/Episodes"  #<------THIS VALUE MUST BE SET-------
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  AlternateMoveDir=/home/mythtv/Episodes
  #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.
  #UseOriginalDir will not separate episodes from movies. Enabled|Disabled
- UseOriginalDir=Disabled
+ UseOriginalDir=Enabled
  #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled
  UseShowNameAsDir=Enabled
  #Internet access Timeout in seconds: Default Timeout=50 (seconds)
@@ -153,7 +153,7 @@
  #MySQL Myth Database: Default="mythconverg"
  MySQLMythDb=mythconverg
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
- PrimaryMovieDir="/home/mythtv/NAS/Video/Movies" #<------THIS VALUE MUST BE SET-------
+ PrimaryMovieDir="/home/mythtv/Movies" #<------THIS VALUE MUST BE SET-------
  #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails
  AlternateMovieDir="/home/mythtv/Movies"
  #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled
