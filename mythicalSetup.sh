@@ -66,8 +66,29 @@ $lastupdated" 16 40
  DownloadML=$(dialog --menu "Would you like to update?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
 fi
 
+if [ "$DownloadML" = "Stable" ]; then
+ 	echo "Stable "`date`>"./lastupdated"
+ 	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
+ 	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
+  	startwrite=0
+	test -f ./librarian && rm -f ./librarian
+ 	while read line
+ 	do
+		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+ 		if [ $startwrite = 2 ]; then
+ 			echo -e "$line" >> ./librarian
+  	echo $startwrite
+ 		fi
+  	done <./mythicalLibrarian.sh
+ 	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
+ 	curl "http://mythicallibrarian.googlecode.com/files/mythicalSetup.sh">"./mythicalSetup.sh"
+ 	chmod +x "./mythicalSetup.sh"
+ 	./mythicalSetup.sh
+	exit 0
 
-if [ "$DownloadML" = "Latest" ]; then
+fi
+if [ "$DownloadML" = "Stable" ]; then
  	echo "SVN "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
