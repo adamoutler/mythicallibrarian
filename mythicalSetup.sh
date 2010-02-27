@@ -56,7 +56,9 @@ fi
 
 if [ ! -f "./librarian" ]; then
  	DownloadML=Stable
+ 	echo "Stable `date`">./lastupdated
 else
+ lastupdated="`cat ./lastupdated`"
  DownloadML=$(dialog --menu "Would you like to update?" 10 60 15 "Current"  "$lastupdated" "Stable" "-the most recent stable version" "Latest" "-Most up-to-date SVN revision" 2>&1 >/dev/tty)	
 test "$?" = "1" && exit 0
 fi
