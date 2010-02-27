@@ -272,11 +272,12 @@ echo " ###Reporting/Communications###">>./mythicalSetup
   	echo "NotifyUserName=$DesktopUserName" >>./mythicalSetup
 
  	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalSetup
-	dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications? (requires further configuration)" 9 30
+	dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications?
+if Yes, the user must have no password sudo access." 10 45
 	test $? = 0 && notifications=1 || notifications=0
  	if [ "$notifications" = "1" ]; then
  	echo "Notify=Enabled" >> ./mythicalSetup
-	dialog --infobox "See this link for setting up Desktop Notifications.  http://www.xbmc.org/wiki/?title=MythicalLibrarian#GNOME_Desktop_Notifications" 10 30 
+
 
 else
 
