@@ -1003,8 +1003,7 @@ echo $showname
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
  
- #set up envirnoment for UseOriginalDir if enabled
-
+ 
 
  InputTitle=$2
  InputSubtitle=$3

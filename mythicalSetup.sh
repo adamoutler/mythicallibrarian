@@ -144,7 +144,7 @@ AlternateMoveDir=/home/mythtv/Episodes
 echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalSetup
 
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalSetup
-echo " #UseOriginalDir will not separate episodes from movies. Enabled|Disabled">> ./mythicalSetup
+echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalSetup
 
 test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./mythicalSetup || echo "UseOriginalDir=Enabled">>./mythicalSetup
 echo " #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled">> ./mythicalSetup
