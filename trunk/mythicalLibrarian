@@ -1005,7 +1005,7 @@ echo $showname
  InputTitle=$2
  InputSubtitle=$3
  InputPath=$1
- test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
+ test "$InputPath" != "testfile.ex" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
  #check for command line switches
  case $InputPath in 
