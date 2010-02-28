@@ -235,7 +235,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalSetup
  		echo "AlternateMovieDir='$AlternateMovieDir'" >> ./mythicalSetup
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalSetup
- 		echo " ShowStopper=Enabled">> ./mythicalSetup
+ 		echo " ShowStopper=Disabled">> ./mythicalSetup || echo " ShowStopper=Enabled">> ./mythicalSetup
  		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalSetup
  		echo "CommercialMarkup=Enabled" >> ./mythicalSetup
 
@@ -279,7 +279,7 @@ elif [ $mythtv = 0 ]; then
  
  	echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalSetup
  	dialog --title "Unrecognizable programming" --yesorno "Process unrecognized Episodes and Shows?" 8 40
- 
+  	test "$?" = "1" && echo " ShowStopper=Disabled">> ./mythicalSetup || echo " ShowStopper=Enabled">> ./mythicalSetup
  	echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalSetup
  	echo "CommercialMarkup=Disabled" >> ./mythicalSetup
 
