@@ -439,7 +439,7 @@ echo $showname
  
  #move fully formed temp file on top of the old file
  	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
- 	echo "RSS file successfully created: $rssDir/$TEMPrssFile"
+ 	echo "RSS file successfully created: $rssDir/$OLDrssFile"
  	IFS=$OLDIFS
  	return 0
  }
@@ -1186,6 +1186,7 @@ fi
  
  #Mark matched Zap2it ID
   			echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$seriesid"
+ 			echo "MATCH!!!! Zap2itID:$NewShowName ID.$seriesid">>"$mythicalLibrarian"/output.log
  			MatchedShowName=$NewShowName
  			MatchedSeriesID=$seriesid
  			MatchedSeriesLineNumber=$serieslinenumber
