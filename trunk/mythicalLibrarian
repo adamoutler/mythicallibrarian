@@ -731,6 +731,7 @@ echo $showname
  	echo " sudo mythicalLibrarian --undo"
  	echo " Data loss can occour if this operation is interupted."
 	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
+ 	echo ""
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  		mythicalLibrarian --doover
@@ -752,7 +753,7 @@ echo $showname
  	echo "--You have entered diagnostic mode"
  	echo "mythicalLibrarian will now conduct a series of tests."
 	read -n1 -p "press any key to verify installed packages..."
- 	
+ 	echo ""
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
 	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin"	
@@ -765,11 +766,13 @@ echo $showname
  		echo "Please run 'apt-get install $checkc$checkd$checke' or equivalant"
 	fi
  	read -n1 -p "Press any key to perform Desktop Message test..."
+ 	echo ""
  	echo "Performing librarian-notify-send test"
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
  	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
  	echo "Desktop Notifications test $notifytest"
  	read -n1 -p "Press any key to perform XBMC Notification test..."
+ 	echo ""
 	echo "Performing XBMC Notifications test"
   	for XBMCIP in ${XBMCIPs[@]}
  	do
@@ -779,6 +782,7 @@ echo $showname
  	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
  	read -n1 -p "Press any key to test file system permissions..."
+ 	echo ""
  	echo "Testing file system permissions"
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
@@ -809,6 +813,7 @@ echo $showname
 
  	if [ "$overallchecks" = "***PASSED***" ]; then
  	 read -n1 -p "press any key to test mythicalLibrarian..."
+ 	 echo ""
 	 mythicalLibrarian testfile.ext "mister" "Show 1332"
 	 exitstatus=$?
 	 echo "exited with status $exitstatus"
@@ -824,6 +829,7 @@ echo $showname
  		mythicaltest="COULD NOT COMPLETE" 
  	fi
 	read -n1 -p "press any key to continue on to the final results..."	
+ 	echo ""
 	echo -e "  All tests complete            RESULTS"
 	echo -e "  Installed Packages:        $packagecheck $checkc$checkd$checke"
  	echo -e "  Notifications Test:        $notifytest"
@@ -851,6 +857,7 @@ echo $showname
  	echo " while this process is running. It is important that this"
         echo " process does not get interupted or data loss may occour."
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
+ 	echo ""
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibraian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
@@ -877,6 +884,7 @@ echo $showname
  	echo " mythicalLibrarian. It is important that this process is"
 	echo " not interupted or data loss may occour"
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
+ 	echo ""
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  		test -f "$mythicalLibrarian/undo.sh" && cat "$mythicalLibrarian/undo.sh">>"$mythicalLibrarian/undo.sh.old"
@@ -956,6 +964,7 @@ echo $showname
  	echo " Desktop Notifications, XBMC notificatons, XBMC library updates"
  	echo " MythTV Database settings, and various operational modes."
  	read -n1 -p " Do you wish to continue? y/(n) >" yesorno
+ 	echo ""
  	test "$yesorno" != "y" && exit 0
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
  	cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
