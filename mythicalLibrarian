@@ -770,6 +770,8 @@ echo $showname
  	read -n1 -p "Press any key to perform Desktop Message test..."
  	echo ""
  	echo "Performing librarian-notify-send test"
+ 	echo "This test verifies that the message was sent to the DBUS."
+	echo "This test does not verify the user has a valid desktop open."
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
  	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
  	echo "Desktop Notifications test $notifytest"
@@ -1040,7 +1042,7 @@ echo $showname
  InputFileBasename=`basename $InputPath`
  GrabTitleAndSubtitle
  ShowName=$InputTitle
- test "$Showname" = "" && mythicalHelp
+ test "$ShowName" = "" && mythicalHelp
  epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d [:punct:]`
  originalext=`echo "${InputPath#*.}"`
  originaldirname=`dirname "$InputPath"`
