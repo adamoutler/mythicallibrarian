@@ -64,6 +64,7 @@ if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated"
  	echo "please re-run mythicalSetup"
+ 	exit 1
 fi
 fi
 
