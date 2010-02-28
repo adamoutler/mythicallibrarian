@@ -855,8 +855,7 @@ echo $showname
  	echo "--You have entered doover mode."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
  	echo " mythicalLibrarain against all files which failed on the"
- 	echo " first run of mythicalLibrarian. There will be no indicators"
- 	echo " while this process is running. It is important that this"
+ 	echo " last run of mythicalLibrarian.  It is important that this"
         echo " process does not get interupted or data loss may occour."
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	echo ""
@@ -866,7 +865,7 @@ echo $showname
  		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
  		exit 0
 	else
-  		test -f "$mythicalLibrarian/doover.sh" && echo "You must press y to execute doover" || echo "No Doover file Exists"
+  		test -f "$mythicalLibrarian/doover.sh" && echo "You must press y to execute Doover." || echo "No Doover jobs exist."
 		exit 0
 	fi
  	exit 1
@@ -883,11 +882,11 @@ echo $showname
  	echo "--You have entered undo mode."
 	echo " In this mode of operation, mythicalLibrarian will reverse"
  	echo " file changes created by the current user while running."
- 	echo " mythicalLibrarian. It is important that this process is"
-	echo " not interupted or data loss may occour"
- 	read -n1 -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
+ 	echo " mythicalLibrarian. There will be no indicators while undo"
+ 	echo " is running. It is important that this process is not "
+ 	echo " interupted or data loss may occour"
+ 	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	echo ""
- 	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  		test -f "$mythicalLibrarian/undo.sh" && cat "$mythicalLibrarian/undo.sh">>"$mythicalLibrarian/undo.sh.old"
  	 	test -f "$mythicalLibrarian/undo.sh" && chmod +x "$mythicalLibrarian/undo.sh"
