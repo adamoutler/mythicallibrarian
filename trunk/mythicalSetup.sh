@@ -58,6 +58,7 @@ if [ ! -f "./librarian" ]; then
  	DownloadML=Stable
  	echo "Stable `date`">./lastupdated
 else
+
  lastupdated="`cat ./lastupdated`"
  DownloadML=$(dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download the most recent stable version" "Latest" "Download up-to-date SVN revision" 2>&1 >/dev/tty)	
 if [ "$?" = "1" ]; then
@@ -91,7 +92,8 @@ if [ "$DownloadML" = "Stable" ]; then
 
 fi
 if [ "$DownloadML" = "Latest" ]; then
- 	echo "SVN "`date`>"./lastupdated"
+  	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision | replace "<html><head><title>mythicallibrarian - " ""| replace ": /trunk</title></head>" ""`
+	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
