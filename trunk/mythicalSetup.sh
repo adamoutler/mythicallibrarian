@@ -219,7 +219,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "#MySQL Myth Database: Default="mythconverg"">> ./mythicalSetup
  		echo "MySQLMythDb=mythconverg">>./mythicalSetup
 
- 		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"">> ./mythicalSetup 		
+ 		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./mythicalSetup 		
 
  		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="/home/mythtv/Movies"
 
