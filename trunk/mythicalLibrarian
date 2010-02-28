@@ -14,7 +14,7 @@
  # This program was designed to be a user job in MythTV.  It can be called by creating a user job. It must have access to your MythTV recordings
  # This file should be placed in /usr/local/bin
  # The user job can be called as follows:
- # mythicalLibrarian "%DIR%/%FILE%"
+ # /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"
  #
  #Usage:
  #  mythicalLibrarian "Target File" "show name" "episode name" 
@@ -69,9 +69,9 @@
  # database section of the user settings. Currently, the only guide data supported is schedulesdirect through mythtv. When
  # updating mythicalLibrarian it is best to delte all database folders to ensure proper data formatting.
  #
- #Dependencies: depends on "curl", "tre-agrep", "libnotify-bin" and Mythtv Backend for database access.
+ #Dependencies: depends on "curl", "agrep", "libnotify-bin" and Mythtv Backend for database access.
  # install curl with "apt-get install curl"  -curl downloads webpages and sends commands to XBMC 
- # install tre-agrep with "apt-get install tre-agrep"  -tre-agrep provides fuzzy logic
+ # install agrep with "apt-get install agrep"  -agrep provides fuzzy logic
  # optional: install libnotify-bin with "apt-get install libnotify-bin" -allows GNOME desktop notifications
  #
  #Ubuntu Notifications:
@@ -276,7 +276,7 @@
 
  	showname=`echo "$ShowName"|replace "&amp;" "&"`
 echo $showname
- 	serieslinenumber=`tre-agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
+ 	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
   	seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
@@ -662,10 +662,10 @@ echo $showname
  		echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo"
  		echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	fi
- return 0 
+ 	return 0 
  } 
  
- #Get show translations if the showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
+ #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
  	if [ -f $mythicalLibrarian/showtranslations ]; then 
  		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
@@ -676,6 +676,7 @@ echo $showname
  			showtranslation="Inactive"
  		fi
  	fi
+ 	return 0
  }
 
 #Create an NFO file based upon extracted information
@@ -747,6 +748,7 @@ echo $showname
  	 	echo "you must press 'y' to scan"
  		exit 0
  	fi
+ 	exit 1
 }
  mythicalDiagnostics () {
 
@@ -755,9 +757,9 @@ echo $showname
 	read -n1 -p "press any key to verify installed packages..."
  	echo ""
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
-	test `which tre-agrep`>/dev/null && echo "package 'tre-agrep' or 'tre-tre-agrep' is installed" || checkd="tre-agrep "
+	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
 	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin"	
-	if [ `which notify-send`>/dev/null ] && [ `which tre-agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
+	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
  		packagecheck="***PASSED***"
 		echo "Installed packages check ***PASSED***"
 	else
@@ -867,7 +869,7 @@ echo $showname
 	 	echo "You must press y to execute doover"
 		exit 0
 	fi
-
+ 	exit 1
  }
  
  
@@ -902,7 +904,7 @@ echo $showname
 	 	echo "You must press y to execute undo"
 		exit 0
 	fi
-
+ 	exit 1
  }
 
  mythicalHelp () {
@@ -1028,7 +1030,7 @@ echo $showname
    		mythicalUpdater
  	;;
  esac
- test "${InputTitle:0:2}" = "--" && mythicalHelp
+ test "${InputTitle:0:1}" = "-" && mythicalHelp
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  showcheck="Enabled"
@@ -1039,6 +1041,7 @@ echo $showname
  InputFileBasename=`basename $InputPath`
  GrabTitleAndSubtitle
  ShowName=$InputTitle
+ test "$Showname" = "" && mythicalHelp
  epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d [:punct:]`
  originalext=`echo "${InputPath#*.}"`
  originaldirname=`dirname "$InputPath"`
@@ -1219,7 +1222,7 @@ fi
  	test -z "$NewShowName" && NewShowName=$ShowName
  
  #use fuzzy logic to find the closest show name from the locally created database and return absolute episode number
- 	absolouteEpisodeNumber=`tre-agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 	absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
  	echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
  
  #if no fuzzy match, then use database to match.
@@ -1356,6 +1359,24 @@ WorkingDirWritable=$TMoveDirWritable
   	jobtype=InvalidFileNameSupplied
  	RunJob
  fi
+  ######PRE-NAMING CHECKS#####
+ if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
+
+ 	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo  "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ 	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
+ 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+ #This line is for marking Episodes as shows 
+	mythicalEpiShow=1
+  	mythicalLibrarianProgramIDCheck=SH
+ #Debug 
+ # 		jobtype=TvDbIsIncomplete
+ #		RunJob
+ fi
  
 
  FailSafeState=0
@@ -1374,23 +1395,7 @@ WorkingDirWritable=$TMoveDirWritable
  test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
 
  
- ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
 
- 	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-  	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo  "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
- 	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
- 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
- #This line is for marking Episodes as shows 
-	mythicalEpiShow=1
-  	jobtype=TvDbIsIncomplete
- 	RunJob
- fi
- 
  
  #####OUTPUT FILE NAME FORMATTING#####
 
@@ -1499,10 +1504,12 @@ WorkingDirWritable=$TMoveDirWritable
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
   		echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
-
-  		jobtype=GenericShow
-		RunJob
+  		
+ 		#Debug
+  		#jobtype=GenericShow
+		#RunJob
  	fi
+ 
  #####MOVE MODE HANDLING#####
  #If symlink is not in LINK mode, Move and rename the file.
  if [ "$SYMLINK" != "LINK" ]; then
@@ -1516,7 +1523,7 @@ WorkingDirWritable=$TMoveDirWritable
  	if [ -f "$MoveDir/$ShowFileName.$originalext" ]; then
  		if [ -s "$MoveDir/$ShowFileName.$originalext" ];then
  
- #Send notification to XBMC, Update Library, Clean Library
+ #On move send notification to XBMC, Update Library, Clean Library
   			XBMCAutomate 		
  
  #Create Commercial skip data with file
@@ -1536,12 +1543,15 @@ WorkingDirWritable=$TMoveDirWritable
  				
   			fi
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
+  			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
+ 			test "$mythicalEpiShow" = "1" && echo "mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 			test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
- 			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
-			echo "moving '$MoveDir/$ShowFileName.$originalext' to '$MoveDir/$ShowFileName.$originalext'"
+			echo "MOVING: $InputPath"
+ 			echo "TO: $MoveDir/$ShowFileName.$originalext "
  			dailyreport "$ShowFileName"
  			generaterss 
  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
