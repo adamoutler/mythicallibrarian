@@ -156,6 +156,8 @@
  PrimaryMovieDir="/home/mythtv/Movies" #<------THIS VALUE MUST BE SET-------
  #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails
  AlternateMovieDir="/home/mythtv/Movies"
+ #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed
+ ShowStopper="Enabled"
  #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled
  CommercialMarkup=Enabled
  #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed
@@ -1034,12 +1036,11 @@ echo $showname
  test "${InputTitle:0:1}" = "-" && mythicalHelp
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
- showcheck="Enabled"
-
  
 
-
  InputFileBasename=`basename $InputPath`
+
+ #If not specified, grab Title and subtitle from database using basename for reference
  GrabTitleAndSubtitle
  ShowName=$InputTitle
  test "$ShowName" = "" && mythicalHelp
@@ -1499,7 +1500,7 @@ WorkingDirWritable=$TMoveDirWritable
  
  #####SH Identification Type Handling #####
  #if the ProgramID does not meet criteria, then end the program
- 	if [ "$ProgramIDType" = "Generic Episode With No Data" -a "$showcheck" = "Enabled" ]; then
+ 	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
  		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1507,10 +1508,12 @@ WorkingDirWritable=$TMoveDirWritable
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log 
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
   		echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
-  		
- 		#Debug
-  		#jobtype=GenericShow
-		#RunJob
+
+ #prevent generic shows from being processed
+ 		if [ "$ShowStopper" = "Enabled" ]; then
+ 		 	jobtype=GenericShow
+			RunJob
+ 		fi
  	fi
  
  #####MOVE MODE HANDLING#####
