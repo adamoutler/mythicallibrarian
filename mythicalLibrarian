@@ -730,7 +730,7 @@ echo $showname
 	echo " This operation can be reversed using the following command:"
  	echo " sudo mythicalLibrarian --undo"
  	echo " Data loss can occour if this operation is interupted."
-	read -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
+	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  		mythicalLibrarian --doover
@@ -751,7 +751,7 @@ echo $showname
 
  	echo "--You have entered diagnostic mode"
  	echo "mythicalLibrarian will now conduct a series of tests."
-	read -p "press any key to verify installed packages..."
+	read -n1 -p "press any key to verify installed packages..."
  	
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
@@ -764,12 +764,12 @@ echo $showname
 		echo "Installed packages check ***FAILED***" 
  		echo "Please run 'apt-get install $checkc$checkd$checke' or equivalant"
 	fi
- 	read -p "Press any key to perform Desktop Message test..."
+ 	read -n1 -p "Press any key to perform Desktop Message test..."
  	echo "Performing librarian-notify-send test"
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
  	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
  	echo "Desktop Notifications test $notifytest"
- 	read -p "Press any key to perform XBMC Notification test..."
+ 	read -n1 -p "Press any key to perform XBMC Notification test..."
 	echo "Performing XBMC Notifications test"
   	for XBMCIP in ${XBMCIPs[@]}
  	do
@@ -778,7 +778,7 @@ echo $showname
  	done
  	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
- 	read -p "Press any key to test file system permissions..."
+ 	read -n1 -p "Press any key to test file system permissions..."
  	echo "Testing file system permissions"
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
@@ -808,7 +808,7 @@ echo $showname
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILURE***"
 
  	if [ "$overallchecks" = "***PASSED***" ]; then
- 	 read -p "press any key to test mythicalLibrarian..."
+ 	 read -n1 -p "press any key to test mythicalLibrarian..."
 	 mythicalLibrarian testfile.ext "mister" "Show 1332"
 	 exitstatus=$?
 	 echo "exited with status $exitstatus"
@@ -823,7 +823,7 @@ echo $showname
  		echo "OVERALL FAILURE"
  		mythicaltest="COULD NOT COMPLETE" 
  	fi
-	read -p "press any key to continue on to the final results..."	
+	read -n1 -p "press any key to continue on to the final results..."	
 	echo -e "  All tests complete            RESULTS"
 	echo -e "  Installed Packages:        $packagecheck $checkc$checkd$checke"
  	echo -e "  Notifications Test:        $notifytest"
@@ -850,7 +850,7 @@ echo $showname
  	echo " first run of mythicalLibrarian. There will be no indicators"
  	echo " while this process is running. It is important that this"
         echo " process does not get interupted or data loss may occour."
- 	read -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
+ 	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibraian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
@@ -876,7 +876,7 @@ echo $showname
  	echo " file changes created by the current user while running."
  	echo " mythicalLibrarian. It is important that this process is"
 	echo " not interupted or data loss may occour"
- 	read -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
+ 	read -n1 -p "  Press 'y' to continue or 'n' to exit..... (y)/n:>" yesorno
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
  		test -f "$mythicalLibrarian/undo.sh" && cat "$mythicalLibrarian/undo.sh">>"$mythicalLibrarian/undo.sh.old"
@@ -955,7 +955,7 @@ echo $showname
  	echo " Episode naming, Movie naming, local RSS feeds, local Daily Report,"
  	echo " Desktop Notifications, XBMC notificatons, XBMC library updates"
  	echo " MythTV Database settings, and various operational modes."
- 	read -p " Do you wish to continue? y/(n) >" yesorno
+ 	read -n1 -p " Do you wish to continue? y/(n) >" yesorno
  	test "$yesorno" != "y" && exit 0
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
  	cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
