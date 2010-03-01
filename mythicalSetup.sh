@@ -61,7 +61,7 @@ if [ ! -f "./librarian" ]; then
 else
 
  lastupdated="`cat ./lastupdated`"
- dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download the most recent stable version" "Latest" "Download up-to-date SVN revision" 2>&1 >./downloadchoice)	
+ dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download the most recent stable version" "Latest" "Download up-to-date SVN revision" 2>&1 >./downloadchoice	
 if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated"
