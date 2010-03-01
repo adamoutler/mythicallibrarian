@@ -171,7 +171,7 @@
  #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled
  Notify=Enabled
  #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)
- NotifyUserName="xbmc" #<------THIS VALUE MUST BE SET-------
+ NotifyUserName="MYUSERNAME" #<------THIS VALUE MUST BE SET-------
  #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled
  XBMCUpdate=Enabled
  #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled
