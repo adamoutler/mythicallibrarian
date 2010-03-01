@@ -609,7 +609,7 @@ echo $showname
  
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
- 		seriesid=`echo $seriesid|tr -d "<seriesid>"|tr -d "</seriesid>"`
+ 		seriesid=`echo $seriesid|replace  "<seriesid>" "" |replace "</seriesid>" ""`
  
  #Download information from server
  		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
@@ -620,10 +620,10 @@ echo $showname
 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"|replace "  <zap2it_id>" ""|replace "</zap2it_id>" ""| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'|replace "&amp;" "&"|tr -d '`"<>:!\|/"'"'">"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'|replace "&amp;" "&" >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|tr -d [:punct:]>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 
  #Get OriginalAirDate
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"|replace "  <FirstAired>" ""|replace "</FirstAired>" ""|replace "/" "">"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
@@ -1043,7 +1043,7 @@ echo $showname
  GrabTitleAndSubtitle
  ShowName=$InputTitle
  test "$ShowName" = "" && mythicalHelp
- epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d [:punct:]`
+ epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  originalext=`echo "${InputPath#*.}"`
  originaldirname=`dirname "$InputPath"`
  FileBaseName=${InputPath##*/}  
@@ -1402,11 +1402,11 @@ WorkingDirWritable=$TMoveDirWritable
 
  
  #####OUTPUT FILE NAME FORMATTING#####
-
+#universally not accepted file system characters:  |\?*<":>+[]/ 
  #Format Shows
- epn=`echo $epn| tr -d [:punct:]`
- NewShowName=`echo $NewShowName|tr -d [:punct:]`
- Showname=`echo $ShowName|tr -d [:punct:]`
+ epn=`echo $epn| tr -d '|\?*<":>+[]/'`
+ NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'`
+ Showname=`echo $ShowName|tr -d '|\?*<":>+[]/'`
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
  if [ "$exx" != "" ]; then
@@ -1422,7 +1422,7 @@ WorkingDirWritable=$TMoveDirWritable
  elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
   	exx="Generic"
  	MoveDir="$PrimaryShowDir"
-	NewShowName=`echo $ShowName|tr -d [:punct:]`
+	NewShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'`
   	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
  fi
  
