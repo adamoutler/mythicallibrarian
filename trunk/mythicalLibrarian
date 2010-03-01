@@ -117,7 +117,7 @@
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  AlternateMoveDir=/home/mythtv/Episodes
  #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.
- #UseOriginalDir will not separate episodes from movies. Enabled|Disabled
+ #UseOriginalDir will separate generic shows from episodes and movies. Enabled|Disabled
  UseOriginalDir=Enabled
  #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled
  UseShowNameAsDir=Enabled
@@ -1059,7 +1059,7 @@ echo $showname
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
-if [ "$UseOriginalDir=Enabled" ]; then
+if [ "$UseOriginalDir" = "Enabled" ]; then
 	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
 	 MoveDir="$originaldirname/Episodes"
 	 test ! -d "$MoveDir" && mkdir "$MoveDir"
