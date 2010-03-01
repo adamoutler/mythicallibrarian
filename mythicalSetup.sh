@@ -16,6 +16,12 @@ else
  	a="dialog " 
 fi
 
+if which replace >/dev/null; then
+ 	echo "Verified mysqlserver exists"
+else
+ 	echo "install package 'mythtv' on your system"
+fi
+
 if which curl >/dev/null; then
 	echo "Verified curl exists"
 else
@@ -54,14 +60,13 @@ if ! which librarian-notify-send>/dev/null; then
  	fi
 fi
 
-echo debug
 if [ ! -f "./librarian" ]; then
- 	DownloadML="Stable"
+ 	DownloadML=Stable
  	echo "Stable `date`">./lastupdated
 else
 
  lastupdated="`cat ./lastupdated`"
- dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download the most recent stable version" "Latest" "Download up-to-date SVN revision" 2> ./downloadchoice	
+ DownloadML=$(dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download the most recent stable version" "Latest" "Download up-to-date SVN revision" 2>&1 >/dev/tty)	
 if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated"
@@ -69,7 +74,6 @@ if [ "$?" = "1" ]; then
  	exit 1
 fi
 fi
- DownloadML=`cat ./downloadchoice`
 
 if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
