@@ -17,9 +17,10 @@ else
 fi
 
 if which replace >/dev/null; then
- 	echo "Verified mysqlserver exists"
+ 	echo "Verified  mysql-server-5.0 exists"
 else
- 	echo "install package 'mythtv' on your system"
+ 	echo "install package ' mysql-server-5.0' on your system"
+ 	b="mysql-server-5.0 "
 fi
 
 if which curl >/dev/null; then
@@ -46,7 +47,7 @@ if which notify-send>/dev/null && which agrep>/dev/null && which curl>/dev/null 
 	echo "All checks complete!!!"
 else
 	echo "the proper dependencies must be installed..." 
- 	echo "Debian based users run 'apt-get install $a$c$d$e"
+ 	echo "Debian based users run 'apt-get install $a$b$c$d$e"
 	exit 1
 fi
 

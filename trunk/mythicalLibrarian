@@ -758,16 +758,17 @@ echo $showname
  	echo "mythicalLibrarian will now conduct a series of tests."
 	read -n1 -p "press any key to verify installed packages..."
  	echo ""
+ 	test `which replace`>/dev/null && echo "package 'mysql-server-5.0' is installed" || checkb="mysql-server-5.0 "
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
-	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin"	
-	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
+	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin "	
+	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ] && [ `which replace`>/dev/null ]; then
  		packagecheck="***PASSED***"
 		echo "Installed packages check ***PASSED***"
 	else
  		packagecheck="***FAILED***"
 		echo "Installed packages check ***FAILED***" 
- 		echo "Please run 'apt-get install $checkc$checkd$checke' or equivalant"
+ 		echo "Please run 'apt-get install $checkb$checkc$checkd$checke' or equivalant"
 	fi
  	read -n1 -p "Press any key to perform Desktop Message test..."
  	echo ""
