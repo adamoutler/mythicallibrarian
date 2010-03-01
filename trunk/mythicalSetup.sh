@@ -54,6 +54,7 @@ if ! which librarian-notify-send>/dev/null; then
  	fi
 fi
 
+echo debug
 if [ ! -f "./librarian" ]; then
  	DownloadML="Stable"
  	echo "Stable `date`">./lastupdated
