@@ -1444,7 +1444,7 @@ WorkingDirWritable=$TMoveDirWritable
  		echo "WARNING:SHOW WAS CONSIDERED AN EPISODE BUT INFORMAITON WAS NOT OBTAINABLE">>"$mythicalLibrarian"/output.log
   		echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "HANDLING EPISODE AS GENERAL SHOWING AND DUMPING INTO --doover USER JOB">>"$mythicalLibrarian"/output.log
- 	FI
+ 	fi
  fi
  
 
