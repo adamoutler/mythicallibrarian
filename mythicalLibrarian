@@ -1221,7 +1221,7 @@ fi
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
  	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|replace "<seriesid>" ""|replace "</seriesid>" "">"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" "">$mythicalLibrarian/shn.txt
+ 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" ""|replace "&amp;" "&" >$mythicalLibrarian/shn.txt
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
