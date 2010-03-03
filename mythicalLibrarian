@@ -1115,7 +1115,7 @@ echo $showname
 
  #Check for show translations relating to the show in question.
  ShowTranslations
- 
+ UseOriginalAirdateForTheseShows
  #Format Show name for Sending to www.TheTvDb.com and XBMC
  tvdbshowname=`echo $ShowName|replace " " "%20"`
 
