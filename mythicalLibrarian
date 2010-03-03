@@ -927,7 +927,7 @@ echo $showname
         echo " process does not get interupted or data loss may occour."
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	echo "$yesorno"
- 	if [ "$yesorno" = "y" -a -f "$mythicalLibraian/doover.sh" ]; then
+ 	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
