@@ -430,10 +430,7 @@ echo ' exit 4'>> ./mythicalSetup
 echo ''>> ./mythicalSetup
 echo ' }'>> ./mythicalSetup
 echo ''>> ./mythicalSetup
-echo ' ########################## USER JOBS############################'>> ./mythicalSetup
-echo ' '>> ./mythicalSetup
-echo ' ################################################################'>> ./mythicalSetup
-echo ' ############Adept personel only beyond this point###############'>> ./mythicalSetup
+
 echo ' ################################################################'>> ./mythicalSetup
 test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
