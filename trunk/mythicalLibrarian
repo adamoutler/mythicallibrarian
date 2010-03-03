@@ -678,10 +678,10 @@ echo $showname
 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"|replace "  <zap2it_id>" ""|replace "</zap2it_id>" ""| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'|replace "&amp;" "&" >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 
  #Get OriginalAirDate
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"|replace "  <FirstAired>" ""|replace "</FirstAired>" ""|replace "/" "">"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
@@ -1220,13 +1220,14 @@ fi
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
- 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|replace "<seriesid>" ""|replace "</seriesid>" "">"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" ""|replace "&amp;" "&" >$mythicalLibrarian/shn.txt
+ 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|replace "<seriesid>" ""|replace "</seriesid>" "" | replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian/sid.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" "" | replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian/shn.txt"
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
  fi
- 
+
+
  
  ######DOWNLOAD/PARSE/IDENTIFICATION OF SHOW NAME######
  if [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
@@ -1290,7 +1291,6 @@ fi
  	if [ "$Database" = "Enabled" ]; then
  		if [ "$absolouteEpisodeNumber" = "" -a "$OriginalAirDate" != "" ]; then
  			absolouteEpisodeNumber=0
- 			absolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  			absolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Subtract 1 to compensate for original series airdate
   			if [ "$absolouteEpisodeNumber" != "" ]; then
