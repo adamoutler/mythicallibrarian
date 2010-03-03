@@ -1634,14 +1634,8 @@ WorkingDirWritable=$TMoveDirWritable
 			echo "MOVED: $InputPath"
  			echo "TO: $MoveDir/$ShowFileName.$originalext "
 
-
-
-
  #If symlink=disabled, remove database entries
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
-
-
-
 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
@@ -1651,9 +1645,8 @@ WorkingDirWritable=$TMoveDirWritable
 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
   			XBMCAutomate 
  			performLoggingForMoveMode
- 			dailyreport "$ShowFileName"
+ 			dailyreport 
  			generaterss 
- #mark job and end
   			jobtype=MoveModeSucessful		
  			RunJob
  
@@ -1706,7 +1699,7 @@ WorkingDirWritable=$TMoveDirWritable
 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO 
  		XBMCAutomate 
  		performLoggingForLinkMode
- 		dailyreport "$ShowFileName"
+ 		dailyreport
  		generaterss
    		jobtype=LinkModeSucessful		
  		RunJob
