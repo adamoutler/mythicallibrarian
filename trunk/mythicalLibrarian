@@ -507,6 +507,30 @@ echo $showname
  	return 0
  }
 
+ #logging for move mode
+ performLoggingForMoveMode () {
+ #Create undo file if not present
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "'$mythicalLibrarian/undo.sh'"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "'$mythicalLibrarian/doover.sh'"
+
+ 	echo  "test -L 	'$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/undo.sh"	
+	echo  "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
+
+ 	if ["$SYMLINK" = "MOVE" ]; then
+
+ 		test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath' '$InputPath'">>"$mythicalLibrarian/doover.sh"
+		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
+ 	fi
+}
+
+ #logging for link mode
+ performLoggingForLinkMode () {
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm '$mythicalLibrarian/undo.sh'" >> "$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'">>"mythicalLibrarian/doover.sh"
+ 	echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/undo.sh"
+ }
  #####INITIAL DATASE GRAB#####
  ##This function grabs title and subtitle from the database for use in the rest of the script
  GrabTitleAndSubtitle () {
@@ -1592,51 +1616,44 @@ WorkingDirWritable=$TMoveDirWritable
  	if [ -f "$MoveDir/$ShowFileName.$originalext" ]; then
  		if [ -s "$MoveDir/$ShowFileName.$originalext" ];then
  
- #On move send notification to XBMC, Update Library, Clean Library
-  			XBMCAutomate 		
- 
  #Create Commercial skip data with file
  			if [ "$CommercialMarkup" = "Created" ]; then
  				mv "$mythicalLibrarian/markupframes.txt" "$MoveDir/$ShowFileName.txt"
  				echo "'$MoveDir/$ShowFileName.txt'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
  			fi
- #Create undo file if not present
-  			test ! -f "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
+
  #Make symlink back to original file
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
  				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"
  				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS">>"$mythicalLibrarian"/output
-
- #Create undo job for symlink if created
-  				echo  "test -L 	'$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/undo.sh"			
-  				echo  "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
   			fi
+
+  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
+			echo "MOVED: $InputPath"
+ 			echo "TO: $MoveDir/$ShowFileName.$originalext "
+
+
+
 
  #If symlink=disabled, remove database entries
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
 
- #Created Doover Job for Epi-shows
- 			test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath' "
- 			test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
- 			test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
+
+
 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
 
- #Generate NFO files for v shows
+ #Generate NFO files for shows
 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
-			echo "MOVED: $InputPath"
- 			echo "TO: $MoveDir/$ShowFileName.$originalext "
-
- #Log file in daily report folder
+  			XBMCAutomate 
+ 			performLoggingForMoveMode
  			dailyreport "$ShowFileName"
- 
- #Generate RSS feed for show
  			generaterss 
- 		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
+ #mark job and end
   			jobtype=MoveModeSucessful		
  			RunJob
  
@@ -1678,19 +1695,17 @@ WorkingDirWritable=$TMoveDirWritable
  		if [ "$Notify" = "Enabled" ]; then
  			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName linked to $MoveDir" info
  		fi
- 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
-	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO 
-  #Send notification to XBMC, Update Library, Clean Library
- 		XBMCAutomate 		
 
  #Move comskip data
   	 	if [ "$CommercialMarkup" = "Created" ]; then
  			mv "$mythicalLibrarian"/markupframes.txt "$MoveDir/$ShowFileName.txt"
  			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
- 		echo "#mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
- 		test ! -L "$mythicalLibrarian/undo.sh" && echo rm "$mythicalLibrarian/undo.sh"
-		echo "rm '$MoveDir/$ShowFileName.$originalext'"
+
+ 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
+	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO 
+ 		XBMCAutomate 
+ 		performLoggingForLinkMode
  		dailyreport "$ShowFileName"
  		generaterss
    		jobtype=LinkModeSucessful		
