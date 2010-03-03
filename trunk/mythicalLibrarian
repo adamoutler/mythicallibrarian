@@ -232,12 +232,12 @@
  }
  
  ########################## USER JOBS############################
-
  #####################AIRDATE LOOKUP ONLY########################
  UseOriginalAirdateForTheseShows () {
  test $InputTitle = "The Daily Show" && "$UseAirdateInsteadOfTitle" = "1" 
  }
  #####################AIRDATE LOOKUP ONLY########################
+
  ################################################################
  ############Adept personel only beyond this point###############
  ################################################################
