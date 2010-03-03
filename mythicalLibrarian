@@ -926,7 +926,7 @@ echo $showname
  	echo " last run of mythicalLibrarian.  It is important that this"
         echo " process does not get interupted or data loss may occour."
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
- 	echo ""
+ 	echo "$yesorno""$yesorno""$yesorno""$yesorno""$yesorno"
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibraian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
