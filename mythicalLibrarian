@@ -234,7 +234,7 @@
  ########################## USER JOBS############################
  #####################AIRDATE LOOKUP ONLY########################
  UseOriginalAirdateForTheseShows () {
- test $InputTitle = "The Daily Show" && "$UseAirdateInsteadOfTitle" = "1" 
+ test "$InputTitle" = "The Daily Show" && "$UseAirdateInsteadOfTitle" = "1" 
  }
  #####################AIRDATE LOOKUP ONLY########################
 
