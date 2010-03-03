@@ -431,7 +431,6 @@ echo ''>> ./mythicalSetup
 echo ' }'>> ./mythicalSetup
 echo ''>> ./mythicalSetup
 
-echo ' ################################################################'>> ./mythicalSetup
 test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
