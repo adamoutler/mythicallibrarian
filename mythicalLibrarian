@@ -510,7 +510,7 @@ echo $showname
  	echo  "test -L 	'$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/undo.sh"	
 	echo  "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
 
- 	if ["$SYMLINK" = "MOVE" ]; then
+ 	if [ "$SYMLINK" = "MOVE" ]; then
 
  		test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath' '$InputPath'">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
@@ -938,13 +938,14 @@ echo $showname
  		echo "eg. 'sudo mythicalLibrarian --doover'"
  		exit 1
  	fi
+ 	test "$SUDO_USER" = "" && SUDO_USER="root"
  	echo "--You have entered doover mode."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
  	echo " mythicalLibrarain against all files which failed on the"
  	echo " last run of mythicalLibrarian.  It is important that this"
         echo " process does not get interupted or data loss may occour."
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
- 	echo "$yesorno"
+
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
