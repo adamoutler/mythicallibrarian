@@ -232,12 +232,6 @@
  }
  
  ########################## USER JOBS############################
- #####################AIRDATE LOOKUP ONLY########################
- UseOriginalAirdateForTheseShows () {
- test "$InputTitle" = "The Daily Show" && "$UseAirdateInsteadOfTitle" = "1" 
- }
- #####################AIRDATE LOOKUP ONLY########################
-
  ################################################################
  ############Adept personel only beyond this point###############
  ################################################################
@@ -1139,7 +1133,7 @@ echo $showname
 
  #Check for show translations relating to the show in question.
  ShowTranslations
- UseOriginalAirdateForTheseShows
+
  #Format Show name for Sending to www.TheTvDb.com and XBMC
  tvdbshowname=`echo $ShowName|replace " " "%20"`
 
@@ -1313,24 +1307,31 @@ fi
  	test -z "$NewShowName" && NewShowName=$ShowName
  
  #use fuzzy logic to find the closest show name from the locally created database and return absolute episode number
- 	absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 	echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
+
  
- #if no fuzzy match, then use database to match.
- 	if [ "$Database" = "Enabled" ]; then
- 		if [ "$absolouteEpisodeNumber" = "" -a "$OriginalAirDate" != "" ] || [ "$UseAirdateInsteadOfTitle" = "1" ]; then
+ ##AIRDATE MATCH##
+ 	if [ "$ChanID" != "" ]; then
+ 		if [ "$OriginalAirDate" != "" ] ; then
  			absolouteEpisodeNumber=0
  			absolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Subtract 1 to compensate for original series airdate
-  			if [ "$absolouteEpisodeNumber" != "" ]; then
-  				let absolouteEpisodeNumber=$absolouteEpisodeNumber-1
-  				echo DB ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON ORIG AIR DATE:$OriginalAirDate 
-  			fi
+ 			let absolouteEpisodeNumber=$absolouteEpisodeNumber-1
+ 			echo DB ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON ORIG AIR DATE:$OriginalAirDate 
  		fi
- 
+ 		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=""
  #Remove no match found, "-1" = ""
- 		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=$null
+ 
+ ##FUZZY LOGIC SUBTITLE MATCH##
+		if [ "$absolouteEpisodeNumber" = "" ]; then
+ 		 	absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 		fi
+
+
  	fi
+
+
+ 	echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
+
  	echo "DEFINED ABSOLOUTE EPISODE NUMBER: $absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
   
  #if line match is obtained, then gather new episode name, Sxx and Exx
@@ -1597,8 +1598,7 @@ WorkingDirWritable=$TMoveDirWritable
  	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
  		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "WARNING:%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
-  		echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ 		#DEBUG test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
 
  #prevent generic shows from being processed
  	fi
