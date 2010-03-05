@@ -334,12 +334,11 @@
 
 
  	showname=`echo "$ShowName"|replace "&amp;" "&"`
-echo $showname
  	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
   	seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
- 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|replace "&amp" "&"| tr -d '"<>:!\|/'|grep -m1 ^`
+ 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|replace "&amp;" "&"| tr -d '"<>:!\|/'|grep -m1 ^`
  	return 0
  }
 
@@ -512,7 +511,7 @@ echo $showname
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath' '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
  	fi
