@@ -186,6 +186,7 @@
  #########################USER SETTINGS##########################
  ########################## USER JOBS############################
  #The RunJob function is a place where you can put your custom script to be run at the end of execution
+ #Though it may be at the top, this is actually the end of the program.  
  RunJob () {
  	case $jobtype in
  #Sucessful Completion of mythicalLibrarian
@@ -198,7 +199,7 @@
  			;;
 
  #Information error occoured
- 		TvDbIsIncomplete|GenericShow)
+ 		TvDbIsIncomplete)
  			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"
   			#Insert Custom User Job here 
  			
@@ -223,12 +224,12 @@
  			#
   			exit 2 
  			;;
-  esac
+ 	 esac
  #Custom exit point may be set anywhere in program by typing RunJob on any new line
  #Insert Custom User Job here 
  
- #
- exit 3
+ 	#
+ 	exit 3
  }
  
  ########################## USER JOBS############################
@@ -286,17 +287,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
+ #########BEGIN FUNCTIONS HERE#########
 
  ######DAILY REPORT#####
+ #This function reports all shows processed based on date
  dailyreport () {
  	if [ $DailyReport = Enabled ]; then
  		test ! -d "$mythicalLibrarian/DailyReport" && mkdir "$mythicalLibrarian/DailyReport" 
@@ -330,6 +324,7 @@
  }
  
  #####FUZZY LOGIC RECOGNITION OF SERIES#####
+ #This function provides fuzzy logic matching of a show name and returns a seriesid
  FuzzySeriesMatch () {
 
 
@@ -370,7 +365,7 @@
  
  
  #####XBMC COMMUNICATIONS#####
- #Function XBMC Automate handles all communication with XBMC  
+ #This function Automates communication with XBMC  
  XBMCAutomate () {
  #Send notification to XBMC, Update Library, Clean Library
  
@@ -500,7 +495,8 @@
  	return 0
  }
 
- #logging for move mode
+ #####MOVE MODE LOGGING#####
+ #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo file if not present
   	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "'$mythicalLibrarian/undo.sh'"
@@ -517,13 +513,15 @@
  	fi
 }
 
- #logging for link mode
+ #####LINK MODE LOGGING#####
+ #This function performs logging for link mode
  performLoggingForLinkMode () {
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm '$mythicalLibrarian/undo.sh'" >> "$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'">>"$mythicalLibrarian/doover.sh"
  	echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/undo.sh"
  }
+
  #####INITIAL DATASE GRAB#####
  ##This function grabs title and subtitle from the database for use in the rest of the script
  GrabTitleAndSubtitle () {
@@ -582,7 +580,6 @@
  	fi
 
  #####COMSKIP DATA#####
- 
  #Set up counter, remove old markup data and generate new markup file from markupstart and stop
  	if [ "$CommercialMarkup" = "Enabled" ]; then	
  #Remove old and generate a comskip Start list
@@ -645,6 +642,7 @@
  }
 
  #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
+ #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
  DownloadAndParse () {
  #Get the seriesid based on the showname
  	 seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
@@ -660,6 +658,7 @@
  if [ "$seriesid" != "" ] ; then
  
  #####GET SERIES INFORMATION#####
+
  #Get current server time
  	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
  
@@ -687,6 +686,7 @@
  #if episode information is out of date or not created
  	if [ "$TvDbTime" -gt "$LastUpdated" ]; then
  
+
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
  		seriesid=`echo $seriesid|replace  "<seriesid>" "" |replace "</seriesid>" ""`
@@ -734,7 +734,9 @@
  	return 0
  }
  
+
  #####GENERATE tvshow.nfo#####
+ #Generates folder tvshow.nfo file
  GenerateTVShowNFO () {
 
  	if [ "$mythicalLibrarianProgramIDCheck" = "SH" -a ! -f "$Movedir/tvshow.nfo" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
@@ -747,6 +749,7 @@
  	return 0 
  } 
  
+ #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
  	if [ -f $mythicalLibrarian/showtranslations ]; then 
@@ -761,7 +764,8 @@
  	return 0
  }
 
-#Create an NFO file based upon extracted information
+ #####GENERATE NFO FILE#####
+ #Create an NFO file based upon extracted information
  GenerateEpisodeNFO () {
  	if [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
  		test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
@@ -778,6 +782,7 @@
  	return 0
  }
  
+ #####SCAN MODE#####
  #This function will scan a folder and process the entire library
  mythicalScan () {
  	checkext=$InputTitle
@@ -832,6 +837,9 @@
  	fi
  	exit 1
 }
+
+ #####MYTHICAL DIAGNOSTICS#####
+ #This function provides a functions check on mythicalLibrarian
  mythicalDiagnostics () {
 
  	echo "--You have entered diagnostic mode"
@@ -929,7 +937,8 @@
   	exit 0
  }
  
- 
+ #####DOOVER PROCESSING#####
+ #This function provides an easy way to redo failed jobs.
  executeDoOver () {
  	if [ "$(id -u)" != "0" ]; then
  		echo "You do not have sufficient privlidges to run this script."
@@ -957,7 +966,8 @@
  	exit 1
  }
  
- 
+ #####UNDO JOBS#####
+ #This function provides an easy way to undo all mythicalLibrarian jobs
  executeUndo () {
  	if [ "$(id -u)" != "0" ]; then
  		echo "You do not have sufficient privlidges to run this script."
@@ -992,6 +1002,8 @@
  	exit 1
  }
 
+ #####HELP#####
+ #This function provides a helpful message.
  mythicalHelp () {
  	echo " mythicalLibrarian --:invalid pattern"
 	echo ""
@@ -1092,6 +1104,8 @@
  InputPath=$1
  test "$InputPath" != "testfile.ext" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
+
+ #####COMMAND LINE SWITCHES#####
  #check for command line switches
  case $InputPath in 
 	--scan|-s)
@@ -1115,6 +1129,8 @@
  	;;
  esac
  test "${InputTitle:0:1}" = "-" && mythicalHelp
+
+ #####ENVIRONMENTAL VARIABLES CONTINUED#####
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  
@@ -1141,28 +1157,28 @@
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
-if [ "$UseOriginalDir" = "Enabled" ]; then
-	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
-	 MoveDir="$originaldirname/Episodes"
-	 test ! -d "$MoveDir" && mkdir "$MoveDir"
-	 #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
-	 AlternateMoveDir="$originaldirname/Episodes"
-	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
-	 #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
-	 PrimaryMovieDir="$originaldirname/Movies"
-	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir"
-	 #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
-	 AlternateMovieDir="$originaldirname/Movies"
- 	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
- 	 #PrimaryShowDir is where generic episodes will be placed
-	 PrimaryShowDir="$originaldirname/Showings"
- 	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
- 	 #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
- 	 AlternateShowDir="$originaldirname/Showings"
- 	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
-fi	
 
-
+#Setup paths if useoriginaldir is active.
+ if [ "$UseOriginalDir" = "Enabled" ]; then
+ 	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
+ 	 MoveDir="$originaldirname/Episodes"
+ 	 test ! -d "$MoveDir" && mkdir "$MoveDir"
+ 	 #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
+ 	 AlternateMoveDir="$originaldirname/Episodes"
+ 	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
+ 	 #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
+ 	 PrimaryMovieDir="$originaldirname/Movies"
+ 	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir"
+ 	 #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
+ 	 AlternateMovieDir="$originaldirname/Movies"
+  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+  	 #PrimaryShowDir is where generic episodes will be placed
+ 	 PrimaryShowDir="$originaldirname/Showings"
+  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+  	 #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
+  	 AlternateShowDir="$originaldirname/Showings"
+  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
+ fi	
 
  
  
@@ -1360,6 +1376,7 @@ fi
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
  
+
  #######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
@@ -1367,49 +1384,50 @@ fi
  	 SYMLINK=LINK
  fi 
  
-#Get file size and free space
-MoveFileSize=`stat -c %s "$InputPath"`
-MoveFileSize=$((MoveFileSize/1024))
-MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
-AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
+ #Get file size and free space
+ MoveFileSize=`stat -c %s "$InputPath"`
+ MoveFileSize=$((MoveFileSize/1024))
+ MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
+ AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
 
-if [ "$Database" = "Enabled" ]; then
+ if [ "$Database" = "Enabled" ]; then
  	PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
  	AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
  	PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'`|| PrimaryShowDirFreeSpace=0
  	AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
-fi
-
-OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
-WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
-
-#Call permissions check from function.  Write small file, delete, get results
-checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
-MoveDirWritable=$TMoveDirWritable
-checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
-AlternateMoveDirWritable=$TMoveDirWritable
-
-if [ "$Database" = "Enabled" ]; then
+ fi
+ 
+ OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
+ WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
+ 
+ #Call permissions check from function.  Write small file, delete, get results
+ checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
+ MoveDirWritable=$TMoveDirWritable
+ checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
+ AlternateMoveDirWritable=$TMoveDirWritable
+ 
+ if [ "$Database" = "Enabled" ]; then
  	checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
  	PrimaryMovieDirWritable=$TMoveDirWritable
  	checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	AlternateMovieDirWritable=$TMoveDirWritable
  	checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
-	PrimaryShowDirWritable=$TMoveDirWritable
-	checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 	PrimaryShowDirWritable=$TMoveDirWritable
+ 	checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
  	AlternateShowDirWritable=$TMoveDirWritable
-fi
-
-checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
-OriginalDirWritable=$TMoveDirWritable
-checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
-WorkingDirWritable=$TMoveDirWritable
-
+ fi
+ 
+ checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
+ OriginalDirWritable=$TMoveDirWritable
+ checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+ WorkingDirWritable=$TMoveDirWritable
+ 
  
  #####DEBUG MODE OUTPUT BLOCK#####
  if [ "$DEBUGMODE" = "Enabled" ]; then
  	echo "###################DEBUG MODE ENABLED####################">>"$mythicalLibrarian"/output.log
  	echo "MY USER NAME:$MyUserName-">>"$mythicalLibrarian"/output.log
+ 	echo "JOB: mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'"
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
  	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
@@ -1435,7 +1453,7 @@ WorkingDirWritable=$TMoveDirWritable
   fi
  
  
- #####FILE HANDLING AND ID TYPE DECISSION#####
+ #####INVALID FILE HANDLING####
  #If file to be moved does not exist, then report
  if [ ! -f "$InputPath" ] && [ "$InputPath" != "testfile.ext" ]; then
  	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
@@ -1450,10 +1468,11 @@ WorkingDirWritable=$TMoveDirWritable
   	jobtype=InvalidFileNameSupplied
  	RunJob
  fi
-  ######PRE-NAMING CHECKS#####
+ 
+
+ ######PRE-NAMING CHECKS#####
  if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
- 	
-	if [ "$ShowStopper" = "Enabled" ]; then 
+ 	if [ "$ShowStopper" = "Enabled" ]; then 
 
  		echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1477,7 +1496,7 @@ WorkingDirWritable=$TMoveDirWritable
  	fi
  fi
  
-
+ #Command line, no database Episodes: Determine where File will fit
  FailSafeState=0
  test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
  test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
@@ -1485,6 +1504,7 @@ WorkingDirWritable=$TMoveDirWritable
  #Episode handling: Determine where File will fit
  test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
  test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+ 
  #Movie handling: Determine where file will fit
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
  test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
@@ -1492,12 +1512,11 @@ WorkingDirWritable=$TMoveDirWritable
  #Show Handling: Determing Where File will fit
  test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryShowDirWritable" != "1" && PrimaryShowDir="$AlternateShowDir"
  test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
-
  
-
- 
+  
+  
  #####OUTPUT FILE NAME FORMATTING#####
-#universally not accepted file system characters:  |\?*<":>+[]/ 
+ #universally not accepted file system characters:  |\?*<":>+[]/ 
  #Format Shows
  epn=`echo $epn| tr -d '|\?*<":>+[]/'`
  NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'`
@@ -1550,6 +1569,8 @@ WorkingDirWritable=$TMoveDirWritable
  		MoveDir=$FailSafeDir
  	fi
  fi
+
+
  #####FAILSAFE HANDLING#####
  #If failsafe state is set then create link in FailSafeMode
  if [ $FailSafeState = "1" ]; then
@@ -1598,10 +1619,9 @@ WorkingDirWritable=$TMoveDirWritable
  	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
  		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "WARNING:%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		#DEBUG test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Guide error" "Could not obtain enough information for library: $InputTitle $ProgramIDType" utilities-system-monitor
-
- #prevent generic shows from being processed
+ 		
  	fi
+ 
  
  #####MOVE MODE HANDLING#####
  #If symlink is not in LINK mode, Move and rename the file.
@@ -1621,7 +1641,7 @@ WorkingDirWritable=$TMoveDirWritable
  				mv "$mythicalLibrarian/markupframes.txt" "$MoveDir/$ShowFileName.txt"
  				echo "'$MoveDir/$ShowFileName.txt'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
  			fi
-
+ 
  #Make symlink back to original file
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
@@ -1629,21 +1649,21 @@ WorkingDirWritable=$TMoveDirWritable
  				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"
  				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS">>"$mythicalLibrarian"/output
   			fi
-
+ 
   		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
-			echo "MOVED: $InputPath"
+ 			echo "MOVED: $InputPath"
  			echo "TO: $MoveDir/$ShowFileName.$originalext "
-
+ 
  #If symlink=disabled, remove database entries
   			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
-
+ 
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
-
+ 
  #Generate NFO files for shows
-	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
-	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
-  			XBMCAutomate 
+ 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
+ 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
+   			XBMCAutomate 
  			performLoggingForMoveMode
  			dailyreport 
  			generaterss 
@@ -1708,7 +1728,7 @@ WorkingDirWritable=$TMoveDirWritable
  	elif [ ! -L "$MoveDir/$ShowFileName.$originalext" ]; then
  		echo "PERMISSION ERROR OR FILE SYSTEM DOES NOT SUPPORT SYMLINKS:$MoveDir"
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%LINK PERMISSION ERROR OR FILE DOES NOT EXIST%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%%LINK PERMISSION ERROR: SYMLINK NOT CREATED%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
