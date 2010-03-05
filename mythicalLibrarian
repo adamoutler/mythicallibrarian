@@ -1528,7 +1528,7 @@
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
  if [ "$exx" != "" ]; then
- 	 ShowFileName=`echo "$NewShowName.$sxx$exx ($epn)"`
+ 	 ShowFileName=`echo "$NewShowName $sxx$exx ($epn)"`
 
  #Format Movies
  elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
@@ -1541,7 +1541,7 @@
   	exx="Generic"
  	MoveDir="$PrimaryShowDir"
 	NewShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'`
-  	ShowFileName=`echo "$ShowName.S0E0 (Recorded $datehour on $ChanID)"`
+  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
  fi
  
 
