@@ -386,6 +386,9 @@ echo "#maxItems controls the number of items in the RSS. RSS Can be activated by
 echo "maxItems=8">> ./mythicalSetup
 echo "#########################USER SETTINGS########################## ">> ./mythicalSetup
 echo '########################## USER JOBS############################'>> ./mythicalSetup
+echo ' #The RunJob function is a place where you can put your custom script to be run at the end of execution'>> ./mythicalSetup
+echo ' #Though it may be at the top, this is actually the end of the program.  '>> ./mythicalSetup
+
 echo ' RunJob () {'>> ./mythicalSetup
 echo ' 	case $jobtype in'>> ./mythicalSetup
 echo ' #Sucessful Completion of mythicalLibrarian'>> ./mythicalSetup
