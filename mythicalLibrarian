@@ -502,14 +502,14 @@
   	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "'$mythicalLibrarian/undo.sh'"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "'$mythicalLibrarian/doover.sh'"
 
- 	echo  "test -L 	'$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/undo.sh"	
-	echo  "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/undo.sh"
+ 	echo  "test -L \"$InputPath\" && rm \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
+	echo  "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && test -L '$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/doover.sh"
-		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
- 		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath' && rm \"$InputPath\"">>"$mythicalLibrarian/doover.sh"
+		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
 }
 
