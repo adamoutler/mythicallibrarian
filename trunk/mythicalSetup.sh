@@ -490,16 +490,16 @@ if [ "$mythtv" = "1" ]; then
  done 
  if [ "$nomythtvdb" != "1" ] && [ "$JobFoundInSlot" != "0" ]; then
   echo "mythicalLibrarian UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
+ else
+  echo ADDING JOB to slot $SlotToUse
+  if [ "$SlotToUse" != "0" ]; then
+   mysql -uMySQLuser -pMySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"
   else
-   echo ADDING JOB to slot $SlotToUse
-   if [ "$SlotToUse" != "0" ]; then
-    mysql -uMySQLuser -pMySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"
-   else
-    echo "Could not add mythcialLibrarian UserJob because no slots were available"
-   fi
+   echo "Could not add mythcialLibrarian UserJob because no slots were available"
   fi
  fi
 fi
+
 echo "Done."
 
 exit 0
