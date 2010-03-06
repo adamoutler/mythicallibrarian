@@ -483,22 +483,23 @@ if [ "$mythtv" = "1" ]; then
  while [ $counter -lt 4 ]
  do
   let counter=$counter+1
-  job=`mysql -uroot -proot -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" `
+  job=`mysql -uroot -proot -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" ` 
+  test "$?" = "1" && nomythtvdb=1
   test "$job" = '/usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"' && JobFoundInSlot=$counter
   test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
  done 
- 
- if [ "$JobFoundInSlot" != "0" ]; then
+ if [ "$nomythtvdb" != "1" ] && [ "$JobFoundInSlot" != "0" ]; then
   echo "mythicalLibrarian UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
- else
-  echo ADDING JOB to slot $SlotToUse
-  if [ "$SlotToUse" != "0" ]; then
-   mysql -uroot -proot -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse'; UPDATE settings SET data='1' WHERE value='AutoRunUserJob$SlotToUse'"
   else
-   echo "Could not add mythcialLibrarian UserJob because no slots were available"
+   echo ADDING JOB to slot $SlotToUse
+   if [ "$SlotToUse" != "0" ]; then
+    mysql -uroot -proot -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse'; UPDATE settings SET data='1' WHERE value='AutoRunUserJob$SlotToUse'"
+   else
+    echo "Could not add mythcialLibrarian UserJob because no slots were available"
+   fi
   fi
  fi
-fi
+
 echo "Done."
 
 exit 0
