@@ -1476,7 +1476,7 @@
  
 
  ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$InputPath" != "testfile.ext" ] ; then
+ if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
  	if [ "$ShowStopper" = "Enabled" ]; then 
 
  		echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
