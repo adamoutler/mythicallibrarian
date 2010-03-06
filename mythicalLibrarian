@@ -499,15 +499,15 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "'$mythicalLibrarian/undo.sh'"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "'$mythicalLibrarian/doover.sh'"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh"
 
  	echo  "test -L \"$InputPath\" && rm \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
 	echo  "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath' && rm \"$InputPath\"">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath\" && rm \"$InputPath\"">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
@@ -516,10 +516,11 @@
  #####LINK MODE LOGGING#####
  #This function performs logging for link mode
  performLoggingForLinkMode () {
- 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm '$mythicalLibrarian/undo.sh'" >> "$mythicalLibrarian/doover.sh"
- 	test "$mythicalEpiShow" = "1" && echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/doover.sh"
- 	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'">>"$mythicalLibrarian/doover.sh"
- 	echo "test -L '$MoveDir/$ShowFileName.$originalext' && rm '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
+ 	echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/undo.sh"
  }
 
  #####INITIAL DATASE GRAB#####
