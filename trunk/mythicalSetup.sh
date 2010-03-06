@@ -476,6 +476,29 @@ test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1
 test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml"
 echo "mythicalLibrarian is located in /usr/local/bin"
 echo "'mythicalLibrarian --help' for more information"
+if [ "$mythtv" = "1" ]; then
+ JobFoundInSlot=0
+ counter=0
+ SlotToUse=0
+ while [ $counter -lt 4 ]
+ do
+  let counter=$counter+1
+  job=`mysql -uroot -proot -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" `
+  test "$job" = '/usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"' && JobFoundInSlot=$counter
+  test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
+ done 
+ 
+ if [ "$JobFoundInSlot" != "0" ]; then
+  echo "mythicalLibrarian UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
+ else
+  echo ADDING JOB to slot $SlotToUse
+  if [ "$SlotToUse" != "0" ]; then
+   mysql -uroot -proot -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse'; UPDATE settings SET data='1' WHERE value='AutoRunUserJob$SlotToUse'"
+  else
+   echo "Could not add mythcialLibrarian UserJob because no slots were available"
+  fi
+ fi
+fi
 echo "Done."
 
 exit 0
