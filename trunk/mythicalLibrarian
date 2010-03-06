@@ -507,7 +507,7 @@
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -L '$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && test -L '$InputPath' && rm '$InputPath'">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f '$MoveDir/$ShowFileName.$originalext' && mv '$MoveDir/$ShowFileName.$originalext' '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'" >>"$mythicalLibrarian/doover.sh"
  	fi
