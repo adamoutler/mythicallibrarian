@@ -471,11 +471,7 @@ test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.myth
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
-echo "permissions were set for user: $SUDO_USER"
-test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
-test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml"
-echo "mythicalLibrarian is located in /usr/local/bin"
-echo "'mythicalLibrarian --help' for more information"
+
 if [ "$mythtv" = "1" ]; then
  JobFoundInSlot=0
  counter=0
@@ -489,17 +485,21 @@ if [ "$mythtv" = "1" ]; then
   test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
  done 
  if [ "$nomythtvdb" != "1" ] && [ "$JobFoundInSlot" != "0" ]; then
-  echo "mythicalLibrarian UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
+  echo "mythicalLibrarian MythTV UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
  else
   echo ADDING JOB to slot $SlotToUse
   if [ "$SlotToUse" != "0" ]; then
    mysql -uMySQLuser -pMySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"
   else
-   echo "Could not add mythcialLibrarian UserJob because no slots were available"
+   echo "Could not add mythcialLibrarian MythTV UserJob because no slots were available"
   fi
  fi
 fi
-
+echo "permissions were set for user: $SUDO_USER"
+test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
+test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml"
+echo "mythicalLibrarian is located in /usr/local/bin"
+echo "'mythicalLibrarian --help' for more information"
 echo "Done."
 
 exit 0
