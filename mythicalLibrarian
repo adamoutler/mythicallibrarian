@@ -1323,7 +1323,7 @@
  if [ "$seriesid" != "" ] ; then 
  
  
- #####PROCESS SHOW INFORMATION##### 	
+ #####PROCESS EPISODE INFORMATION##### 	
  #If info was pulled from database, then plug name into newshowname	
  	test -z "$NewShowName" && NewShowName=$ShowName
  
@@ -1339,15 +1339,14 @@
  			let absolouteEpisodeNumber=$absolouteEpisodeNumber-1
  			echo DB ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON ORIG AIR DATE:$OriginalAirDate 
  		fi
- 		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=""
  #Remove no match found, "-1" = ""
- 
+ 		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=""
+ 	fi
+
+ 	 
  ##FUZZY LOGIC SUBTITLE MATCH##
-		if [ "$absolouteEpisodeNumber" = "" ]; then
+	if [ "$absolouteEpisodeNumber" = "" ]; then
  		 	absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 		fi
-
-
  	fi
 
 
