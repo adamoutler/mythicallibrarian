@@ -1489,7 +1489,7 @@
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
-		mythicalEpiShow=1
+		test "$ProgramID" != "" && mythicalEpiShow=1
   		mythicalLibrarianProgramIDCheck=SH
  		echo "WARNING: EPISODE INFORMATION COULD NOT BE OBTAINED"
  		echo "HANDLING AS A GENERAL SHOWING"
