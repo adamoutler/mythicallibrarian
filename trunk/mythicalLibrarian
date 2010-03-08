@@ -224,12 +224,20 @@
  			#
   			exit 2 
  			;;
+
+ 		NameCouldNotBeAssigned)
+ 		 	echo "NAME COULD NOT BE ASSIGNED BASED UPON DATA SUPPLIED"
+ 			#Insert Custom User Job here
+ 			
+			#
+			exit 3
+			;;
  	 esac
  #Custom exit point may be set anywhere in program by typing RunJob on any new line
  #Insert Custom User Job here 
  
  	#
- 	exit 3
+ 	exit 4
  }
  
  ########################## USER JOBS############################
@@ -288,6 +296,49 @@
 
 
  #########BEGIN FUNCTIONS HERE#########
+ TraditionalNamingConventions () {
+ #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
+ 	if [ "$exx" != "" ]; then
+ 		 ShowFileName=`echo "$NewShowName $sxx$exx ($epn)"`
+ 	
+ #Format Movies
+ 	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
+ 		exx="Movie"
+ 		MoveDir="$PrimaryMovieDir"
+  		ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
+	
+ #Format generic Shows
+ 	elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
+  		exx="Generic"
+ 		MoveDir="$PrimaryShowDir"
+	  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
+ 	else
+ 	 
+ 	fi
+ }
+ 
+ CategoricNamingConventions () {
+ if [ "$NamingConvention" = "Sports Event" ]; then
+ #Method1 - use airdate for season
+  	test "${OriginalAirDate:0:4}" != 0000 && test "${OriginalAirDate:0:4}" != "" && SportsEventYear="${OriginalAirDate:0:4}" && SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
+ #Check validity of Method1
+ 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
+
+ #Method2
+ 	if [ "$testedmethod1" = "0" ]; then
+  		test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
+ #Check validity of Method2 
+		test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod
+ 	fi
+  	
+	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded:$datehour)"
+ fi
+  
+#debug
+mythicalEpiShow=1
+
+
+ }
 
  ######DAILY REPORT#####
  #This function reports all shows processed based on date
@@ -621,7 +672,10 @@
  
  #Check for database permissions
  	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
- 
+
+ #Check if database contains enough information to put into doover que
+  	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
+
  #Get rating from Stars
   	rating=`printf "%0.f\n" $stars`
   	test $rating != "" && let rating=$rating*2
@@ -639,6 +693,10 @@
  	
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
  	seasonyear=`echo "${ShowStartTime:0:4}"`
+
+	test "$ShowCategory" = "sports event" && NamingConvention=$ShowCategory
+
+  
  	return 0 
  }
 
@@ -1440,15 +1498,15 @@
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
- 	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize'kB'">>"$mythicalLibrarian"/output.log 
- 	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB""- WORKINGDIR:$WorkingDirWritable Free:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
-	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB""- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
+ 	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
+ 	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable Free:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
+	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 	 if [ "$Database" = "Enabled"	 ]; then
- 		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable  FREE:$PrimaryShowDirFreeSpace""kB""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable FREE:$AlternateShowDirFreeSpace""kB"->>"$mythicalLibrarian"/output.log
+ 		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable-  FREE:$PrimaryShowDirFreeSpace""kB-""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable- FREE:$AlternateShowDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 		 echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
  		echo "DATABASE TYPE:$XMLTVGrabber-">>"$mythicalLibrarian"/output.log
 		echo " RECSTART:$ShowStartTime- MOVIE YEAR:$MovieAirDate- ORIGINAL SERIES DATE:$OriginalAirDate-">>"$mythicalLibrarian"/output.log
- 		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory-">>"$mythicalLibrarian"/output.log
+ 		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory- GOFORDOOVER:$GoForDoover-">>"$mythicalLibrarian"/output.log
  		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$stars RATING:$rating">> "$mythicalLibrarian"/output.log
  		echo " ZAP2IT SERIES ID:$Zap2itSeriesID- MATCHED TVDB SERIES ID:$MatchedSeriesID-" >>"$mythicalLibrarian"/output.log
                 echo PLOT: "$plot" >>"$mythicalLibrarian"/output.log
@@ -1489,7 +1547,8 @@
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
-		test "$ProgramID" != "" && mythicalEpiShow=1
+
+ 		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
   		mythicalLibrarianProgramIDCheck=SH
  		echo "WARNING: EPISODE INFORMATION COULD NOT BE OBTAINED"
  		echo "HANDLING AS A GENERAL SHOWING"
@@ -1527,24 +1586,11 @@
  Showname=`echo $ShowName|tr -d '|\?*<":>+[]/'`
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
- if [ "$exx" != "" ]; then
- 	 ShowFileName=`echo "$NewShowName $sxx$exx ($epn)"`
-
- #Format Movies
- elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
- 	exx="Movie"
- 	MoveDir="$PrimaryMovieDir"
-  	ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
-
- #Format generic Shows
- elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
-  	exx="Generic"
- 	MoveDir="$PrimaryShowDir"
-	NewShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'`
-  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
+ if [ "$NamingConvention" = "" ]; then
+ 	TraditionalNamingConventions
+ else
+ 	CategoricNamingConventions
  fi
- 
-
  
 
  #check to see if output folder exists
