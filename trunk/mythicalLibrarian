@@ -172,9 +172,9 @@
  Notify=Enabled
  #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)
  NotifyUserName="MYUSERNAME" #<------THIS VALUE MUST BE SET-------
- #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled
+ #Send a notification to XBMC to Update library upon Successful move job Enabled|Disabled
  XBMCUpdate=Enabled
- #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled
+ #Send a notification to XBMC to cleanup the library upon Successful move job Enabled|Disabled
  XBMCClean=Enabled
  #Send Notifications to XBMC UI when library is updated Enabled|Disabled
  XBMCNotify=Enabled
@@ -189,9 +189,9 @@
  #Though it may be at the top, this is actually the end of the program.  
  RunJob () {
  	case $jobtype in
- #Sucessful Completion of mythicalLibrarian
- 		LinkModeSucessful|MoveModeSucessful)
- 			echo "SUCESSFUL COMPLETEION TYPE: $jobtype"
+ #Successful Completion of mythicalLibrarian
+ 		LinkModeSuccessful|MoveModeSuccessful)
+ 			echo "SUCCESSFUL COMPLETION TYPE: $jobtype"
  			#Insert Custom User Job here 
  			
  			#
@@ -264,7 +264,7 @@
  #$MoveDir = the folder to which the file was moved ie. "/home/mythtv/videos/Episode"
  #$ShowFileName = the name of the show moved, not including extension eg. "simpsons S01E02 (foo)" or "MovieTitle(year)"
  #$originalext = original file extension  eg "mpg"
- #$NewShowName = sucessfully resolved show name
+ #$NewShowName = Successfully resolved show name
  #$ChanID = ChannelID
  #$ProgramID= Zap2it listing
  #$ShowStartTime = begin recording time
@@ -541,7 +541,7 @@ mythicalEpiShow=1
  
  #move fully formed temp file on top of the old file
  	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
- 	echo "RSS file successfully created: $rssDir/$OLDrssFile"
+ 	echo "RSS FILE SUCCESSFULLY CREATED: $rssDir/$OLDrssFile"
  	IFS=$OLDIFS
  	return 0
  }
@@ -1720,7 +1720,7 @@ mythicalEpiShow=1
  			performLoggingForMoveMode
  			dailyreport 
  			generaterss 
-  			jobtype=MoveModeSucessful		
+  			jobtype=MoveModeSuccessful		
  			RunJob
  
  #if file was not moved, then fail  
@@ -1774,7 +1774,7 @@ mythicalEpiShow=1
  		performLoggingForLinkMode
  		dailyreport
  		generaterss
-   		jobtype=LinkModeSucessful		
+   		jobtype=LinkModeSuccessful		
  		RunJob
  
  #If link failure, send notification and fail
