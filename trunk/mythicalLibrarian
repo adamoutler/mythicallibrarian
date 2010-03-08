@@ -312,6 +312,7 @@
   		exx="Generic"
  		MoveDir="$PrimaryShowDir"
 	  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
+ 		RequiresNFO=1 
  	else
  	 
  	fi
@@ -333,7 +334,7 @@
   	
 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded:$datehour)"
  fi
-  
+ $RequiresNFO=1 
 #debug
 mythicalEpiShow=1
 
@@ -688,6 +689,7 @@ mythicalEpiShow=1
 	test "$mythicalLibrarianProgramIDCheck" = "SH" && ProgramIDType="Generic Episode With No Data"
 	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
+ 	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Generic Episode With No Data" && mythicalLibrarianProgramIDCheck=SH
  
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
  	
@@ -1590,6 +1592,7 @@ mythicalEpiShow=1
  	TraditionalNamingConventions
  else
  	CategoricNamingConventions
+ 	RequiresNFO=1
  fi
  
 
@@ -1711,8 +1714,8 @@ mythicalEpiShow=1
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
  
  #Generate NFO files for shows
- 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
- 	 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO
+ 	 	 	test  "$RequiresNFO" = "1" && GenerateTVShowNFO
+ 	 	 	test  "$RequiresNFO" = "1" && GenerateEpisodeNFO
    			XBMCAutomate 
  			performLoggingForMoveMode
  			dailyreport 
@@ -1765,8 +1768,8 @@ mythicalEpiShow=1
  			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
 
- 	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateTVShowNFO
-	 	test  "$mythicalLibrarianProgramIDCheck" = "SH" && GenerateEpisodeNFO 
+ 	 	test  "$RequiresNFO" = "1"  && GenerateTVShowNFO
+	 	test  "$RequiresNFO" = "1"  && GenerateEpisodeNFO 
  		XBMCAutomate 
  		performLoggingForLinkMode
  		dailyreport
