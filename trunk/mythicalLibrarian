@@ -313,8 +313,7 @@
  		MoveDir="$PrimaryShowDir"
 	  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
  		RequiresNFO=1 
- 	else
- 	 
+	 
  	fi
  }
  
