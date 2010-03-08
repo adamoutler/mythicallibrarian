@@ -319,7 +319,7 @@
  }
  
  CategoricNamingConventions () {
- if [ "$NamingConvention" = "Sports Event" ]; then
+ if [ "$NamingConvention" = "Sports event" ]; then
  #Method1 - use airdate for season
   	test "${OriginalAirDate:0:4}" != 0000 && test "${OriginalAirDate:0:4}" != "" && SportsEventYear="${OriginalAirDate:0:4}" && SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method1
@@ -689,14 +689,14 @@ mythicalEpiShow=1
 	test "$mythicalLibrarianProgramIDCheck" = "SH" && ProgramIDType="Generic Episode With No Data"
 	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
- 	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Generic Episode With No Data" && mythicalLibrarianProgramIDCheck=SH
+ 	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
  
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
  	
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
-	test "$ShowCategory" = "sports event" && NamingConvention=$ShowCategory
+	test "$ShowCategory" = "Sports event" && NamingConvention=$ShowCategory
 
   
  	return 0 
@@ -1007,7 +1007,7 @@ mythicalEpiShow=1
  		echo "eg. 'sudo mythicalLibrarian --doover'"
  		exit 1
  	fi
- 	test "$SUDO_USER" = "" && SUDO_USER="root"
+ 	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
  	echo "--You have entered doover mode."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
  	echo " mythicalLibrarain against all files which failed on the"
@@ -1036,6 +1036,7 @@ mythicalEpiShow=1
  		echo "eg. 'sudo mythicalLibrarian --undo'"
  		exit 1
  	fi
+ 	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
  	echo "--You have entered undo mode."
 	echo " In this mode of operation, mythicalLibrarian will reverse"
  	echo " file changes created by the current user while running."
@@ -1669,7 +1670,7 @@ mythicalEpiShow=1
  
  #####SH Identification Type Handling #####
  #if the ProgramID does not meet criteria, then end the program
- 	if [ "$ProgramIDType" = "Generic Episode With No Data" ]; then
+ 	if [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
  		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  		echo "WARNING:%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		
