@@ -332,8 +332,8 @@
  	if [ "$testedmethod1" != "1" ]; then
   		test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method2 
-		test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || echo "FAILED TO RECOGNIZE SPORTS EVENT" && exit 9
- 	fi
+		test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod=1 
+	fi
   	
 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
  fi
