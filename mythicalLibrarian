@@ -320,22 +320,24 @@
  CategoricNamingConventions () {
  if [ "$NamingConvention" = "Sports event" ]; then
  #Method1 - use airdate for season
-  	test "${OriginalAirDate:0:4}" != 0000 && test "${OriginalAirDate:0:4}" != "" && SportsEventYear="${OriginalAirDate:0:4}" && SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
+  	if [ "${OriginalAirDate:0:4}" != "0000" ]&& [ "${OriginalAirDate:0:4}" != "" ] ; then
+ 		 SportsEventYear="${OriginalAirDate:0:4}" ] 
+ 		 SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method1
- 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
+ 	         test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
 
  #Method2
  	if [ "$testedmethod1" = "0" ]; then
   		test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method2 
-		test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod
+		test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || echo "FAILED TO RECOGNIZE SPORTS EVENT" && exit 9
  	fi
   	
 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
  fi
- $RequiresNFO=1 
+ RequiresNFO=1 
 #debug
-mythicalEpiShow=1
+ mythicalEpiShow=1
 
 
  }
