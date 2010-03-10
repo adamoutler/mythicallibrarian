@@ -324,8 +324,9 @@
  		 SportsEventYear="${OriginalAirDate:0:4}" ] 
  		 SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method1
- 	         test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
-
+ 	        
+ 	fi
+ 	test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
  #Method2
  	if [ "$testedmethod1" = "0" ]; then
   		test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
