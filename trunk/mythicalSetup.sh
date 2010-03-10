@@ -479,7 +479,7 @@ if [ "$mythtv" = "1" ]; then
  while [ $counter -lt 4 ]
  do
   let counter=$counter+1
-  job=`mysql -uMySQLuser -pMySQLpass -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" ` 
+  job=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" ` 
   test "$?" = "1" && nomythtvdb=1
   test "$job" = '/usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"' && JobFoundInSlot=$counter
   test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
