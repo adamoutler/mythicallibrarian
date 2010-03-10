@@ -1585,12 +1585,13 @@ mythicalEpiShow=1
  #Format Shows
  epn=`echo $epn| tr -d '|\?*<":>+[]/'`
  NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'`
- Showname=`echo $ShowName|tr -d '|\?*<":>+[]/'`
+ ShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'`
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
  if [ "$NamingConvention" = "" ]; then
  	TraditionalNamingConventions
  else
+ 	test "$NewShowName" = "" && NewShowName=$ShowName
  	CategoricNamingConventions
  	RequiresNFO=1
  fi
