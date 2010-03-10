@@ -162,9 +162,9 @@ echo "UseShowNameAsDir=Enabled">>./mythicalSetup
 echo " #Internet access Timeout in seconds: Default Timeout=50 (seconds)">> ./mythicalSetup
 
 echo "Timeout=50">>./mythicalSetup
-echo " #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='84000' (1 day)">> ./mythicalSetup
+echo " #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='70000' (almost a day)">> ./mythicalSetup
 
-echo "UpdateDatabase=86000">>./mythicalSetup
+echo "UpdateDatabase=70000">>./mythicalSetup
 echo " #mythicalLibrarian working file dir: Default=~/.mythicalLibrarian (home/username/mythicalLibraian)">> ./mythicalSetup
 
 echo "mythicalLibrarian=~/.mythicalLibrarian">>./mythicalSetup
