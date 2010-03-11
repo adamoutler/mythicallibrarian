@@ -347,33 +347,33 @@ if [ "$notifications" = "1" ]; then
 		  
 	dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to update your library?" 9 30
 		  if [ $? = 0 ]; then
- 			echo " #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
+ 			echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCUpdate=Enabled">>./mythicalSetup
  			 echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCNotify=Enabled">>./mythicalSetup
 
 		  else
 
-		 	 echo " #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
+		 	 echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCUpdate=Disabled">>./mythicalSetup
  			 echo " #Send Nrotifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
  			 echo "XBMCNotify=Disabled"
  		  fi
 
-	echo " #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
+	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCClean=Disabled">>./mythicalSetup
 else
 
 	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./mythicalSetup
 	echo "XBMCIPs=''">>./mythicalSetup
 
-	echo " #Send a notification to XBMC to Update library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
+	echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCUpdate=Disabled">>./mythicalSetup
 
 	echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCNotify=Disabled">>./mythicalSetup
 
- 	echo " #Send a notification to XBMC to cleanup the library upon sucessful move job Enabled|Disabled">> ./mythicalSetup
+ 	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./mythicalSetup
 	echo "XBMCClean=Disabled">>./mythicalSetup
 
 fi 
@@ -391,9 +391,9 @@ echo ' #Though it may be at the top, this is actually the end of the program.  '
 
 echo ' RunJob () {'>> ./mythicalSetup
 echo ' 	case $jobtype in'>> ./mythicalSetup
-echo ' #Sucessful Completion of mythicalLibrarian'>> ./mythicalSetup
-echo ' 		LinkModeSucessful|MoveModeSucessful)'>> ./mythicalSetup
-echo ' 			echo "SUCESSFUL COMPLETEION TYPE: $jobtype"'>> ./mythicalSetup
+echo ' #Successful Completion of mythicalLibrarian'>> ./mythicalSetup
+echo ' 		LinkModeSuccessful|MoveModeSuccessful)'>> ./mythicalSetup
+echo ' 			echo "SUCCESSFUL COMPLETEION TYPE: $jobtype"'>> ./mythicalSetup
 echo ' 			#Insert Custom User Job here '>> ./mythicalSetup
 echo ' 			'>> ./mythicalSetup
 echo ' 			#'>> ./mythicalSetup
@@ -469,7 +469,7 @@ sudo -u $SUDO_USER mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
-test "$passed" = "0" && echo "Installation and tests completed sucessfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+test "$passed" = "0" && echo "Installation and tests completed successfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
 
 if [ "$mythtv" = "1" ]; then
