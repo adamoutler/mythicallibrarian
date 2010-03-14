@@ -1135,9 +1135,12 @@
  	echo " You will be asked a series of questions and the updater will make"
 	echo " decisions based upon your selections and your system. mythicalSetup "
  	echo " is designed to make updating easy and will set up the following:"
- 	echo " Episode naming, Movie naming, local RSS feeds, local Daily Report,"
+ 	echo " Episode naming, Movie naming, local RSS feeds, Daily Report,"
  	echo " Desktop Notifications, XBMC notificatons, XBMC library updates"
- 	echo " MythTV Database settings, and various operational modes."
+ 	echo " MythTV Database settings, and various operational modes. Upon"
+ 	echo " completion, a diagnostic will be run.  This is designed to be" 
+	echo " a fully automated process.  Please pay attention and report any"
+	echo " errors which may occour during this process."
  	read -n1 -p " Do you wish to continue? y/(n) >" yesorno
  	echo ""
  	test "$yesorno" != "y" && exit 0
