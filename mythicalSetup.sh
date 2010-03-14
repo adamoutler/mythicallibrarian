@@ -485,7 +485,7 @@ if [ "$mythtv" = "1" ]; then
   test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
  done 
  if [ "$nomythtvdb" != "1" ] && [ "$JobFoundInSlot" != "0" ]; then
-  echo "mythicalLibrarian MythTV UserJob not added because UserJob already exists in slot $JobFoundInSlot"	
+  echo "MythTV job not added because mythicalLibrarian already exists in slot $JobFoundInSlot"	
  else
   echo ADDING JOB to slot $SlotToUse
   if [ "$SlotToUse" != "0" ]; then
