@@ -50,7 +50,7 @@ else
  	echo "Debian based users run 'apt-get install $a$b$c$d$e"
 	exit 1
 fi
-
+ svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision | replace "<html><head><title>mythicallibrarian - " ""| replace ": /trunk</title></head>" ""`
 
 if ! which librarian-notify-send>/dev/null; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
@@ -67,7 +67,7 @@ if [ ! -f "./librarian" ]; then
 else
 
  lastupdated="`cat ./lastupdated`"
- DownloadML=$(dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download and switch to stable version" "Latest" "Download and switch to SVN revision" 2>&1 >/dev/tty)	
+ DownloadML=$(dialog --menu "Which version would you like to use?" 10 65 15 "Continue"  "using: $lastupdated" "Stable" "Download and switch to recent stable version" "Latest" "Download and switch to SVN revision $svnrev" 2>&1 >/dev/tty)	
 if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated"
