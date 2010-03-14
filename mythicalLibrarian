@@ -1124,7 +1124,8 @@
  	fi
 
  	if [ "$(id -u)" != "0" ]; then
-		echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
+		echo "You do not have sufficient privlidges to run this script."
+ 		echo "Try again with sudo mythicalLibrarian --update"
 		exit 1
 	fi
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
