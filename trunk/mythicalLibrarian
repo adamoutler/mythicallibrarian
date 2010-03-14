@@ -750,6 +750,7 @@
  #if episode information is out of date or not created
  	if [ "$TvDbTime" -gt "$LastUpdated" ]; then
  
+ 		DatabaseWasUpdate="YES"
 
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
@@ -793,6 +794,7 @@
  #Send report to the log if database was not updated.
  	elif [ "$TvDbTime" -le "$LastUpdated" ]; then
  		echo "DATABASE IS MAINTAINED. TIME IS:$TvDbTime NEXT UPDATE IS:$LastUpdated"
+ 		DatabaseWasUpdate="NO"
  	fi
  fi
  	return 0
@@ -1512,6 +1514,7 @@
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify DEBUG MODE:$DEBUGMODE-">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
+ 	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
