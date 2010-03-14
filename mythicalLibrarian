@@ -972,6 +972,7 @@
 
  	if [ "$overallchecks" = "***PASSED***" ]; then
  	 read -n1 -p "press any key to test mythicalLibrarian..."
+ 	 echo ""
  	 echo " Falsifying information. MythTV-Database is not used for testing."
  	 echo " Performing fuzzy logic lookup on non-MythTV-database file."
 	 echo " Please wait. It may take a moment to build database files "
