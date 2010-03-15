@@ -382,7 +382,6 @@
  #This function provides fuzzy logic matching of a show name and returns a seriesid
  FuzzySeriesMatch () {
 
-
  	showname=`echo "$ShowName"|replace "&amp;" "&"`
  	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
@@ -545,7 +544,7 @@
  
  #move fully formed temp file on top of the old file
  	mv "$rssDir/$TEMPrssFile" "$rssDir/$OLDrssFile"
- 	echo "RSS FILE SUCCESSFULLY CREATED: $rssDir/$OLDrssFile"
+ 	echo "RSS ENTRY SUCCESSFULLY CREATED: $rssDir/$OLDrssFile"
  	IFS=$OLDIFS
  	return 0
  }
@@ -1086,37 +1085,37 @@
 
  	if [ "$switchhelp" = "1" ]; then
 	 	echo ""
- 		echo "Adam Outler: outleradam at hotmail.com"
+ 		echo "Author: Adam Outler outleradam(at)hotmail.com"
 
  		echo ""
 	 	echo "-m|--mythicalDiagnostics"
-  		echo " .diagnostics: tests functions of mythicalLibrarian"
- 		echo " .eg. mythicalLibrarian --mythicalDiagnostics"
+  		echo "  diagnostics: tests functions of mythicalLibrarian"
+ 		echo "  eg. mythicalLibrarian --mythicalDiagnostics"
  		echo ""
  		echo "-s|--scan filetype /path/to/folder"
- 		echo " .eg. mythicalLibrarian --scan mpg /home/mythtv/videos"
-  		echo " .scan: creates a library from an entire folder"
+ 		echo "  eg. mythicalLibrarian --scan mpg /home/mythtv/videos"
+  		echo "  scan: creates a library from an entire folder"
  		echo "" 		
  	 	echo "-u|--update"
- 		echo " .update: mythicalLibrarian to the current version"
- 		echo " .eg. sudo mythicalLibrarian --update"
+ 		echo "  update: mythicalLibrarian to the current version"
+ 		echo "  eg. sudo mythicalLibrarian --update"
  		echo ""
  		echo "-d|--doover"
-  		echo " .eg. sudo mythicalLibrarian --doover"
- 		echo " .doover: reruns previously failed jobs sequentially"
+  		echo "  eg. sudo mythicalLibrarian --doover"
+ 		echo "  doover: reruns previously failed jobs sequentially"
  		echo ""
  		echo "-u|--undo"
- 		echo " .eg. sudo mythicalLibrarian --undo"
- 		echo " .undo: returns all files to original states"
+ 		echo "  eg. sudo mythicalLibrarian --undo"
+ 		echo "  undo: returns all files to original states"
  		echo ""
  		echo "-?|-h|--help"
- 		echo " .example: mythicalLibrarian --help"
- 		echo "Help: displays this message"
+ 		echo "  example: mythicalLibrarian --help"
+ 		echo "  Help: displays this message"
  		echo "======================================================="
  	fi
 	echo " ensure you have set the user settings properly and run"
  	echo " --mythicalDiagnostics before using mythicalLibrarian"
- 	echo " in --scan mode or a user job."
+ 	echo " in --scan mode or as a UserJob."
 	exit 1
  }
  
