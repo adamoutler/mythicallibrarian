@@ -1517,7 +1517,7 @@
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
- 	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable Free:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
+ 	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
 	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 	 if [ "$Database" = "Enabled"	 ]; then
  		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable-  FREE:$PrimaryShowDirFreeSpace""kB-""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable- FREE:$AlternateShowDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
