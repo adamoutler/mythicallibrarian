@@ -248,6 +248,32 @@ echo " ###Database Settings###">>./mythicalSetup
  		dialog --title "Unrecognizable programming" --yesno "Process unrecognized Episodes and Shows?" 8 40
   		test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalSetup || echo " ShowStopper=Enabled">> ./mythicalSetup
  		
+
+
+
+ 		test "$PrimaryShowDir1" = "" && PrimaryMovieDir1="/home/mythtv/Showings"
+
+
+ 		if [ "$UserChoosesFolder" = "0" ]; then 
+		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$PrimaryShowDir1" 12 50 "$PrimaryShowDir1" 2>./PrimaryShowDir
+ 		 PrimaryShowDir=`cat ./PrimaryShowDir`
+		fi
+ 		test "$PrimaryShowDir" = "" && PrimaryMovieDir=$PrimaryShowDir1
+ 		echo "$PrimaryShowDir">./PrimaryMovieDir
+ 		echo "PrimaryShowDir='$PrimaryShowDir'">>./mythicalSetup
+ 		AlternateShowDir="/home/mythtv/Showings"
+ 		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalSetup
+ 		echo "AlternateShowDir='$AlternateShowDir'" >> ./mythicalSetup
+
+
+
+
+
+
+
+
+
+
  		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalSetup
  		echo "CommercialMarkup=Enabled" >> ./mythicalSetup
 
