@@ -144,7 +144,7 @@
  Database=Enabled
  #Database Type Default=MythTV
  DatabaseType=MythTV
- #Guide data type
+ #Guide data type: SchedulesDirect currently covers DataDirect, MC2XML and others.
  GuideDataType=SchedulesDirect
  #MySQL User name: Default="mythtv"
  MySQLuser="mythtv" 
@@ -158,6 +158,10 @@
  AlternateMovieDir="/home/mythtv/Movies"
  #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed
  ShowStopper="Enabled"
+ #Primary Show Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
+ PrimaryShowDir="/home/mythtv/Showings" #<------THIS VALUE MUST BE SET-------
+ #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails
+ AlternateShowDir="/home/mythtv/Showings" #<------THIS VALUE MUST BE SET-------
  #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled
  CommercialMarkup=Enabled
  #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed
@@ -279,8 +283,8 @@
  #$MyUserName = name of user running mythicalLibrarian
 
  ####EPISODES AND GENERIC SHOWS####
- #$OriginalAirDate = original air date  Generic programming will be the first episode ever
- #$epn = Subtitle
+ #$OriginalAirDate = original air date  Generic programming will be the first episode ever, for episodes it will be the first aired date
+ #$epn = Subtitle or EPisode Name
 
  #####EPISODES####
  #$exx = Episode Number or "Movie" in case of a movie
@@ -338,6 +342,8 @@
 	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
  fi
  RequiresNFO=1 
+ HasSxxExx=1
+
 #debug
  mythicalEpiShow=1
 
@@ -839,8 +845,8 @@
  		echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
  		echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
  		echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-		echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
- 		echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
+		test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+ 		test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
  		echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
   		echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
   	fi
