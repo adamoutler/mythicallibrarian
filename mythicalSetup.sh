@@ -251,7 +251,7 @@ echo " ###Database Settings###">>./mythicalSetup
 
 
 
- 		test "$PrimaryShowDir1" = "" && PrimaryMovieDir1="/home/mythtv/Showings"
+ 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="/home/mythtv/Showings"
 
 
  		if [ "$UserChoosesFolder" = "0" ]; then 
