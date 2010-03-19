@@ -251,7 +251,7 @@
 
 
  #The following is a list of variables which can be used as a part of user jobs at the end of mythicalLibrarian
- #Suggested examples are
+ #Suggested examples are:
  #1.string together multiple versions of mythicalLibrarian configured for different languages. Set a different
  #Language for each, then on failure, call the next job.
  #2.custom name replacement of certain programming
@@ -963,7 +963,8 @@
  	MoveDirWritable=$TMoveDirWritable
  	checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
  	AlternateMoveDirWritable=$TMoveDirWritable
- 	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ 
+	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
  	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
  	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
@@ -982,7 +983,7 @@
 	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
  	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
 	echo "PrimaryShowDir   |$PrimaryShowDirWritable   |$PrimaryShowDir"
- 	echo "AlternateShowDir |$AlternateShowWritable   |$AlternateShowDir"
+ 	echo "AlternateShowDir |$AlternateShowDirWritable   |$AlternateShowDir"
  	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILURE***"
