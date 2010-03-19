@@ -967,19 +967,22 @@
  	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
  	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
-	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
- 	test "$Database" = "Enabled" && AlternateShowDirWritable=$TMoveDirWritable
 	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
  	test "$Database" = "Enabled" && PrimaryShowDirWritable=$TMoveDirWritable
-
- 	checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 	test "$Database" = "Enabled" && AlternateShowDirWritable=$TMoveDirWritable 
+ 
+	checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
 	WorkingDirWritable=$TMoveDirWritable
+
  	echo "USER SETTING     |FLAG|Folder name"
 	echo "MoveDir          |$MoveDirWritable   |$MoveDir "
 	echo "AlternateMoveDir |$AlternateMoveDirWritable   |$AlternateMoveDir"
 	echo "PrimaryMovieDir  |$PrimaryMovieDirWritable   |$PrimaryMovieDir"
 	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
  	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
+	echo "PrimaryShowDir   |$PrimaryShowDirWritable   |$PrimaryShowDir"
+ 	echo "AlternateShowDir |$AlternateShowWritable   |$AlternateShowDir"
  	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILURE***"
