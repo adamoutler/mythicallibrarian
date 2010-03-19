@@ -954,8 +954,10 @@
  	MoveFileSize=$((MoveFileSize/1024))
  	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  	AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- 	test "$Database" = "Enabled" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
- 	test "$Database" = "Enabled" && AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d $PrimaryMovieDir && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d $AlternateMovieDir &&  AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d $PrimaryShowDir &&  PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'` || PrimaryShowDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d $AlternateShowDir && AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
  	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
  	checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
  	MoveDirWritable=$TMoveDirWritable
@@ -965,6 +967,11 @@
  	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
  	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
+	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 	test "$Database" = "Enabled" && AlternateShowDirWritable=$TMoveDirWritable
+	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
+ 	test "$Database" = "Enabled" && PrimaryShowDirWritable=$TMoveDirWritable
+
  	checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
 	WorkingDirWritable=$TMoveDirWritable
  	echo "USER SETTING     |FLAG|Folder name"
