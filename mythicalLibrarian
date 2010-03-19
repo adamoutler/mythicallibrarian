@@ -981,10 +981,11 @@
 	echo "AlternateMoveDir |$AlternateMoveDirWritable   |$AlternateMoveDir"
 	echo "PrimaryMovieDir  |$PrimaryMovieDirWritable   |$PrimaryMovieDir"
 	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
- 	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
+
 	echo "PrimaryShowDir   |$PrimaryShowDirWritable   |$PrimaryShowDir"
  	echo "AlternateShowDir |$AlternateShowDirWritable   |$AlternateShowDir"
- 	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
+  	echo "mythicalLibrarian|$WorkingDirWritable   |$mythicalLibrarian"
+	test "$MoveDirWritable" = "1" && test "$AlternateMoveDirWritable" = "1" && test "$WorkingDirWritable" = "1" && folderchecks="***PASSED***" || folderchecks="***FAILED***"
  	echo "Critical Filesystem checks $folderchecks"
  	test "$packagecheck" = "***PASSED***" && test "$folderchecks" = "***PASSED***" && overallchecks="***PASSED***" || overallchecks="***FAILURE***"
 
