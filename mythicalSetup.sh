@@ -229,7 +229,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "MySQLMythDb=mythconverg">>./mythicalSetup
 
  		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./mythicalSetup 		
-
+ 		test -f ./PrimaryMovieDir && PrimaryMovieDir1=`cat ./PrimaryMovieDir`
  		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="/home/mythtv/Movies"
 
 
@@ -250,8 +250,8 @@ echo " ###Database Settings###">>./mythicalSetup
  		
 
 
-
- 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="/home/mythtv/Showings"
+		test -f ./PrimaryShowDir && PrimaryShowDir1=`cat ./PrimaryShowDir`
+ 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="/home/mythtv/Showings" ||
 
 
  		if [ "$UserChoosesFolder" = "0" ]; then 
