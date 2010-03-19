@@ -273,7 +273,7 @@
  #$ProgramID= Zap2it listing
  #$ShowStartTime = begin recording time
  #$ShowCategory = category like children or sports
- #$mythicalLibrarianProgramIDCheck = "SH" for SHow - "MV" for MoVie - "EP" for EPisode
+ #$mythicalLibrarianProgramIDCheck = "SH" for SHow or sports - "MV" for MoVie - "EP" for EPisode
  #$plot = plot
  #$stars = stars
  #$FileBaseName = name of the file to be moved without ext 
@@ -322,24 +322,24 @@
  }
  
  CategoricNamingConventions () {
- if [ "$NamingConvention" = "Sports event" ]; then
+ 
  #Method1 - use airdate for season
 
-  	if [ "${OriginalAirDate:0:4}" != "0000" ]&& [ "${OriginalAirDate:0:4}" != "" ] ; then
- 		 SportsEventYear="${OriginalAirDate:0:4}" ] 
- 		 SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
+ if [ "${OriginalAirDate:0:4}" != "0000" ]&& [ "${OriginalAirDate:0:4}" != "" ] ; then
+ 	 SportsEventYear="${OriginalAirDate:0:4}" ] 
+ 	 SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method1
- 	        
- 	fi
- 	test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
-
+         
+ fi
+ test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
+ 
  #Method2
- 	if [ "$testedmethod1" != "1" ]; then
-  		test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
+ if [ "$testedmethod1" != "1" ]; then
+ 	test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method2 
-	fi
+ fi
   	
-	test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
+ test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
  fi
  RequiresNFO=1 
  HasSxxExx=1
@@ -597,6 +597,8 @@
  	fi
  	return 0 
  }
+ 
+ 
  #####MYTHTV DATABASE#####
  #This function gathers information from the mythtv database for use in the program
  GetMythTVDatabase () {
@@ -639,7 +641,8 @@
  	if [ ! -z "$MovieAirDate" ] && [ $MovieAirDate -lt 1900 ]; then
  		MovieAirDate=$null
  	fi
-
+ 
+ 
  #####COMSKIP DATA#####
  #Set up counter, remove old markup data and generate new markup file from markupstart and stop
  	if [ "$CommercialMarkup" = "Enabled" ]; then	
@@ -656,24 +659,7 @@
  	return 0
  }
  
- #####REMOVE ENTRIES FROM LIBRARY#####
- #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
- SYMLINKDisabled () {
- 
- #Make sure we got input arguments and file is valid
- 	if [ ! -f "$InputPath" ]; then
- 	
- #Remove recording entry from mysql database
- 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
-  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
-		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
- 
- #Remove thumbnails
- 		rm -f "$originaldirname/$FileBaseName".*	
- 	fi 
- 	return 0
- }
- 
+
  
  #####PROCESS DATABASE INFORMATION#####
  #Function ProcessSchedulesDirect processes Zap2it/SchedulesDirect/Tribune data for use in the program
@@ -704,11 +690,31 @@
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
-	test "$ShowCategory" = "Sports event" && NamingConvention=$ShowCategory
+	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
 
   
  	return 0 
  }
+
+ #####REMOVE ENTRIES FROM LIBRARY#####
+ #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
+ SYMLINKDisabled () {
+ 
+ #Make sure we got input arguments and file is valid
+ 	if [ ! -f "$InputPath" ]; then
+ 	
+ #Remove recording entry from mysql database
+ 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
+  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
+		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
+ 
+ #Remove thumbnails
+ 		rm -f "$originaldirname/$FileBaseName".*	
+ 	fi 
+ 	return 0
+ }
+ 
+
 
  #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
  #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
@@ -809,14 +815,11 @@
  #####GENERATE tvshow.nfo#####
  #Generates folder tvshow.nfo file
  GenerateTVShowNFO () {
-
- 	if [ "$mythicalLibrarianProgramIDCheck" = "SH" -a ! -f "$Movedir/tvshow.nfo" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
-		test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
- 		echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
- 		echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
- 		echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo"
- 		echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
- 	fi
+ 	test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
+ 	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
+ 	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
+ 	echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo"
+ 	echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	return 0 
  } 
  
@@ -838,19 +841,17 @@
  #####GENERATE NFO FILE#####
  #Create an NFO file based upon extracted information
  GenerateEpisodeNFO () {
- 	if [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
- 		test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
- 		echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
- 		echo -e "\t<title>Recorded $datehour -Generic Episode</title>">>"$MoveDir/$ShowFileName.nfo"
- 		echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
- 		echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
- 		echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-		test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
- 		test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
- 		echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
-  		echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
-  	fi
- 	return 0
+ 	test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
+ 	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
+ 	test "$NamingConvention" = "" && echo -e "\t<title>$epn Recorded $datehour -Episode</title>">>"$MoveDir/$ShowFileName.nfo" ||echo -e "\t<title>$EPN Recorded $datehour -Episode</title>">>"$MoveDir/$ShowFileName.nfo" 
+ 	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
+	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+ 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
+ 	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
+ return 0
  }
  
  #####SCAN MODE#####
