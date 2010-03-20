@@ -494,12 +494,15 @@
 	fi
  #TODO: use episode link as GUID - IMPORTANT-may be handled by using 
     	which ifconfig >/dev/null && myip=`ifconfig  | grep 'inet addr' -m1 | cut -d: -f2 | awk '{ print $1}'`
+ 	rssepn=`echo $epn| replace "&" "&amp;"`
+ 	rssNewShowName=`echo $NewShowName| replace "&" "&amp;"`
+	rssplot=`echo $plot| replace "&" "&amp;"`	
  	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"|replace "(" "%28"|replace ")" "%29"|replace " " "%20"`
  	echo -e "\t\t\t<guid>sftp://$mythicalGUID</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
- 	echo -e "\t\t\t\tEpisode Title: $epn$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
- 	echo -e "\t\t\t\tProgram: $NewShowName$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tEpisode Title: $rssepn$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tProgram: $rssNewShowName$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
