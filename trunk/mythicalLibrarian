@@ -1318,6 +1318,7 @@
  		DirToCheck=$line
  		if [ -d "$DirToCheck" ]; then
   			DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m1 ^`
+ 			test "$DirToCheckCheck" = "" && DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m2 ^`
 		 	if [ "$DirToCheckCheck" = "" ]; then
  				echo "REMOVING ORPHAN FOLDER:$line">>"$mythicalLibrarian"/output.log
   				echo "REMOVING ORPHAN FOLDER:$line"
