@@ -326,21 +326,23 @@
  #Method1 - use airdate for season
 
  if [ "${OriginalAirDate:0:4}" != "0000" ]&& [ "${OriginalAirDate:0:4}" != "" ] ; then
- 	 SportsEventYear="${OriginalAirDate:0:4}" ] 
- 	 SportsEventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
+ 	 EventYear="${OriginalAirDate:0:4}" ] 
+ 	 sxx=$EventYear
+ 	 EventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
+ 	 exx=$EventMonthDay
  #Check validity of Method1
          
  fi
- test "$SportsEventMonthDay" != "" && test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
+ test "$EventMonthDay" != "" && test "$EventYear" -gt "1900" && test "$EventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
  
  #Method2
  if [ "$testedmethod1" != "1" ]; then
- 	test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && SportsEventYear="${ShowStartTime:0:4}" && SportsEventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
+ 	test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && EventYear="${ShowStartTime:0:4}" && EventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
  #Check validity of Method2 
  fi
   	
- test "$SportsEventYear" -gt "1900" && test "$SportsEventMonthDay" -gt "0" && ShowFileName="$NewShowName S$SportsEventYear""E$SportsEventMonthDay ($InputSubtitle Recorded $datehour)"
-
+ test "$EventYear" -gt "1900" && test "$EventMonthDay" -gt "0" && ShowFileName="$NewShowName S$EventYear""E$EventMonthDay ($InputSubtitle Recorded $datehour)"
+ exx=$
  RequiresNFO=1 
  HasSxxExx=1
 
@@ -850,8 +852,8 @@
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-	test "$exx" != "" && echo -e "\t<season>$sxx</season>" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
- 	test "$exx" != "" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
+	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+ 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
  	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
  	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
  return 0
