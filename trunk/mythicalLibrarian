@@ -825,11 +825,29 @@
  	test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
  	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
- 	test "$seriesid" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>"
+ 	test "$seriesid" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	return 0 
  } 
- 
+
+
+ #####GENERATE NFO FILE#####
+ #Create an NFO file based upon extracted information
+ GenerateEpisodeNFO () {
+ 	test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
+ 	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
+ 	test "$NamingConvention" = "" && echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo" ||echo -e "\t<title>$EPN Recorded $datehour -Episode</title>">>"$MoveDir/$ShowFileName.nfo" 
+ 	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
+	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" >>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+ 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>">>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
+ 	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
+ return 0
+ }
+
+
  #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
@@ -858,6 +876,9 @@
 		exit 1
  	fi
  }
+
+
+
  #####MAINTENANCE ROUTINE#####
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
@@ -917,21 +938,7 @@
 }
 
 
- #####GENERATE NFO FILE#####
- #Create an NFO file based upon extracted information
- GenerateEpisodeNFO () {
- 	test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
- 	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
- 	test "$NamingConvention" = "" && echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo" ||echo -e "\t<title>$EPN Recorded $datehour -Episode</title>">>"$MoveDir/$ShowFileName.nfo" 
- 	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
- 	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
- 	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
- 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
- 	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
- 	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
- return 0
- }
+
  
  #####SCAN MODE#####
  #This function will scan a folder and process the entire library
@@ -1127,6 +1134,7 @@
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
+ 		echo "done."
  		exit 0
 	else
   		test -f "$mythicalLibrarian/doover.sh" && echo "You must press y to execute Doover." || echo "No Doover jobs exist."
@@ -1163,7 +1171,7 @@
  		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
 
- 		
+ 		echo "done."
 		exit 0
 	else
 	 	echo "You must press y to execute undo"
@@ -1313,6 +1321,7 @@
  		MaintenanceWarning
  		removedead=1
  		DoMaintenance
+ 		echo "done."
  		exit 0
  	;;
  esac
