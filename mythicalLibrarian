@@ -1001,10 +1001,10 @@
  	 echo " Falsifying information. MythTV-Database is not used for testing."
  	 echo " Performing fuzzy logic lookup on non-MythTV-database file."
 	 echo " Please wait. It may take a moment to build database files "
- 	 echo " executing mythicalLibrarian testfile.ext 'mister' 'Show 1332'"
+ 	 echo " executing mythicalLibrarian testfile.ext 'mister rogers' 'show 1332'"
 	 echo " testing for exit status 0"
 
-	 mythicalLibrarian testfile.ext "mister rogers" "Show 1332"
+	 mythicalLibrarian testfile.ext "mister rogers" "show 1332"
 	 exitstatus=$?
 	 echo "exited with status $exitstatus"
  	 if [ "$exitstatus" = "0" ]; then 
