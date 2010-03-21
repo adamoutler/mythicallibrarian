@@ -823,7 +823,7 @@
  	test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
  	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
- 	test "$seriesid" ! = "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>"
+ 	test "$seriesid" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>"
  	echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	return 0 
  } 
