@@ -326,7 +326,7 @@
  #Method1 - use airdate for season
 
  if [ "${OriginalAirDate:0:4}" != "0000" ]&& [ "${OriginalAirDate:0:4}" != "" ] ; then
- 	 EventYear="${OriginalAirDate:0:4}" ] 
+ 	 EventYear="${OriginalAirDate:0:4}"
  	 sxx=$EventYear
  	 EventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
  	 exx=$EventMonthDay
