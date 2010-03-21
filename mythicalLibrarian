@@ -342,7 +342,7 @@
  fi
   	
  test "$EventYear" -gt "1900" && test "$EventMonthDay" -gt "0" && ShowFileName="$NewShowName S$EventYear""E$EventMonthDay ($InputSubtitle Recorded $datehour)"
- exx=$
+
  RequiresNFO=1 
  HasSxxExx=1
 
@@ -1004,7 +1004,7 @@
  	 echo " executing mythicalLibrarian testfile.ext 'mister' 'Show 1332'"
 	 echo " testing for exit status 0"
 
-	 mythicalLibrarian testfile.ext "mister" "Show 1332"
+	 mythicalLibrarian testfile.ext "mister rogers" "Show 1332"
 	 exitstatus=$?
 	 echo "exited with status $exitstatus"
  	 if [ "$exitstatus" = "0" ]; then 
