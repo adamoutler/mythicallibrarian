@@ -867,8 +867,8 @@
  			else
  				echo "FOLDER DISCONNECTED:$SupportFile"
  				echo "FOLDER DISCONNECTED:$SupportFile">>"$mythicalLibrarian"/output.log
- 			 	echo "$line" >> "$mythicalLibrarian/created.tracking2"	
- 			fi
+ 				test "$removedead" != "1" && echo "$line" >> "$mythicalLibrarian/created.tracking2" || echo "REMOVING FROM FUTURE SEARCHES: $line " 
+			fi
  		else 
  			echo "$line" >> "$mythicalLibrarian/created.tracking2"
   		fi
@@ -1294,6 +1294,7 @@
    		mythicalUpdater
  	;;
  	--doMaintenance)
+ 		removedead=1
  		DoMaintenance
  		exit 0
  	;;
