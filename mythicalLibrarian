@@ -845,7 +845,19 @@
  	return 0
  }
 
-
+ MaintenanceWarning () {
+ 	echo " --DoMaintenance You have entered Maintenance mode."
+ 	echo " mythicalLibrarian will conduct standard maintenance while"
+ 	echo " perfoming maintenance on it's records.  Please ensure that"
+ 	echo " All network attached storage and removable storage drives"
+ 	echo " are connected and mounted properly before continuing"
+ 	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
+ 	if [ "$yesorno" != "y" ]; then
+ 		echo "" 
+ 		echo "You must press 'y' to continue" 
+		exit 1
+ 	fi
+ }
  #####MAINTENANCE ROUTINE#####
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
@@ -1294,6 +1306,7 @@
    		mythicalUpdater
  	;;
  	--doMaintenance)
+ 		MaintenanceWarning
  		removedead=1
  		DoMaintenance
  		exit 0
