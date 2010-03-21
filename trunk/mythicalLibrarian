@@ -850,7 +850,7 @@
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
  	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
  	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
  	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
