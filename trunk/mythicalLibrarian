@@ -846,7 +846,7 @@
  }
 
  MaintenanceWarning () {
- 	echo " --DoMaintenance You have entered Maintenance mode."
+ 	echo " --You have entered Maintenance mode."
  	echo " mythicalLibrarian will conduct standard maintenance while"
  	echo " perfoming maintenance on it's records.  Please ensure that"
  	echo " All network attached storage and removable storage drives"
@@ -1191,8 +1191,12 @@
  		echo "  eg. mythicalLibrarian --mythicalDiagnostics"
  		echo ""
  		echo "-s|--scan filetype /path/to/folder"
- 		echo "  eg. mythicalLibrarian --scan mpg /home/mythtv/videos"
   		echo "  scan: creates a library from an entire folder"
+ 		echo "  eg. mythicalLibrarian --scan mpg /home/mythtv/videos"
+ 		echo "" 		
+ 		echo "-doMaintenance"
+  		echo "  doMaintenance: removes FOLDER DISCONNECTED errors from logs"
+ 		echo "  eg. mythicalLibrarian --doMaintenance"
  		echo "" 		
  	 	echo "-u|--update"
  		echo "  update: mythicalLibrarian to the current version"
@@ -1203,8 +1207,8 @@
  		echo "  doover: reruns previously failed jobs sequentially"
  		echo ""
  		echo "-u|--undo"
- 		echo "  eg. sudo mythicalLibrarian --undo"
  		echo "  undo: returns all files to original states"
+ 		echo "  eg. sudo mythicalLibrarian --undo"
  		echo ""
  		echo "-?|-h|--help"
  		echo "  example: mythicalLibrarian --help"
