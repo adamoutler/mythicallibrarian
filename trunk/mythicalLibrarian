@@ -3,7 +3,7 @@
 # ***** WELCOME! Scroll further down to set the user settings. *****
 
  #mythicalLibrarian by Adam Outler
- #THU 4MAR2010 2127
+ #SUN 21mar2010 1149
  #email: outleradam@hotmail.com
  #Software the way it should be: Free and Open Source
  #Please contact me with any bug reports 
@@ -760,7 +760,7 @@
  
  #Check for valid time, if blank, then assign 0 value
  	test "$LastUpdated" = "" && LastUpdated="0"
- 
+ 	test "$TvDbTime" = "" && TvDbTime = "9999999" && echo "THETVDB TIME SERVER WAS DOWN"
  #Apply Database Update interval to last update time  LastUpdated = NextUpdated
  	let LastUpdated=$LastUpdated+$UpdateDatabase
  
@@ -1168,6 +1168,7 @@
 		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
 		test -f "$mythicalLibrarian/doover.sh" && cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		test -f "$mythicalLibrarian/doover.sh" && rm -f "$mythicalLibrarian/doover.sh"
+ 		DoMaintenance
  		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
 
