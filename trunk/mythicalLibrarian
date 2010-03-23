@@ -1355,7 +1355,7 @@
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
-
+ 
 #Setup paths if useoriginaldir is active.
  if [ "$UseOriginalDir" = "Enabled" ]; then
  	 #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
