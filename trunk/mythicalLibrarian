@@ -1626,10 +1626,15 @@
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
   		echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+
  		echo  "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
  		echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
+ 		echo "ENABLE HANDLING OF UNRECOGNIZED SHOWS TO PROCESS THIS FILE"
+ 		echo "TO PREVENT THIS ERROR IN THE FUTURE ENABLE HANDLING OF UNRECOGNIZED SHOWS">>"$mythicalLibrarian"/output.log
+ 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  		test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+		jobtype=NameCouldNotBeAssigned
+ 		runjob
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
