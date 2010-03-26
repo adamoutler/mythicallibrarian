@@ -1288,6 +1288,8 @@
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
  
+ #load variables from a file if required
+ test -f ~/mythicalLibrarian/mythicalLibrarian.conf && . ~/mythicalLibrarian/mythicalLibrarian.conf
  
 
  InputTitle=$2
