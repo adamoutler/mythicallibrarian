@@ -700,7 +700,7 @@
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
 	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
-
+ 	test NamingConvention="News" && UseMethod2=1
   
  	return 0 
  }
@@ -762,7 +762,7 @@
  
  #Check for valid time, if blank, then assign 0 value
  	test "$LastUpdated" = "" && LastUpdated="0"
- 	test "$TvDbTime" = "" && TvDbTime = "9999999" && echo "THETVDB TIME SERVER WAS DOWN"
+ 	test "$TvDbTime" = "" && TvDbTime="9999999" && echo "THETVDB TIME SERVER WAS DOWN"
  #Apply Database Update interval to last update time  LastUpdated = NextUpdated
  	let LastUpdated=$LastUpdated+$UpdateDatabase
  
