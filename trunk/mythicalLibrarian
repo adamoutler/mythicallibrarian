@@ -3,7 +3,7 @@
 # ***** WELCOME! Scroll further down to set the user settings. *****
 
  #mythicalLibrarian by Adam Outler
- #SUN 21mar2010 1149
+ #SUN 1APR2010 1044
  #email: outleradam@hotmail.com
  #Software the way it should be: Free and Open Source
  #Please contact me with any bug reports 
@@ -571,12 +571,12 @@
   	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh"
 
- 	echo  "test -L \"$InputPath\" && rm \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
-	echo  "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
+ 	echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
+	echo  "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$originalext\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath\" && rm \"$InputPath\"">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath\" && rm \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
