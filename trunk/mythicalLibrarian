@@ -838,7 +838,17 @@
  GenerateEpisodeNFO () {
  	test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
  	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
- 	test "$NamingConvention" = "" && echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo" ||echo -e "\t<title>$EPN Recorded $datehour -Episode</title>">>"$MoveDir/$ShowFileName.nfo" 
+
+ 	if [ "$NamingConvention" = "" ] ; then
+ 		if [ "$GoForDoover" = "1"]; then
+ 		  	echo -e "\t<title>$epn Recorded $datehour -Episode in --doover Que</title>">>"$MoveDir/$ShowFileName.nfo"
+ 		else
+	       		echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo"
+ 		fi
+	else
+		echo -e "\t<title>$epn Recorded $datehour -Categoric</title>">>"$MoveDir/$ShowFileName.nfo" 
+ 	fi
+
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
