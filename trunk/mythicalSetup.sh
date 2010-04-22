@@ -1,5 +1,5 @@
 #! /bin/bash
-
+#
 #This script will generate the user settings portion of mythicalLibrarian
 echo "" > ./mythicalSetup 
 if [ "$(id -u)" != "0" ]; then
