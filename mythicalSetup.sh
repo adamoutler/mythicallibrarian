@@ -80,7 +80,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./Librarian"
+ 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
@@ -108,7 +108,7 @@ if [ "$DownloadML" = "Latest" ]; then
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
   	echo $startwrite
