@@ -56,7 +56,7 @@ if ! which librarian-notify-send>/dev/null; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
   	test $? = 0 && DownloadLNS=1 || DownloadLNS=0
  	if [ "$DownloadLNS" = "1" ]; then
- 		curl "http://mythicallibrarian.googlecode.com/files/librarian-notify-send">"/usr/local/bin/librarian-notify-send"
+ 		sudo curl "http://mythicallibrarian.googlecode.com/files/librarian-notify-send">"/usr/local/bin/librarian-notify-send"
  		sudo chmod +x /usr/local/bin/librarian-notify-send
  	fi
 fi
