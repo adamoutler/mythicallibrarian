@@ -840,6 +840,7 @@
  	if [ "$SeasonNumber" != "" ]; then
  		MoveDir="$MoveDir/Season $SeasonNumber" 
 		test ! -d "$MoveDir" && mkdir "$MoveDir"
+		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
  	fi
  
  
