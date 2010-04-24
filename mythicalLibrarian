@@ -839,7 +839,7 @@
  #Make the Season folder if it is applicable and does not exist
  	if [ "$SeasonNumber" != "" ]; then
  		MoveDir="$MoveDir/Season $SeasonNumber" 
-		test ! -d "$MoveDir" && mkdir $MoveDir
+		test ! -d "$MoveDir" && mkdir "$MoveDir"
  	fi
  
  
