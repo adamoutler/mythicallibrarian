@@ -109,7 +109,7 @@ if [ "$DownloadML" = "Latest" ]; then
  	while read line
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
- 		if [ $startwrite = 2 ]; then
+ 		if [ $startwrite = 1 ]; then
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
