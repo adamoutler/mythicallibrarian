@@ -1,7 +1,7 @@
 #! /bin/bash
-#
+
 #This script will generate the user settings portion of mythicalLibrarian
-test -f ./mythicalSetup && rm ./mythicalSetup
+echo "" > ./mythicalSetup 
 if [ "$(id -u)" != "0" ]; then
 	echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
 	exit 1
@@ -17,10 +17,10 @@ else
 fi
 
 if which replace >/dev/null; then
- 	echo "Verified  mysql-server-5.0 or higher exists"
+ 	echo "Verified  mysql-server-5.0 exists"
 else
- 	echo "install package ' mysql-server-5.0' or higher on your system"
- 	b="mysql-server-5.1 "
+ 	echo "install package ' mysql-server-5.0' on your system"
+ 	b="mysql-server-5.0 "
 fi
 
 if which curl >/dev/null; then
@@ -62,7 +62,7 @@ if ! which librarian-notify-send>/dev/null; then
 fi
 
 if [ ! -f "./librarian" ]; then
- 	DownloadML="Stable"
+ 	DownloadML=Stable
  	echo "Stable `date`">./lastupdated
 else
 
@@ -80,15 +80,15 @@ if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace \\ \\\\ "\t" "\\\t "   >"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1
- 		if [ "$startwrite" = "2" ]; then
+		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+ 		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
-  			echo $startwrite
+  	echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
@@ -103,18 +103,16 @@ if [ "$DownloadML" = "Latest" ]; then
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace  \\ \\\\ "\t" "\\\t " >"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
-
-
  	while read line
  	do
-		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT 		
- 	if [ $startwrite = 2 ]; then
+		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+ 		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
-  			echo $startwrite
- 	fi
+  	echo $startwrite
+ 		fi
   	done <./mythicalLibrarian.sh
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
