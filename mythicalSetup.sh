@@ -103,13 +103,12 @@ if [ "$DownloadML" = "Latest" ]; then
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\ >"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace  \\ \\\\ "\t" "\\\t " >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT
- 		if [ $startwrite = 1 ]; then
+		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT 		if [ $startwrite = 1 ]; then
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
