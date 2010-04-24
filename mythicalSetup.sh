@@ -17,10 +17,10 @@ else
 fi
 
 if which replace >/dev/null; then
- 	echo "Verified  mysql-server-5.0 exists"
+ 	echo "Verified  mysql-server-5.0 or higher exists"
 else
- 	echo "install package ' mysql-server-5.0' on your system"
- 	b="mysql-server-5.0 "
+ 	echo "install package ' mysql-server-5.0' or higher on your system"
+ 	b="mysql-server-5.1 "
 fi
 
 if which curl >/dev/null; then
