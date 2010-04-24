@@ -80,7 +80,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" |replace "\\" "\\\\" "\t" "\\\t "  >"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh" | replace "\t" "\\\t " \\ \\\\  >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
