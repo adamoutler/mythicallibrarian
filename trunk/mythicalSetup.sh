@@ -85,7 +85,7 @@ if [ "$DownloadML" = "Stable" ]; then
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
   			echo $startwrite
@@ -106,13 +106,15 @@ if [ "$DownloadML" = "Latest" ]; then
  	cat "./mythicalLibrarian.sh" | replace  \\ \\\\ "\t" "\\\t " >"./mythicalLibrarian.sh"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
+
+
  	while read line
  	do
 		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT 		
  	if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
-  	echo $startwrite
- 		fi
+  			echo $startwrite
+ 	fi
   	done <./mythicalLibrarian.sh
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
