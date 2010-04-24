@@ -819,7 +819,43 @@
  fi
  	return 0
  }
+
+ MakeFolder() {
+
+
+
+ #####MAKE FOLDER#####
+
+ #If specified, make $movedir = $movedir/show name
+ 	test "$UseShowNameAsDir" = "Enabled" && MoveDir=`echo "$MoveDir"/"$NewShowName"`
  
+ #Make the Show folder if it does not exist
+ 	if [ ! -d "$MoveDir" ]; then
+ 		echo "CREATING FOLDER: $MoveDir">>"$mythicalLibrarian"/output.log
+		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
+ 		mkdir "$MoveDir"
+ 	fi
+ 
+ #Make the Season folder if it is applicable and does not exist
+ 	if [ "$SeasonNumber" != "" ]; then
+ 		MoveDir="$MoveDir/Season $SeasonNumber" 
+		test ! -d "$MoveDir" && mkdir $MoveDir
+ 	fi
+ 
+ 
+ #Error message if folder was not created
+ 	if [ ! -d "$MoveDir" ];then
+ 		echo "COULD NOT CREATE $MoveDir/$NewShowName">>"$mythicalLibrarian"/output.log
+ 		echo "##########################################################">>"$mythicalLibrarian"/output.log
+ 		echo "#############FAILSAFE MODE HAS BEEN ACTIVATED#############">>"$mythicalLibrarian"/output.log
+ 		echo "##########################################################">>"$mythicalLibrarian"/output.log
+ 		if [ $Notify = "Enabled" ]; then
+ 			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "failsafe mode activated."  error
+	 	fi
+ 		SYMLINK=LINK
+ 		MoveDir=$FailSafeDir
+ 	fi
+ }
 
  #####GENERATE tvshow.nfo#####
  #Generates folder tvshow.nfo file
@@ -1518,6 +1554,7 @@
  #gather series and episode names from files created earlier.
  		exx=`sed -n $absolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".E.txt`
  		sxx=`sed -n $absolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".S.txt`
+ 		test $sxx != "" && SeasonNumber=$sxx
  
  #Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
  		test $exx -lt 10  && exx="E0$exx" || exx="E$exx"
@@ -1699,34 +1736,11 @@
  	RequiresNFO=1
  fi
  
-
+ #####MAKE THE FOLDER#####
+ MakeFolder
+ 
  #check to see if output folder exists
  test -d "$MoveDir" && echo "TARGET SET:$MoveDir/$ShowFileName"
- 
- #If specified, make $movedir = $movedir/show name
- test "$UseShowNameAsDir" = "Enabled" && MoveDir=`echo "$MoveDir"/"$NewShowName"`
- 
- 
- #####MAKE FOLDER#####
- #Make the folder if it does not exist
- if [ ! -d "$MoveDir" ]; then
- 	echo "CREATING FOLDER: $MoveDir">>"$mythicalLibrarian"/output.log
-	echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
- 	mkdir "$MoveDir"
- #Error message if folder was not created
- 	if [ ! -d "$MoveDir" ];then
- 		echo "COULD NOT CREATE $MoveDir/$NewShowName">>"$mythicalLibrarian"/output.log
- 		echo "##########################################################">>"$mythicalLibrarian"/output.log
- 		echo "#############FAILSAFE MODE HAS BEEN ACTIVATED#############">>"$mythicalLibrarian"/output.log
- 		echo "##########################################################">>"$mythicalLibrarian"/output.log
- 		if [ $Notify = "Enabled" ]; then
- 			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "failsafe mode activated."  error
- 		fi
- 		SYMLINK=LINK
- 		MoveDir=$FailSafeDir
- 	fi
- fi
-
 
  #####FAILSAFE HANDLING#####
  #If failsafe state is set then create link in FailSafeMode
