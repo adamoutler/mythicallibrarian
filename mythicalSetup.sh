@@ -1,7 +1,7 @@
 #! /bin/bash
 #
 #This script will generate the user settings portion of mythicalLibrarian
-echo "" > ./mythicalSetup/mythicalSetup
+test -f ./mythicalSetup && rm ./mythicalSetup
 if [ "$(id -u)" != "0" ]; then
 	echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
 	exit 1
@@ -86,7 +86,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	while read line
  	do
 		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1
- 		if [ $startwrite = 2 ]; then
+ 		if [ "$startwrite: = "2" ]; then
  			echo -e "$line" >> ./librarian
   			echo $startwrite
  		fi
