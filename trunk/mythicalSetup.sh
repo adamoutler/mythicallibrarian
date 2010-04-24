@@ -108,7 +108,8 @@ if [ "$DownloadML" = "Latest" ]; then
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT 		if [ $startwrite = 1 ]; then
+		test "$line" = " ########################## USER JOBS############################" && let startwrite=$startwrite+1 && echo WOOT 		
+ 	if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
