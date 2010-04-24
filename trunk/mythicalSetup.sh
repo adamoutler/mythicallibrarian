@@ -61,8 +61,8 @@ if ! which librarian-notify-send>/dev/null; then
  	fi
 fi
 
-if [ ! -f "./mythicalLibrarian" ]; then
- 	DownloadML=Stable
+if [ ! -f "./Librarian" ]; then
+ 	DownloadML="Stable"
  	echo "Stable `date`">./lastupdated
 else
 
