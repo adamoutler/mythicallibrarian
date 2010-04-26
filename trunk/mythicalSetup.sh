@@ -82,7 +82,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
-	mv ./mythicalLIbrarian1 ./mythicalLibrarian.sh
+	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
