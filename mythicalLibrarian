@@ -1113,9 +1113,10 @@
  	echo ""
  	echo "Testing file system permissions"
 
+
+
  	test "$UseOriginalDir" = "Enabled" && UseOriginalDir
 
- 	fi	
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
  	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
