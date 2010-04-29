@@ -1472,7 +1472,7 @@
 	--doover|-d)
  		executeDoOver
 	;;
- 	--undo|-u)
+ 	--undo)
  		executeUndo
 	;;
  	--help|-?|-h)
