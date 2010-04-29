@@ -88,13 +88,14 @@ if [ "$DownloadML" = "Stable" ]; then
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
- 		clear
-		parsing="$parsing""."
-		echo "$parsing"
+
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
+ 			clear
+			parsing="$parsing""."
+			echo "$parsing"
  			echo -e "$line" >> ./librarian
-  	echo $startwrite
+ 			echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
  	clear
@@ -129,7 +130,6 @@ if [ "$DownloadML" = "Latest" ]; then
 			parsing="$parsing""."
 
  			echo -e "$line" >> ./librarian
-  	echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
  	clear
