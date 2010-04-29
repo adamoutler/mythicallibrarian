@@ -1488,6 +1488,7 @@
  		DoMaintenance
  		echo "done."
  		exit 0
+	;;
 	--version|-v)
 		echo $mythicalVersion
 		exit 0
