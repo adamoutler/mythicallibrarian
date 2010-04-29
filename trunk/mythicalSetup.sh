@@ -120,7 +120,7 @@ if [ "$DownloadML" = "Latest" ]; then
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
- 	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./libraria
+ 	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
 	while read line
  	do
 
