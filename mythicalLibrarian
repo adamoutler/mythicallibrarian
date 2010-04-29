@@ -1495,7 +1495,7 @@
  #####ENVIRONMENTAL VARIABLES CONTINUED#####
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
- 
+ echo "$mythicalVersion">>"$mythicalLibrarian"/output.log 
 
  InputFileBasename=`basename $InputPath`
 
