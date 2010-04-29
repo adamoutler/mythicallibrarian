@@ -283,15 +283,6 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalSetup
  		echo "AlternateShowDir='$AlternateShowDir'" >> ./mythicalSetup
 
-
-
-
-
-
-
-
-
-
  		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalSetup
  		echo "CommercialMarkup=Enabled" >> ./mythicalSetup
 
