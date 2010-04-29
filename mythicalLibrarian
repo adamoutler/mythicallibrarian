@@ -1315,7 +1315,7 @@
  	test ! -d "$mythicalLibrarian" && mkdir "$mythicalLibrarian"
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
  	cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
-	sudo -u $SUDO_USER echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
+
  	if [ ! -f "../output.log" ]; then 
 	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
 		exit 1
@@ -1325,7 +1325,8 @@
 		echo "You do not have sufficient privlidges to run this script."
  		echo "Try again with sudo mythicalLibrarian --update"
 		exit 1
-	fi
+	fi	
+	sudo -u $SUDO_USER echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 
  	echo "--You have entered Update mode."
