@@ -221,7 +221,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		echo "DatabaseType=MythTV">>./mythicalSetup
 
  		echo " #Guide data type">> ./mythicalSetup
-		echo "GuideDataType=SchedulesDirect">>./mythicalSetup
+		test "$database" = 1 && echo "GuideDataType=SchedulesDirect">>./mythicalSetup || echo "GuideDataType=NoLookup">>./mythicalSetup
 
  		echo " #MySQL User name: Default="mythtv"">> ./mythicalSetup
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
