@@ -83,18 +83,22 @@ if [ "$DownloadML" = "Stable" ]; then
  	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
- 	
+ 	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		echo "$line"
+ 		clear
+		parsing="$parsing""."
+		echo "$parsing"
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
+ 	clear
+	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
@@ -115,13 +119,15 @@ if [ "$DownloadML" = "Latest" ]; then
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
-		echo "$line"
+
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
 
  		if [ $startwrite = 2 ]; then
  			clear
+			echo "$line"
+ 			echo -e "$line"
 			parsing="$parsing""."
-			echo "$parsing"
+
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
