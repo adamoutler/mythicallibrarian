@@ -117,7 +117,11 @@ if [ "$DownloadML" = "Latest" ]; then
  	do
 		echo "$line"
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
+ 		parsing="Parsing mythicalLibrarian"
  		if [ $startwrite = 2 ]; then
+ 			clear
+			parsing="$parsing."
+			echo "$parsing"
  			echo -e "$line" >> ./librarian
   	echo $startwrite
  		fi
