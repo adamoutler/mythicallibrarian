@@ -1024,7 +1024,7 @@
  	while read line
 	do
 	folderToCheck="$mythicalLibrarian/$line"
-	 if [ -d "$folderToCheck"]; then
+	 if [ -d "$folderToCheck" ]; then
  		if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
  		 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
 				echo "Removing database from:$folderToCheck"
