@@ -144,7 +144,8 @@
  Database=Enabled
  #Database Type Default=MythTV
  DatabaseType=MythTV
- #Guide data type: SchedulesDirect currently covers DataDirect, MC2XML and others.
+ #Guide data type: SchedulesDirect currently covers DataDirect, MC2XML and others.  NoLookup will bypass tvdb scanning
+ #Options: SchedulesDirect|NoLookup
  GuideDataType=SchedulesDirect
  #MySQL User name: Default="mythtv"
  MySQLuser="mythtv" 
@@ -705,6 +706,61 @@
  	return 0 
  }
 
+ #####PROCESS DATABASE INFORMATION#####
+ ####NoLookup is an alternate mode where TheTvDb is not used for lookups
+ ProcessNoLookup () {
+ 
+ #Check for database permissions
+ 	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
+
+ #Check if database contains enough information to put into doover que
+  	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
+
+ #Get rating from Stars
+  	rating=`printf "%0.f\n" $stars`
+  	test $rating != "" && let rating=$rating*2
+ 	test $rating = "" && rating=1
+ 
+ #Create MV/EP/SH Identification Type from ProgramID
+	mythicalLibrarianProgramIDCheck=${ProgramID:0:2}
+ 
+ #Spoof show as episode to avoid programid
+ 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Generic Episode With No Data" && mythicalLibrarianProgramIDCheck="SH"
+ #Extrapolate data from Programid
+	test "$mythicalLibrarianProgramIDCheck" = "SH" && ProgramIDType="Generic Episode With No Data"
+	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
+ 	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
+ 
+ 
+ 	
+ 	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
+ 	seasonyear=`echo "${ShowStartTime:0:4}"`
+
+	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
+ 	test NamingConvention="News" && UseMethod2=1
+  
+ 	return 0 
+ }
+
+
+ #####REMOVE ENTRIES FROM LIBRARY#####
+ #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
+ SYMLINKDisabled () {
+ 
+ #Make sure we got input arguments and file is valid
+ 	if [ ! -f "$InputPath" ]; then
+ 	
+ #Remove recording entry from mysql database
+ 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
+  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
+		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
+ 
+ #Remove thumbnails
+ 		rm -f "$originaldirname/$FileBaseName".*	
+ 	fi 
+ 	return 0
+ }
+
  #####REMOVE ENTRIES FROM LIBRARY#####
  #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
  SYMLINKDisabled () {
@@ -741,8 +797,8 @@
  #If series ID is obtained, then get show information.
  if [ "$seriesid" != "" ] ; then
  
+ 
  #####GET SERIES INFORMATION#####
-
  #Get current server time
  	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
  
@@ -1477,8 +1533,8 @@
   #Get information if database is enabled
  if [ "$Database" = "Enabled" ]; then 
   	test "$DatabaseType" = "MythTV" && GetMythTVDatabase
-	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect
- 
+	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect || ProcessNoLookup
+ 	
   fi
   #Report found data
  echo "RECSTART:$ShowStartTime MOVIEYEAR:$MovieAirDate SERIESDATE:$OriginalAirDate"
