@@ -98,6 +98,7 @@ if [ "$DownloadML" = "Stable" ]; then
  			echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
+	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
  	clear
 	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
@@ -130,6 +131,7 @@ if [ "$DownloadML" = "Latest" ]; then
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
+	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
  	clear
 	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
