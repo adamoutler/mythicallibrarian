@@ -85,7 +85,8 @@ if [ "$DownloadML" = "Stable" ]; then
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
-	test -f ./librarian && rm -f ./librarian
+	test -f ./librarian && rm -f ./librarian	
+ 	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
  	while read line
  	do
 
@@ -98,7 +99,7 @@ if [ "$DownloadML" = "Stable" ]; then
  			echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
-	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
+
  	clear
 	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
@@ -119,7 +120,8 @@ if [ "$DownloadML" = "Latest" ]; then
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
- 	while read line
+ 	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./libraria
+	while read line
  	do
 
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
@@ -131,7 +133,7 @@ if [ "$DownloadML" = "Latest" ]; then
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
-	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
+n
  	clear
 	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
