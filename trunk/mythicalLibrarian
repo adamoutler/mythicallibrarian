@@ -987,6 +987,9 @@
   	test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
   	test -f "$mythicalLibrarian/created.tracking2" && mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
 
+
+	
+
  fi
 
  #Check if folders are empty and remove dir if needed and it was created by mythicalLibrarian
@@ -1012,7 +1015,24 @@
  	done < "$mythicalLibrarian"/dir.tracking
   	rm -f "$mythicalLibrarian/dir.tracking"
   	test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
- fi 	 
+ fi 
+
+
+#remove database folders
+ 	rm "$mythicalLibrarian/cleanup"
+	ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
+ 	while read line
+	do
+	folderToCheck="$mythicalLibrarian/$line"
+	 if [ -d "$folderToCheck"]; then
+ 		if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
+ 		 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
+				echo "Removing database from:$folderToCheck"
+	 			echo "rm -Rf $folderToCheck"
+			fi
+		fi
+	 fi
+ 	 done < "$mythicalLibrarian/cleanup"
 }
 
 
