@@ -112,10 +112,10 @@ if [ "$DownloadML" = "Latest" ]; then
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	
   	startwrite=0
-  	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
+		echo "$line"
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
  			echo -e "$line" >> ./librarian
