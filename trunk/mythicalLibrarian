@@ -961,78 +961,78 @@
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
  DoMaintenance() {
- if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
- 	mythicalLibrarianCounter=0
- 	echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
- 	while read line
- 	do
- 		(( ++$mythicalLibrarianCounter ))
- 		SupportFile=`echo $line|cut -d"'" -f2`
- 	 	MainFile=`echo $line|cut -d"'" -f4`
- 		ls "$MainFile" > /dev/null 2>&1
- 		if [ "$?" != "0" ]; then
-  			if [ -d "`dirname "$SupportFile"`" ]; then
- 				echo "REMOVING ORPHAN $SupportFile"
- 				echo "REMOVING ORPHAN $SupportFile">>"$mythicalLibrarian"/output.log
- 				rm -f "$SupportFile"
- 			else
- 				echo "FOLDER DISCONNECTED:$SupportFile"
- 				echo "FOLDER DISCONNECTED:$SupportFile">>"$mythicalLibrarian"/output.log
- 				test "$removedead" != "1" && echo "$line" >> "$mythicalLibrarian/created.tracking2" || echo "REMOVING FROM FUTURE SEARCHES: $line " 
-			fi
- 		else 
- 			echo "$line" >> "$mythicalLibrarian/created.tracking2"
-  		fi
- 	done <"$mythicalLibrarian/created.tracking"
-  	test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
-  	test -f "$mythicalLibrarian/created.tracking2" && mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
-
-
-	
-
- fi
-
+ 	if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
+ 		mythicalLibrarianCounter=0
+ 		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
+ 		while read line
+ 		do
+ 			(( ++$mythicalLibrarianCounter ))
+ 			SupportFile=`echo $line|cut -d"'" -f2`
+ 		 	MainFile=`echo $line|cut -d"'" -f4`
+ 			ls "$MainFile" > /dev/null 2>&1
+ 			if [ "$?" != "0" ]; then
+  				if [ -d "`dirname "$SupportFile"`" ]; then
+ 					echo "REMOVING ORPHAN $SupportFile"
+ 					echo "REMOVING ORPHAN $SupportFile">>"$mythicalLibrarian"/output.log
+ 					rm -f "$SupportFile"
+ 				else
+ 					echo "FOLDER DISCONNECTED:$SupportFile"
+ 					echo "FOLDER DISCONNECTED:$SupportFile">>"$mythicalLibrarian"/output.log
+ 					test "$removedead" != "1" && echo "$line" >> "$mythicalLibrarian/created.tracking2" || echo "REMOVING FROM FUTURE SEARCHES: $line " 
+ 				fi
+ 			else 
+ 				echo "$line" >> "$mythicalLibrarian/created.tracking2"
+  			fi
+ 		done <"$mythicalLibrarian/created.tracking"
+  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
+  		test -f "$mythicalLibrarian/created.tracking2" && mv "$mythicalLibrarian/created.tracking2" "$mythicalLibrarian/created.tracking"
+	 fi
+ 
  #Check if folders are empty and remove dir if needed and it was created by mythicalLibrarian
- if [ "$DirTracking" = "Enabled" -a -f "$mythicalLibrarian/dir.tracking" ]; then
- 	while read line
- 	do
- 		DirToCheck=$line
- 		if [ -d "$DirToCheck" ]; then
-  			DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m1 ^`
- 			test "$DirToCheckCheck" = "" && DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m2 ^`
-		 	if [ "$DirToCheckCheck" = "" ]; then
- 				echo "REMOVING ORPHAN FOLDER:$line">>"$mythicalLibrarian"/output.log
-  				echo "REMOVING ORPHAN FOLDER:$line"
- 				test -f "$line/tvshow.nfo" && rm -f "$line/tvshow.nfo"
-				rmdir "$line"
-			elif [ "$DirToCheckCheck" != "" ]; then
-  				echo "$DirToCheck" >> "$mythicalLibrarian/dir.tracking2"
-			fi
- 		elif [ ! -d "$DirToCheck" ]; then
- 			echo $DirToCheck >> "$mythicalLibrarian/dir.tracking2"
- 		fi
-
- 	done < "$mythicalLibrarian"/dir.tracking
-  	rm -f "$mythicalLibrarian/dir.tracking"
-  	test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
- fi 
+ 	if [ "$DirTracking" = "Enabled" -a -f "$mythicalLibrarian/dir.tracking" ]; then
+ 		while read line
+ 		do
+ 			DirToCheck=$line
+ 			if [ -d "$DirToCheck" ]; then
+  				DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m1 ^`
+ 				test "$DirToCheckCheck" = "" && DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m2 ^`
+ 			 	if [ "$DirToCheckCheck" = "" ]; then
+  					echo "REMOVING ORPHAN FOLDER:$line">>"$mythicalLibrarian"/output.log
+  					echo "REMOVING ORPHAN FOLDER:$line"
+  					test -f "$line/tvshow.nfo" && rm -f "$line/tvshow.nfo"
+	 				rmdir "$line"
+ 				elif [ "$DirToCheckCheck" != "" ]; then
+  					echo "$DirToCheck" >> "$mythicalLibrarian/dir.tracking2"
+ 				fi
+ 			elif [ ! -d "$DirToCheck" ]; then
+ 				echo $DirToCheck >> "$mythicalLibrarian/dir.tracking2"
+ 			fi
+	 
+ 		done < "$mythicalLibrarian"/dir.tracking
+  		rm -f "$mythicalLibrarian/dir.tracking"
+  		test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
+ 	fi	 
 
 
 #remove database folders
- 	rm "$mythicalLibrarian/cleanup"
-	ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
- 	while read line
-	do
-	folderToCheck="$mythicalLibrarian/$line"
-	 if [ -d "$folderToCheck" ]; then
- 		if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
- 		 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
-				echo "Removing database from:$folderToCheck"
-	 			echo "rm -Rf $folderToCheck"
-			fi
-		fi
-	 fi
- 	 done < "$mythicalLibrarian/cleanup"
+
+	if [ "$removedead" != "1" ]; then
+ 		rm "$mythicalLibrarian/cleanup"
+ 		ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
+ 		while read line
+ 		do
+ 			folderToCheck="$mythicalLibrarian/$line"
+ 			 if [ -d "$folderToCheck" ]; then
+ 				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
+ 				 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
+ 						echo "Removing database from:$folderToCheck"
+ 			 			echo "rm -Rf $folderToCheck"
+ 					fi
+ 				fi
+ 			 fi
+ 	 	done < "$mythicalLibrarian/cleanup"
+		rm "$mythicalLibrarian/cleanup"
+	fi
 }
 
 
