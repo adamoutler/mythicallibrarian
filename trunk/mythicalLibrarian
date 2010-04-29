@@ -1016,7 +1016,7 @@
 
 #remove database folders
 
-	if [ "$removedead" != "1" ]; then
+	if [ "$removedead" = "1" ]; then
  		rm "$mythicalLibrarian/cleanup"
  		ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
  		while read line
@@ -1026,7 +1026,7 @@
  				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
  				 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
  						echo "Removing database from:$folderToCheck"
- 			 			echo "rm -Rf $folderToCheck"
+ 			 			rm -Rf $folderToCheck
  					fi
  				fi
  			 fi
