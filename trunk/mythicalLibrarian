@@ -953,6 +953,7 @@
  		echo "You must press 'y' to continue" 
 		exit 1
  	fi
+	echo \n
  }
 
 
@@ -1017,8 +1018,9 @@
 #remove database folders
 
 	if [ "$removedead" = "1" ]; then
- 		rm "$mythicalLibrarian/cleanup"
+ 		test -f "$mythicalLibrarian/cleanup" && rm "$mythicalLibrarian/cleanup"
  		ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
+
  		while read line
  		do
  			folderToCheck="$mythicalLibrarian/$line"
@@ -1033,6 +1035,7 @@
  	 	done < "$mythicalLibrarian/cleanup"
 		rm "$mythicalLibrarian/cleanup"
 	fi
+	echo "Done."
 }
 
 
