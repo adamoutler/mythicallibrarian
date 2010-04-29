@@ -126,7 +126,7 @@ if [ "$DownloadML" = "Latest" ]; then
  		if [ $startwrite = 2 ]; then
  			clear
 
-			parsing="$parsing""."
+			parsing="$parsing""#"
 			echo $parsing
  			echo -e "$line"
  			echo -e "$line" >> ./librarian
