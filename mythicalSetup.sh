@@ -110,17 +110,17 @@ if [ "$DownloadML" = "Latest" ]; then
  	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
- 	
+ 	parsing="Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
  	do
 		echo "$line"
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
- 		parsing="Parsing mythicalLibrarian"
+
  		if [ $startwrite = 2 ]; then
  			clear
-			parsing="$parsing."
+			parsing="$parsing""."
 			echo "$parsing"
  			echo -e "$line" >> ./librarian
   	echo $startwrite
