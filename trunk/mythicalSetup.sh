@@ -125,10 +125,10 @@ if [ "$DownloadML" = "Latest" ]; then
 
  		if [ $startwrite = 2 ]; then
  			clear
-			echo "$line"
- 			echo -e "$line"
-			parsing="$parsing""."
 
+			parsing="$parsing""."
+			echo $parsing
+ 			echo -e "$line"
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
