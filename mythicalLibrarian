@@ -865,22 +865,25 @@
 
  UseOriginalDir () {
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
- 	 MoveDir="$originaldirname/Episodes"
+ 	 
+  	 test "$originaldirname" = "" && thisfolder="./" || thisfolder="/"
+ 	 MoveDir="$originaldirname$thisfolder""Episodes"
  	 test ! -d "$MoveDir" && mkdir "$MoveDir"
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
- 	 AlternateMoveDir="$originaldirname/Episodes"
+ 	 AlternateMoveDir="$originaldirname$thisfolder""Episodes"
+ 	 
  	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
- 	 PrimaryMovieDir="$originaldirname/Movies"
+ 	 PrimaryMovieDir="$originaldirname$thisfolder""Movies"
  	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir"
  #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
- 	 AlternateMovieDir="$originaldirname/Movies"
+ 	 AlternateMovieDir="$originaldirname$thisfolder""Movies"
   	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
  #PrimaryShowDir is where generic episodes will be placed
- 	 PrimaryShowDir="$originaldirname/Showings"
+ 	 PrimaryShowDir="$originaldirname$thisfolder""Showings"
   	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
-  	 AlternateShowDir="$originaldirname/Showings"
+  	 AlternateShowDir="$originaldirname$thisfolder""Showings"
   	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
  }
 
