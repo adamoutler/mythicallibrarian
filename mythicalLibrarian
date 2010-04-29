@@ -906,7 +906,7 @@
  	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
 
  	if [ "$NamingConvention" = "" ] ; then
- 		if [ "$GoForDoover" = "1"]; then
+ 		if [ "$GoForDoover" = "1" ]; then
  		  	echo -e "\t<title>$epn Recorded $datehour -Episode in --doover Que</title>">>"$MoveDir/$ShowFileName.nfo"
  		else
 	       		echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo"
