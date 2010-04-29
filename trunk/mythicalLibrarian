@@ -1489,7 +1489,7 @@
  		echo "done."
  		exit 0
 	;;
-	--version|-v)
+	--version|-v|-ver|-V)
 		echo $mythicalVersion
 		exit 0
  	;;
