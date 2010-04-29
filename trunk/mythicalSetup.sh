@@ -110,7 +110,7 @@ if [ "$DownloadML" = "Latest" ]; then
  	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
- 	parsing="Parsing mythicalLibrarian"
+ 	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
  	while read line
@@ -126,6 +126,8 @@ if [ "$DownloadML" = "Latest" ]; then
   	echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
+ 	clear
+	echo "Parsing mythicalLibrarian completed"
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
