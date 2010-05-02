@@ -16,12 +16,6 @@ else
  	a="dialog " 
 fi
 
-if which replace >/dev/null; then
- 	echo "Verified  mysql-server-5.0 exists"
-else
- 	echo "install package ' mysql-server-5.0' on your system"
- 	b="mysql-server-5.0 "
-fi
 
 if which curl >/dev/null; then
 	echo "Verified curl exists"
@@ -38,7 +32,7 @@ fi
 if which notify-send >/dev/null; then
 	echo "Verified libnotify-bin exists"
 else
-	echo "Please install 'libnotify-bin' on your system"
+	echo "'libnotify-bin' is a non essential missing package on your system"
  	e="libnotify-bin "
 fi
 
@@ -50,7 +44,7 @@ else
  	echo "Debian based users run 'apt-get install $a$b$c$d$e"
 	exit 1
 fi
- svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision | replace "<html><head><title>mythicallibrarian - " ""| replace ": /trunk</title></head>" ""`
+ svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g|  sed s/": \/trunk<\/title><\/head>"/""/g`
 
 if ! which librarian-notify-send>/dev/null; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
@@ -80,7 +74,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
+ 	cat "./mythicalLibrarian.sh" |  sed s/"\\"/"\\\\"/g |  sed s/"\t"/"\\\t "/g >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
@@ -110,11 +104,11 @@ if [ "$DownloadML" = "Stable" ]; then
 
 fi
 if [ "$DownloadML" = "Latest" ]; then
-  	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision | replace "<html><head><title>mythicallibrarian - " ""| replace ": /trunk</title></head>" ""`
+  	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" | replace "\\" "\\\\" | replace "\t" "\\\t " >"./mythicalLibrarian1"
+ 	cat "./mythicalLibrarian.sh" | sed s/"\\"/"\\\\"/g | sed s/"\t"/"\\\t "/g >"./mythicalLibrarian1"
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
@@ -227,7 +221,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		test "$database" = 1 && echo "GuideDataType=SchedulesDirect">>./mythicalSetup || echo "GuideDataType=NoLookup">>./mythicalSetup
 
  		echo " #MySQL User name: Default="mythtv"">> ./mythicalSetup
- 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBUserName="/""/g`||mythtvusername="mythtv"
  		echo "$MySQLuser1" >./MySQLuser
 	    	dialog --inputbox "Enter your MYSQL Username. Default=$MySQLuser1" 9 40 "$MySQLuser1" 2>./MySQLuser
 		MySQLuser=`cat ./MySQLuser`
@@ -238,7 +232,7 @@ echo " ###Database Settings###">>./mythicalSetup
 
  		echo " #MySQL Password: Default="mythtv"">> ./mythicalSetup	
  		
- 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPassword="/""/g`||mythtvusername="mythtv"
  		test ! -f "./MySQLpass" && echo "$MySQLpass1">./MySQLpass
 	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 "$MySQLpass1" 2>./MySQLpass
  		MySQLpass=`cat ./MySQLpass`
@@ -310,11 +304,11 @@ elif [ $mythtv = 0 ]; then
 	echo " #Guide data type">> ./mythicalSetup
  	echo "GuideDataType=none" >> ./mythicalSetup
 
- 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/etc/mythtv/.mythtv/mysql.txt" | replace "DBUserName=" ""`||mythtvusername="mythtv"
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/etc/mythtv/.mythtv/mysql.txt" |  sed s/"DBUserName="/""/g`||mythtvusername="mythtv"
 	echo " #MySQL User name: Default="$mythtvusername"">> ./mythicalSetup
  	echo "MySQLuser=''" >> ./mythicalSetup
 
- 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/etc/mythtv/.mythtv/mysql.txt" | replace "DBPassword=" ""`||mythtvusername="mythtv"
+ 	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/etc/mythtv/.mythtv/mysql.txt" |  sed s/"DBPassword="/""/g`||mythtvusername="mythtv"
 	echo " #MySQL Password: Default="$mythtvpassword"">> ./mythicalSetup
  	echo "MySQLpass=''" >> ./mythicalSetup
 
@@ -476,7 +470,9 @@ test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalSetup >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 
-
+test ! -d "/usr" && mkdir "/usr"
+test ! -d "/usr/local" && mkdir "/usr/local"
+test ! -d "/usr/local/bin" && mkdir "/usr/local/bin" && PATH=$PATH:/usr/local/bin && export PATH && echo "PATH=$PATH:/usr/local/bin">~/.profile
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
@@ -518,7 +514,7 @@ if [ "$mythtv" = "1" ]; then
  while [ $counter -lt 4 ]
  do
   let counter=$counter+1
-  job=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | replace "data" "" |sed -n "2p" ` 
+  job=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; select data from settings where value like 'UserJob$counter';" | sed s/"data"/""/g |sed -n "2p" ` 
   test "$?" = "1" && nomythtvdb=1
   test "$job" = '/usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"' && JobFoundInSlot=$counter
   test "$JobFoundInSlot" = "0" && test "$SlotToUse" = "0" && test "$job" = "" && SlotToUse=$counter
