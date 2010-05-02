@@ -1517,7 +1517,7 @@
  ShowTranslations
 
  #Format Show name for Sending to www.TheTvDb.com and XBMC
- tvdbshowname=`echo $ShowName|replace " " "%20"`
+ tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g`
 
 
  #Check and make doover.sh if it does not exist
@@ -1555,8 +1555,8 @@
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
- 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|replace "<seriesid>" ""|replace "</seriesid>" "" | replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"|replace "<SeriesName>" ""|replace "</SeriesName>" "" | replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian/shn.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"</seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"</SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
