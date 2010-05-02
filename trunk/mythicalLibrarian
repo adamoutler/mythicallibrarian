@@ -395,12 +395,12 @@
  #This function provides fuzzy logic matching of a show name and returns a seriesid
  FuzzySeriesMatch () {
 
- 	showname=`echo "$ShowName"|replace "&amp;" "&"`
+ 	showname=`echo "$ShowName"|sed s/"&amp;"/"&"/g`
  	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
   	seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
- 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|replace "&amp;" "&"| tr -d '"<>:!\|/'|grep -m1 ^`
+ 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
  	return 0
  }
 
@@ -496,15 +496,15 @@
 	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
  		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$showname</link>">>$rssDir/$TEMPrssFile 
  	else
- 		tvdotcomshowname=`echo $ShowName|replace " " "%20"`
+ 		tvdotcomshowname=`echo $ShowName|sed s/" "/"%20"/g`
  		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&amp;stype=all&amp;tag=search%3Bfrontdoor&amp;qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
 	fi
  #TODO: use episode link as GUID - IMPORTANT-may be handled by using 
     	which ifconfig >/dev/null && myip=`ifconfig  | grep 'inet addr' -m1 | cut -d: -f2 | awk '{ print $1}'`
- 	rssepn=`echo $epn| replace "&" "&amp;"`
- 	rssNewShowName=`echo $NewShowName| replace "&" "&amp;"`
-	rssplot=`echo $plot| replace "&" "&amp;"`	
- 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"|replace "(" "%28"|replace ")" "%29"|replace " " "%20"`
+ 	rssepn=`echo $epn| sed s/"&"/"&amp;"/g`
+ 	rssNewShowName=`echo $NewShowName| sed s/"&"/"&amp;"/g`
+	rssplot=`echo $plot| sed s/"&"/"&amp;"/g`	
+ 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"| sed s/"("/"%28"/g| sed s/")"/"%29"|sed s/" "/"%20"/g`
  	echo -e "\t\t\t<guid>sftp://$mythicalGUID</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
@@ -1555,8 +1555,8 @@
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
- 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"</seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"</SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
