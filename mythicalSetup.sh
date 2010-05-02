@@ -297,7 +297,7 @@ echo " ###Database Settings###">>./mythicalSetup
 elif [ $mythtv = 0 ]; then
 
  	
-    	dialog --title "SYMLINK" --yesno "Do you want a symlink to the original file after move?" 6 25
+    	dialog --title "SYMLINK" --yesno "Do you want mythicalLibrarian to symlink to the original file after move?" 8 35
  	test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalSetup || echo "SYMLINK=Disabled" >> ./mythicalSetup
 
  	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalSetup
