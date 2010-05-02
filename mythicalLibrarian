@@ -598,10 +598,10 @@
  GrabTitleAndSubtitle () {
  	if [ "$InputTitle" = "" ]; then
  
- 		InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|replace "airdate" ""|sed -n "2p"`
+ 		InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
 
      #get year for movies 
- 		InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|replace "Subtitle" ""|sed -n "2p"`
+ 		InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
 
 
  	fi
@@ -617,35 +617,35 @@
  	echo "Accessing MythTV DataBase:"
 
  #get chanid for recordings to identify program table
- 	ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$FileBaseName';"|sed -n 2p|replace "chanid" ""|replace " " ""`
+ 	ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$FileBaseName';"|sed s/"\/"/""/g|sed -n 2p|sed s/"chanid"/""/g|sed s/" "/""/g`
   
  #get ProgramID from recorded to identify program
- 	ProgramID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select programid from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "starttime" ""`
+ 	ProgramID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select programid from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
  
  #Get zap2it series id from basename to identify program
- 	Zap2itSeriesID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select seriesid from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "seriesid" ""`
+ 	Zap2itSeriesID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select seriesid from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"seriesid"/""/g`
  
  #Get plot from basename to identify program
-  	plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "description" ""`
+  	plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
  
  #Get rating from basename to identify program
- 	stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "stars" ""`
+ 	stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"stars"/""/g`
 
  #get show start time to identify program ----future development
- 	ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "starttime" ""`
+ 	ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
  
  #get category from recorded to identify program table -----future development
- 	ShowCategory=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select category from recorded where basename like '$FileBaseName' ; " |sed -n "2p"|replace "category" ""`
+ 	ShowCategory=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select category from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"category"/""/g`
  
  #get original air date for tv shows
- 	OriginalAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select originalairdate from recorded where basename like '$FileBaseName' ; "|sed -n "2p"|replace "originalairdate" ""`
+ 	OriginalAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select originalairdate from recorded where basename like '$FileBaseName' ; "|sed s/"\/"/""/g|sed -n "2p"|sed s/"originalairdate"/""/g`
  	test "$OriginalAirDate" = "0000-00-00" && OriginalAirDate="$null"
  
  #get DataType
-   	XMLTVGrabber=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select xmltvgrabber from videosource ; "|replace "xmltvgrabber" ""|sed -n "2p"|replace " " ""`
+   	XMLTVGrabber=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select xmltvgrabber from videosource ; "|sed s/"xmltvgrabber"/""/g|sed s/"\/"/""/g|sed -n "2p"|sed s/" "/""/g`
  
  #get year for movies 
- 	MovieAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select airdate from recordedprogram where programid like '$ProgramID' and chanid like '$ChanID' ; "|replace "airdate" ""|sed -n "2p"|replace " " ""`
+ 	MovieAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select airdate from recordedprogram where programid like '$ProgramID' and chanid like '$ChanID' ; "|sed s/"\/"/""/g|sed s/"airdate"/""/g|sed -n "2p"|sed s/" "/""/g`
  
  #Blank year if it is invalid
  	if [ ! -z "$MovieAirDate" ] && [ $MovieAirDate -lt 1900 ]; then
@@ -658,11 +658,11 @@
  	if [ "$CommercialMarkup" = "Enabled" ]; then	
  #Remove old and generate a comskip Start list
  		echo "">$mythicalLibrarian/markupstart.txt
-	 	mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "4" ; " |replace "mark" ""|replace " " "">>$mythicalLibrarian/markupstart.txt
+	 	mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "4" ; " |sed s/"mark"/""/g|sed s/" "/""/g>>$mythicalLibrarian/markupstart.txt
  
  #Remove old and generate comskip Stop list
  		echo "">$mythicalLibrarian/markupstop.txt
- 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "5" ; " |replace "mark" ""|replace " " "">>$mythicalLibrarian/markupstop.txt
+ 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select mark from recordedmarkup where starttime like '$ShowStartTime' and chanid like '$ChanID' and type like "5" ; " |sed s/"mark"/""/g|sed s/" "/""/g>>$mythicalLibrarian/markupstop.txt
 
  		GenComSkip
  	fi
@@ -786,7 +786,7 @@
  DownloadAndParse () {
  #Get the seriesid based on the showname
  	 seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
- 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|replace "&amp;" "&"`
+ 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"&".g`
  #Create folder for database if it does not exist
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
  	mkdir $mythicalLibrarian/"$NewShowName"
@@ -803,7 +803,7 @@
  	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
  
  #Parse file into usable data only
- 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep "<Time>"|replace "<Time>" ""|replace "</Time>" "">"$mythicalLibrarian/$NewShowName/current.time"
+ 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep "<Time>"|sed s/"<Time>"/""/g|sed s/"</Time>"/""/g>"$mythicalLibrarian/$NewShowName/current.time"
   	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
  	test -f "$mythicalLibrarian/$NewShowName/lastupdated.time" && LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
  
@@ -830,7 +830,7 @@
 
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
- 		seriesid=`echo $seriesid|replace  "<seriesid>" "" |replace "</seriesid>" ""`
+ 		seriesid=`echo $seriesid|sed s/"<seriesid>"/""/g | sed s/"</seriesid>"/""/g`
  
  #Download information from server
  		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
@@ -838,10 +838,10 @@
  #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
  		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
  #Get Zap2it ID
-			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"|replace "  <zap2it_id>" ""|replace "</zap2it_id>" ""| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
+			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"| sed s/"  <zap2it_id>"/""/g|sed s/"<\/zap2it_id>"/""/g| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""|sed 's/;.*//'| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"</EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
