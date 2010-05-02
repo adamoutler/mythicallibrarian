@@ -830,7 +830,7 @@
 
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
- 		seriesid=`echo $seriesid|sed s/"<seriesid>"/""/g | sed s/"</seriesid>"/""/g`
+ 		seriesid=`echo $seriesid|sed s/"<seriesid>"/""/g | sed s/"<\/seriesid>"/""/g`
  
  #Download information from server
  		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
