@@ -803,7 +803,7 @@
  	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
  
  #Parse file into usable data only
- 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep "<Time>"|sed s/"<Time>"/""/g|sed s/"</Time>"/""/g>"$mythicalLibrarian/$NewShowName/current.time"
+ 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep "<Time>"|sed s/"<Time>"/""/g|sed s/"<\/Time>"/""/g>"$mythicalLibrarian/$NewShowName/current.time"
   	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
  	test -f "$mythicalLibrarian/$NewShowName/lastupdated.time" && LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
  
@@ -841,7 +841,7 @@
 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"| sed s/"  <zap2it_id>"/""/g|sed s/"<\/zap2it_id>"/""/g| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"</EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
