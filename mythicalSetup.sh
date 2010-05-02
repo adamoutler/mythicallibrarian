@@ -151,8 +151,7 @@ echo " ###Stand-alone mode values###">>./mythicalSetup
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "would you like to use your/recording/directory/Episodes and your/recording/directory/Movies?
-Or would you like to choose your own directory to separate Episodes from Movies?" 10 50
+dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Would you like to use your original recordings folder or would you like to choose your own folder to place recordings?" 10 50
 	test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
 
 test -f ./movedir && movedir1=`cat ./movedir`
@@ -267,7 +266,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "AlternateMovieDir='$AlternateMovieDir'" >> ./mythicalSetup
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalSetup
- 		dialog --title "Unrecognizable programming" --yesno "Process unrecognized Episodes and Shows?" 8 40
+ 		dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows when it cannot obtain TVDB information?" 8 40
   		test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalSetup || echo " ShowStopper=Enabled">> ./mythicalSetup
  		
 
