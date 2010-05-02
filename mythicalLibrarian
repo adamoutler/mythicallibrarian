@@ -844,16 +844,16 @@
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"|replace "&amp;" "and"|replace "  <EpisodeName>" ""|replace "</EpisodeName>" ""| replace '&quot;' '"' | replace '&amp;' '&' | replace '&ndash;' '-' | replace "&lt;" "<" | replace "&gt;" ">" |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 
  #Get OriginalAirDate
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"|replace "  <FirstAired>" ""|replace "</FirstAired>" ""|replace "/" "">"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"| sed s/"  <FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g>"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
 
  #Get Season number
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<SeasonNumber>"|replace "<SeasonNumber>" ""|replace "</SeasonNumber>" ""|replace " " "">"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<SeasonNumber>"| sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
  
  #Get Episode number
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<EpisodeNumber>"|replace "<EpisodeNumber>" ""|replace "</EpisodeNumber>" ""|replace " " "">"$mythicalLibrarian/$NewShowName/$NewShowName".E.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<EpisodeNumber>"| sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g>"$mythicalLibrarian/$NewShowName/$NewShowName".E.txt
  
  
  		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
@@ -986,7 +986,7 @@
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
  	if [ -f $mythicalLibrarian/showtranslations ]; then 
- 		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"|replace "$ShowName = " ""|replace "$mythicalLibrarian/showtranslations" ""`		 
+ 		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"| sed s/"$ShowName = "/""/g `		 
  		if [ "$showtranslation" != "" ];then 
  			ShowName=$showtranslation
  			echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
@@ -1051,8 +1051,8 @@
  		do
  			DirToCheck=$line
  			if [ -d "$DirToCheck" ]; then
-  				DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m1 ^`
- 				test "$DirToCheckCheck" = "" && DirToCheckCheck=`ls "$line"|replace "tvshow.nfo" ""|grep -m2 ^`
+  				DirToCheckCheck=`ls "$line"|  sed s/"tvshow.nfo"/""/g |grep -m1 ^`
+ 				test "$DirToCheckCheck" = "" && DirToCheckCheck=`ls "$line"|  sed s/"tvshow.nfo"/""/g |grep -m2 ^`
  			 	if [ "$DirToCheckCheck" = "" ]; then
   					echo "REMOVING ORPHAN FOLDER:$line">>"$mythicalLibrarian"/output.log
   					echo "REMOVING ORPHAN FOLDER:$line"
@@ -1160,11 +1160,10 @@
  	echo "mythicalLibrarian will now conduct a series of tests."
 	read -n1 -p "press any key to verify installed packages..."
  	echo ""
- 	test `which replace`>/dev/null && echo "package 'mysql-server-5.0' is installed" || checkb="mysql-server-5.0 "
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
 	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin "	
-	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ] && [ `which replace`>/dev/null ]; then
+	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
  		packagecheck="***PASSED***"
 		echo "Installed packages check ***PASSED***"
 	else
