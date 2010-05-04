@@ -504,7 +504,7 @@
  	rssepn=`echo $epn| sed s/"&"/"&amp;"/g`
  	rssNewShowName=`echo $NewShowName| sed s/"&"/"&amp;"/g`
 	rssplot=`echo $plot| sed s/"&"/"&amp;"/g`	
- 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"| sed s/"("/"%28"/g| sed s/")"/"%29"|sed s/" "/"%20"/g`
+ 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"| sed s/"("/"%28"/g| sed s/")"/"%29"/g|sed s/"\ "/"%20"/g`
  	echo -e "\t\t\t<guid>sftp://$mythicalGUID</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
@@ -1932,14 +1932,9 @@
  	 	 	test  "$RequiresNFO" = "1" && GenerateTVShowNFO
  	 	 	test  "$RequiresNFO" = "1" && GenerateEpisodeNFO
    			XBMCAutomate 
-	 
-echo 1
  			performLoggingForMoveMode
-echo 2
  			dailyreport 
-echo 3
  			generaterss 
-echo 4
   			jobtype=MoveModeSuccessful		
  			RunJob
  
