@@ -1932,9 +1932,14 @@
  	 	 	test  "$RequiresNFO" = "1" && GenerateTVShowNFO
  	 	 	test  "$RequiresNFO" = "1" && GenerateEpisodeNFO
    			XBMCAutomate 
+	 
+echo 1
  			performLoggingForMoveMode
+echo 2
  			dailyreport 
+echo 3
  			generaterss 
+echo 4
   			jobtype=MoveModeSuccessful		
  			RunJob
  
