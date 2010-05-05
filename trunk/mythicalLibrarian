@@ -282,6 +282,7 @@
  #$ProgramIDType= Generic episode with no data, Movie, or Series With Episode Data
  #$Zap2itSeriesID= Zap2it ID with SH, MV or EP stripped
  #$MyUserName = name of user running mythicalLibrarian
+ #$SafeShowName = title of show after showtranslations formatted for filesystem use
 
  ####EPISODES AND GENERIC SHOWS####
  #$OriginalAirDate = original air date  Generic programming will be the first episode ever, for episodes it will be the first aired date
@@ -316,7 +317,7 @@
  	else
   		exx="Generic"
  		MoveDir="$PrimaryShowDir"
-	  	ShowFileName=`echo "$ShowName S0E0 (Recorded $datehour on $ChanID)"`
+	  	ShowFileName=`echo "$ShowName S0E0 ($epn Recorded $datehour on $ChanID)"`
  		RequiresNFO=1 
 	 
  	fi
@@ -1514,7 +1515,7 @@
 
  #Check for show translations relating to the show in question.
  ShowTranslations
-
+ SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Format Show name for Sending to www.TheTvDb.com and XBMC
  tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g`
 
@@ -1789,6 +1790,7 @@
 
  		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
   		mythicalLibrarianProgramIDCheck=SH
+		NewShowName=$SafeShowName
  		echo "WARNING: EPISODE INFORMATION COULD NOT BE OBTAINED"
  		echo "HANDLING AS A GENERAL SHOWING"
  		echo "Please consider helping out and adding to thetvdb."
