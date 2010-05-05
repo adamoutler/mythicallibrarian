@@ -1822,9 +1822,9 @@
  #####OUTPUT FILE NAME FORMATTING#####
  #universally not accepted file system characters:  |\?*<":>+[]/ 
  #Format Shows
- epn=`echo $epn| tr -d '|\?*<":>+[]/'`
- NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'`
- ShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'`
+ epn=`echo $epn| tr -d '|\?*<":>+[]/'"'"`
+ NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'"'"`
+ ShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'"'"`
  
  #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
  if [ "$NamingConvention" = "" ]; then
