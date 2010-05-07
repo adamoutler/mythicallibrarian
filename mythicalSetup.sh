@@ -1,7 +1,7 @@
 #! /bin/bash
  
 #This script will generate the user settings portion of mythicalLibrarian
-echo "" > ./mythicalSetup 
+test -f "./mythicalSetup" && echo "" "../mythicalSetup/mythicalSetup"
 if [ "$(id -u)" != "0" ]; then
 	echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
 	exit 1
