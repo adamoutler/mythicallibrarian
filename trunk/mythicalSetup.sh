@@ -108,7 +108,7 @@ if [ "$DownloadML" = "Latest" ]; then
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh"| sed s/'\\'/'\\\\'/g |sed s/"\ "/'\\\ '/g |sed s/"\t"/'\\\t'/g >./mythicalLibrarian1
+ 	cat "./mythicalLibrarian.sh"| sed s/'\\'/'\\\\'/g |sed s/'\ '/'\\\ '/g |sed s/'\t'/'\\\t'/g >./mythicalLibrarian1
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
