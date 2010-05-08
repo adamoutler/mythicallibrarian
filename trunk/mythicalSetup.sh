@@ -108,7 +108,7 @@ if [ "$DownloadML" = "Latest" ]; then
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh"| sed s/'\\'/'\\\\'/g | sed s/"\t"/"	"/g  >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
+ 	cat "./mythicalLibrarian.sh"| sed s/"	"/'\t'/g | sed s/"\ "/'\\'/g| sed s/'\\'/'\\\\'/g   >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
@@ -117,9 +117,7 @@ if [ "$DownloadML" = "Latest" ]; then
  	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
 	while read line
  	do
-
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
-
  		if [ $startwrite = 2 ]; then
  			clear
 			parsing="$parsing""."
