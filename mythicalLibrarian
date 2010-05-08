@@ -1479,7 +1479,7 @@
  		switchhelp=1
  		mythicalHelp
  	;;
- 	--update|-u)
+ 	--update|--upgrade|--build|-u)
    		mythicalUpdater
  	;;
  	--doMaintenance)
@@ -1499,7 +1499,8 @@
  #####ENVIRONMENTAL VARIABLES CONTINUED#####
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
- echo "$mythicalVersion">>"$mythicalLibrarian"/output.log 
+ echo "$mythicalVersion">>"$mythicalLibrarian"/output.log
+ echo "$mythicalVersion" 
 
  InputFileBasename=`basename $InputPath`
 
