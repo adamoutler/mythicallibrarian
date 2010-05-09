@@ -237,6 +237,14 @@
 			#
 			exit 3
 			;;
+ 		titleIgnore|categoricIgnore)
+ 			echo "Show Was ignored based on $jobtype"
+			#Insert Custom User Job Here
+			
+			#
+			exit 0
+			;;
+			
  	 esac
  #Custom exit point may be set anywhere in program by typing RunJob on any new line
  #Insert Custom User Job here 
@@ -982,7 +990,20 @@
  return 0
  }
 
+ ignoreList () {
 
+ 	if [ -f "$mythicalLibrarian/titleIgnore" ]; then 
+ 		ignoreTest=`grep "$InputTitle" "$mythicalLibrarian/titleIgnore"`
+ 		test "$InputTitle" = "$ignoreTest" && JobType=titleIgnore && runJob
+ 
+	fi
+ 	return 0
+ 		if [ -f "$mythicalLibrarian/categoricIgnore" ]; then
+  		ignoreTest=`grep "$ShowCategory" "$mythicalLibrarian/categoricIgnore"`
+ 		test "$ShowCategory" = "$ignoreTest" && JobType=categoricIgnore && runJob
+        fi
+ 	return 0
+}
  #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
@@ -1521,6 +1542,7 @@
 
  #Check for show translations relating to the show in question.
  ShowTranslations
+ ignoreList
  SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Format Show name for Sending to www.TheTvDb.com and XBMC
  tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g`
