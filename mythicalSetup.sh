@@ -117,7 +117,7 @@ if [ "$?" = "1" ]; then
  	exit 1
 fi
 fi
-
+clear
 if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
