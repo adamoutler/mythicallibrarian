@@ -44,6 +44,50 @@ else
 	echo "the proper dependencies must be installed..." 
  	echo "The missing dependencies are $a$b$c$d$e"
  	test "$LinuxDep" = "1" && echo "Debian based users run 'apt-get install $a$b$c$d$e" || echo "Please obtain MacPorts and install $a$b$c"
+	if [ "$LinuxDep" = "0" ]; then
+ 		read -n1 -p " Would you like some help on installing MacPorts? Select: (y)/n" MacPortsHelp
+ 		if [ "$MacPortsHelp" != "n" ]; then
+ 			clear
+ 			echo "Please select"
+			echo "1. Snow Leopard"
+			echo "2. Leopard"
+			echo "3. Tiger"
+			read -n1 -p "Select (1), 2, or 3" OSXVER
+			clear
+			echo "Step 1. Please download the MacPorts dmg file in Safari from:"
+			test "$OSXVER" = "1" && echo "http://distfiles.macports.org/MacPorts/MacPorts-1.8.2-10.6-SnowLeopard.dmg"
+			test "$OSXVER" = "2" && echo "http://distfiles.macports.org/MacPorts/MacPorts-1.8.2-10.5-Leopard.dmg"
+			test "$OSXVER" = "3" && echo "http://distfiles.macports.org/MacPorts/MacPorts-1.8.2-10.4-Tiger.dmg"
+			echo "Step 2. Double-click on the file to mount it"
+			echo "Step 3. Double-click on the MacPorts pkg file"
+			echo "Step 4. click continue, agree, install, and finally close when the Install Suceeded"
+			read -n1 -p "Press any key when finished..." arbitraryVariable
+			echo "Step 5. Verify X11 is installed on your system.  It can be found in the finder under"
+			echo " Applications->Utilities->X11"
+			echo "If it is not there, you have two options:"
+			echo "Step 6a. Insert your mac recovery CD and reboot to it, click the \'customize\' button before installation and select X11. This should not harm any of your documents or programs unless you select reinstallation instead of upgrade."
+			echo "Step 6B. Obtain a copy of xorg-server and build it on your Mac"
+			read -n1 -p "Press any key to continue..." arbitraryVariable
+			clear
+			echo "Step 7. Download Xcode"
+			echo "Step 7a. Log into the Mac Dev Center here:"
+			echo " http://developer.apple.com/technologies/xcode.html"  
+			echo "If you are not registered as a developer, it is free with your AppleID and takes 5 minutes"
+			test "$OSXVER" = "1" && echo "You will need to Download Xcode 3.2.1 or later to work with your version of OSX "
+			test "$OSXVER" = "2" && echo "You will need to Download Xcode 3.1.4 or later to work with your version of OSX "
+			test "$OSXVER" = "3" && echo "You will need to Download Xcode 2.5 or later to work with your version of OSX "
+			echo "Step 7b. Once you have registered, you can open the following link in safari:"
+			echo "https://developer.apple.com/mac/scripts/downloader.php?path=/iphone/iphone_sdk_3.2__final/xcode_3.2.2_and_iphone_sdk_3.2_final.dmg"
+			echo "Step 8. Double-click to Mount the Xcode dmg file"
+ 			echo "Step 9. Double-click to run the Xcode pkg file"
+			read -n1 -p "Press any key to continue..." arbitraryVariable
+			echo "step 10. Open the terminal and type the following"
+			echo "sudo port install agrep"
+			echo "step 11. type the following"
+			echo "sudo port install dialog"
+					
+		fi 
+	fi
 	exit 1
 fi
  svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g|  sed s/": \/trunk<\/title><\/head>"/""/g`
