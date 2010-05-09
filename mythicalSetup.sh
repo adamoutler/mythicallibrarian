@@ -8,32 +8,33 @@ if [ "$(id -u)" != "0" ]; then
 fi
 test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 echo $SUDO_USER
-
+test "`uname`" != "Darwin" && LinuxDep=0 || LinuxDep=1
+test "$LinuxDep" = "0" && read -n1 -p " I see you have a Apple Macintosh! While it is still primarily Linux based, mythicalLibrarian is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org" arbitraryVariable 
 if which dialog >/dev/null; then
 	echo "Verified dialog exists"
 else
-	echo "install package 'dialog' on your system"
- 	a="dialog " 
+	test "$LinuxDep" = "1" && echo "install package 'dialog' on your system" || echo "Please obtain MacPorts and install package dialog"
+ 	test "$LinuxDep" = "1" && a="dialog " 
 fi
 
 
 if which curl >/dev/null; then
 	echo "Verified curl exists"
 else
-	echo "Please install 'curl' on your system"
+	test "$LinuxDep" = "1" && echo "Please install 'curl' on your system" || echo "Please obtain MacPorts and install package curl"
  	c="curl "
 fi
 if which agrep >/dev/null; then
 	echo "Verified agrep exists"
 else
-	echo "Please install 'agrep' on your system"
+	test "$LinuxDep" = "1" && echo "Please install 'agrep' on your system" || echo "Please obtain MacPorts and install package agrep"
  	d="agrep "
 fi
 if which notify-send >/dev/null; then
 	echo "Verified libnotify-bin exists"
 else
 	echo "'libnotify-bin' is a non essential missing package on your system"
- 	e="libnotify-bin "
+ 	test "$LinuxDep" = "1" && e="libnotify-bin "|| echo "This platform does not support Pop-up notifications.-OK"
 fi
 
 
@@ -41,7 +42,8 @@ if which notify-send>/dev/null && which agrep>/dev/null && which curl>/dev/null 
 	echo "All checks complete!!!"
 else
 	echo "the proper dependencies must be installed..." 
- 	echo "Debian based users run 'apt-get install $a$b$c$d$e"
+ 	echo "The missing dependencies are $a$b$c$d$e"
+ 	test "$LinuxDep" = "1" && echo "Debian based users run 'apt-get install $a$b$c$d$e" || echo "Please obtain MacPorts and install $a$b$c"
 	exit 1
 fi
  svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g|  sed s/": \/trunk<\/title><\/head>"/""/g`
