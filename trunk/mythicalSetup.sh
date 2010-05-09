@@ -9,7 +9,7 @@ fi
 test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 echo $SUDO_USER
 test "`uname`" != "Darwin" && LinuxDep=0 || LinuxDep=1
-test "$LinuxDep" = "0" && read -n1 -p " I see you have a Apple Macintosh! While it is still primarily Linux based, mythicalLibrarian is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org" arbitraryVariable 
+test "$LinuxDep" = "1" && read -n1 -p " I see you have a Apple Macintosh! While mythicalLibrarian is still primarily Linux based, it is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org.  Press any key to continue..." arbitraryVariable 
 if which dialog >/dev/null; then
 	echo "Verified dialog exists"
 else
