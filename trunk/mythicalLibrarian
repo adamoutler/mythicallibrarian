@@ -1163,23 +1163,28 @@
  	echo ""
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
-	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed" || checke="libnotify-bin "	
-	if [ `which notify-send`>/dev/null ] && [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
+	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed"  || checke="libnotify-bin "	
+	if [ `which notify-send`>/dev/null -a "$mythicalPlatform" != "Darwin" ] || [ `which agrep`>/dev/null ] || [ `which curl`>/dev/null ]; then
  		packagecheck="***PASSED***"
-		echo "Installed packages check ***PASSED***"
-	else
+ 		echo "Installed packages check ***PASSED***"
+ 	else
  		packagecheck="***FAILED***"
-		echo "Installed packages check ***FAILED***" 
- 		echo "Please run 'apt-get install $checkb$checkc$checkd$checke' or equivalant"
+ 		echo "Installed packages check ***FAILED***" 
+ 		echo "Missing packages are $checkb$checkc$checkd$checke"
+ 		test "$mythicalPlatform" != "Darwin" && echo "Please run 'apt-get install $checkb$checkc$checkd$checke' or equivalant"|| echo "Please obtain MacPorts and install $checkb$checkc$checkd$checke"
+ 	fi
+ 	if [ "$mythicalPlatform" != "Darwin" ]; then
+ 		read -n1 -p "Press any key to perform Desktop Message test..."
+ 		echo ""
+ 		echo "Performing librarian-notify-send test"
+ 		echo "This test verifies that the message was sent to the DBUS."
+ 		echo "This test does not verify the user has a valid desktop open."
+ 		sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
+ 		test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
+ 		echo "Desktop Notifications test $notifytest"
+	else 
+ 		notifytest="   N/A"
 	fi
- 	read -n1 -p "Press any key to perform Desktop Message test..."
- 	echo ""
- 	echo "Performing librarian-notify-send test"
- 	echo "This test verifies that the message was sent to the DBUS."
-	echo "This test does not verify the user has a valid desktop open."
- 	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian test" "Testing Desktop Communications" "info"
- 	test "$?" = "0" && notifytest="***PASSED***" || notifytest="***FAILED***"
- 	echo "Desktop Notifications test $notifytest"
  	read -n1 -p "Press any key to perform XBMC Notification test..."
  	echo ""
 	echo "Performing XBMC Notifications test"
@@ -1501,7 +1506,7 @@
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  echo "$mythicalVersion">>"$mythicalLibrarian"/output.log
  echo "$mythicalVersion" 
-
+ mythicalPlatform="`uname`"
  InputFileBasename=`basename $InputPath`
 
  #If not specified, grab Title and subtitle from database using basename for reference
