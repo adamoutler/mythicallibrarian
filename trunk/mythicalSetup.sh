@@ -74,28 +74,27 @@ if [ "$DownloadML" = "Stable" ]; then
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh" |sed s/'\t'/'\\t'/g|sed s/'\ '/'\\ '/g| sed s/"\\"/"\\\\"/g >"./mythicalLibrarian1"
+ 	cat "./mythicalLibrarian.sh"| sed s/'\t'/'\\t'/g |sed s/'\\'/'\\\\'/g   >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
  	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
-	test -f ./librarian && rm -f ./librarian	
+	test -f ./librarian && rm -f ./librarian
  	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
- 	while read line
+	while read line
  	do
-
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
  		if [ $startwrite = 2 ]; then
  			clear
 			parsing="$parsing""."
-			echo "$parsing"
+			echo $parsing
  			echo -e "$line" >> ./librarian
- 			echo $startwrite
  		fi
   	done <./mythicalLibrarian.sh
-
+n
  	clear
-	echo "Parsing mythicalLibrarian completed"
+	echo "Parsing mythicalLibrarian completed!"
+ 	echo "Removing old and downloading new version of mythicalSetup..."
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
