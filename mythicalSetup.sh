@@ -8,12 +8,14 @@ if [ "$(id -u)" != "0" ]; then
 fi
 test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 echo $SUDO_USER
-test "`uname`" != "Darwin" && LinuxDep=0 || LinuxDep=1
-test "$LinuxDep" = "1" && read -n1 -p " I see you have a Apple Macintosh! While mythicalLibrarian is still primarily Linux based, it is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org.  Press any key to continue..." arbitraryVariable 
+test "`uname`" != "Darwin" && LinuxDep=1 || LinuxDep=0
+test "$LinuxDep" = "0" && read -n1 -p " I see you have a Apple Macintosh! While mythicalLibrarian is still primarily Linux based, it is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org.  Press any key to continue..." arbitraryVariable 
+
+
 if which dialog >/dev/null; then
 	echo "Verified dialog exists"
 else
-	test "$LinuxDep" = "1" && echo "install package 'dialog' on your system" || echo "Please obtain MacPorts and install package dialog"
+	test "$LinuxDep" = "1" && echo "Please install package 'dialog' on your system" || echo "Please obtain MacPorts and install package dialog"
  	test "$LinuxDep" = "1" && a="dialog " 
 fi
 
@@ -79,7 +81,7 @@ else
 			echo "Step 7b. Once you have registered, you can open the following link in safari:"
 			echo "https://developer.apple.com/mac/scripts/downloader.php?path=/iphone/iphone_sdk_3.2__final/xcode_3.2.2_and_iphone_sdk_3.2_final.dmg"
 			echo "Step 8. Double-click to Mount the Xcode dmg file"
- 			echo "Step 9. Double-click to run the Xcode pkg file"
+ 			echo "Step 9. Double-click to run the Xcode pkg file and run through the easy installer"
 			read -n1 -p "Press any key to continue..." arbitraryVariable
 			echo "step 10. Open the terminal and type the following"
 			echo "sudo port install agrep"
