@@ -94,7 +94,7 @@ else
  			echo "Step 7b-4. Double-click to run the Xcode pkg file and run through the easy installer"
 			read -n1 -p "Press any key to continue..." arbitraryVariable
 			echo "step 10. Open the terminal and type the following"
-			echo "sudo port install agrep"
+			echo "sudo port install tre"
 			echo "step 11. type the following"
 			echo "sudo port install dialog"
 					
