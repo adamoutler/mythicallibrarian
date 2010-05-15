@@ -1926,7 +1926,7 @@
  if [ "$SYMLINK" != "LINK" ]; then
  
  #Send notifications, Move the file and rename
- 	echo "MOVING FILE: $InputPath to $MoveDir/$ShowFileName.$originalext">>"$mythicalLibrarian"/output.log
+ 	echo "MOVING FILE: '$InputPath' to '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/output.log
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Moving" "Moving and renaming $ShowFileName" drive-harddisk
  	mv "$InputPath" "$MoveDir/$ShowFileName.$originalext"
  
