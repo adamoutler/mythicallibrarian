@@ -104,7 +104,7 @@ else
 fi
  svnrev=`curl -s -m10  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g|  sed s/": \/trunk<\/title><\/head>"/""/g`
 
-if ! which librarian-notify-send>/dev/null; then
+if ! which librarian-notify-send>/dev/null && test "$LinuxDep" = "1"; then
  	dialog --title "librarian-notify-send" --yesno "install librarian-notify-send script for Desktop notifications?" 8 25
   	test $? = 0 && DownloadLNS=1 || DownloadLNS=0
  	if [ "$DownloadLNS" = "1" ]; then
