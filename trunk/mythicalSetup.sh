@@ -16,7 +16,7 @@ if which dialog >/dev/null; then
 	echo "Verified dialog exists"
 else
 	test "$LinuxDep" = "1" && echo "Please install package 'dialog' on your system" || echo "Please obtain MacPorts and install package dialog"
- 	test "$LinuxDep" = "1" && a="dialog " 
+ 	a="dialog " 
 fi
 
 
@@ -40,7 +40,7 @@ else
 fi
 
 
-if which notify-send>/dev/null && which agrep>/dev/null && which curl>/dev/null && which dialog>/dev/null; then
+if which agrep>/dev/null && which curl>/dev/null && which dialog>/dev/null; then
 	echo "All checks complete!!!"
 else
 	echo "the proper dependencies must be installed..." 
@@ -64,6 +64,7 @@ else
 			echo "Step 3. Double-click on the MacPorts pkg file"
 			echo "Step 4. click continue, agree, install, and finally close when the Install Suceeded"
 			read -n1 -p "Press any key when finished..." arbitraryVariable
+			clear
 			echo "Step 5. Verify X11 is installed on your system.  It can be found in the finder under"
 			echo " Applications->Utilities->X11"
 			echo "If it is not there, you have two options:"
