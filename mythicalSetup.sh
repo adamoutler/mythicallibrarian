@@ -222,12 +222,10 @@ fi
 
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
 test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
-echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
-dialog --infobox "If your primary folder fails, your files will be moved to /home/mythtv/Episodes by default" 10 30 
+dialog --infobox "If your primary folder fails, your files will be moved to $AternateMoveDir1 default" 10 30 
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
-AlternateMoveDir=~/Episodes
 if [ "$UserChoosesFolder" = "0" ]; then 
- dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./movedir
+ dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
  AlternateMoveDir=`cat ./AlternateMoveDir`
 fi
  test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
@@ -329,7 +327,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		test -f ./AlternateMovieDir && AlternateMovieDir1=`cat ./AlternateMovieDir`
  		test "$AlternateMovieDir1" = "" && AlternateMovieDir1="~/Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
-		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$AlternateMovieDir1" 12 50 "$AlternateMovieDir1" 2>./PrimaryMovieDir
+		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$AlternateMovieDir1" 12 50 "$AlternateMovieDir1" 2>./AlternateMovieDir
  		 AlternateMovieDir=`cat ./AlternateMovieDir`
 		fi
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
@@ -362,14 +360,13 @@ echo " ###Database Settings###">>./mythicalSetup
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
  		test "$AlternateShowDir1" = "" && AlternateShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
-		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./PrimaryShowDir
+		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./AlternateShowDir
  		 AlternateShowDir=`cat ./AlternateShowDir`
 		fi
  		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
  		echo "$AlternateShowDir">./AlternateShowDir
  		echo "AlternateShowDir='$AlternateShowDir'">>./mythicalSetup
- 		AlternateShowDir="/home/mythtv/Showings"
- 	 	test !-d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
+  	 	test !-d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
 
 
