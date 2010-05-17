@@ -145,11 +145,12 @@ if [ "$DownloadML" = "Stable" ]; then
  		if [ $startwrite = 2 ]; then
  			clear
 			parsing="$parsing""."
+			test "$parsing" = "Stand-by Parsing mythicalLibrarian......." && parsing="Stand-by Parsing mythicalLibrarian"
 			echo $parsing
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
-n
+
  	clear
 	echo "Parsing mythicalLibrarian completed!"
  	echo "Removing old and downloading new version of mythicalSetup..."
@@ -183,7 +184,7 @@ if [ "$DownloadML" = "Latest" ]; then
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
-n
+
  	clear
 	echo "Parsing mythicalLibrarian completed!"
  	echo "Removing old and downloading new version of mythicalSetup..."
