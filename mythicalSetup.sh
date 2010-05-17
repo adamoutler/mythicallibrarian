@@ -328,7 +328,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		test -f ./AlternateMovieDir && AlternateMovieDir1=`cat ./AlternateMovieDir`
  		test "$AlternateMovieDir1" = "" && AlternateMovieDir1="~/Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
-		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$AlternateMovieDir1" 12 50 "$AlternateMovieDir1" 2>./AlternateMovieDir
+		 dialog --inputbox "Enter the name of the Alternate folder you would like to move Movies Default=$AlternateMovieDir1" 12 50 "$AlternateMovieDir1" 2>./AlternateMovieDir
  		 AlternateMovieDir=`cat ./AlternateMovieDir`
 		fi
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
@@ -361,7 +361,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
  		test "$AlternateShowDir1" = "" && AlternateShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
-		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./AlternateShowDir
+		 dialog --inputbox "Enter the name of the Alternate folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./AlternateShowDir
  		 AlternateShowDir=`cat ./AlternateShowDir`
 		fi
  		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
@@ -369,9 +369,6 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "AlternateShowDir=$AlternateShowDir">>./mythicalSetup
   	 	test !-d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
-
-
- 		echo "AlternateShowDir='$AlternateShowDir'" >> ./mythicalSetup
 
  		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalSetup
  		echo "CommercialMarkup=Enabled" >> ./mythicalSetup
