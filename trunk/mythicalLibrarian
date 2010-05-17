@@ -1709,7 +1709,7 @@
  fi 
  
  #Get file size and free space
- MoveFileSize=`stat %s "$InputPath"`|awk '{print $1}'
+ MoveFileSize=`stat "$InputPath"`|awk '{print $1}'
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
