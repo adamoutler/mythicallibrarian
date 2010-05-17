@@ -215,25 +215,24 @@ fi
  test "$movedir" = "" && movedir=$movedir1
  echo $movedir > ./movedir
  echo "MoveDir=$movedir">>./mythicalSetup
- movedir="/home/mythtv/Episodes"
+ test !-d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
 
 
 
-test -f ./Alternatemovedir && Alternatemovedir1=`cat ./Alternatemovedir`
-test "$Alternatemovedir1" = "" && Alternatemovedir1="~/Episodes"
+test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
+test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
 dialog --infobox "If your primary folder fails, your files will be moved to /home/mythtv/Episodes by default" 10 30 
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalSetup
 AlternateMoveDir=~/Episodes
 if [ "$UserChoosesFolder" = "0" ]; then 
- dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$Alternatemovedir1" 10 50 "$Alternatemovedir1" 2>./movedir
- Alternatemovedir=`cat ./movedir`
+ dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./movedir
+ AlternateMoveDir=`cat ./AlternateMoveDir`
 fi
- test "$Alternatemovedir" = "" && movedir=$Alternatemovedir1
- echo $Alternatemovedir > ./Alternatemovedir
- echo "AlternateMoveDir=$Alternatemovedir">>./mythicalSetup
-echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalSetup
-
+ test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
+ echo $AlternateMovedir > ./AlternateMoveDir
+ echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalSetup
+  test !-d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalSetup
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalSetup
 
@@ -322,7 +321,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
  		echo "PrimaryMovieDir='$PrimaryMovieDir'">>./mythicalSetup
-
+ 	 	test !-d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
 
 
  		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalSetup
@@ -335,7 +334,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
  		echo "$AlternateMovieDir">./AlternateMovieDir
  		echo "AlternateMovieDir='$AlternateMovieDir'">>./mythicalSetup
-
+ 	 	test !-d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir"
 
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalSetup
@@ -353,7 +352,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
  		echo "$PrimaryShowDir">./AlternateShowDir
  		echo "PrimaryShowDir='$PrimaryShowDir'">>./mythicalSetup
- 	
+ 	 	test !-d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
 
 
 
@@ -369,7 +368,7 @@ echo " ###Database Settings###">>./mythicalSetup
  		echo "$AlternateShowDir">./AlternateShowDir
  		echo "AlternateShowDir='$AlternateShowDir'">>./mythicalSetup
  		AlternateShowDir="/home/mythtv/Showings"
-
+ 	 	test !-d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
 
 
