@@ -1470,6 +1470,8 @@
  
  #####DEFINE ENVIRONMENT AND VARIABLES#####
  MyUserName=`whoami`
+ # Set global values
+ test -f "/etc/mythicalLibrarian/globalSettings" && . /etc/mythicalLibrarian/globalSettings
  #make our working dir if it does not exist
  if [ ! -d "$mythicalLibrarian" ]; then 
  	mkdir $mythicalLibrarian
@@ -1523,6 +1525,7 @@
  test "${InputTitle:0:1}" = "-" && mythicalHelp
 
  #####ENVIRONMENTAL VARIABLES CONTINUED#####
+
  #Initial log entry 
  echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  echo "$mythicalVersion">>"$mythicalLibrarian"/output.log
