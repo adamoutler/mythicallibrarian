@@ -350,23 +350,22 @@ echo " ###Database Settings###">>./mythicalSetup
 		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$PrimaryShowDir1" 12 50 "$PrimaryShowDir1" 2>./PrimaryShowDir
  		 PrimaryShowDir=`cat ./PrimaryShowDir`
 		fi
- 		test "$PrimaryShowDir" = "" && AlternateShowDir=$AlternateShowDir1
+ 		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
  		echo "$PrimaryShowDir">./AlternateShowDir
- 		echo "PrimaryShowDir='$AlternateShowDir'">>./mythicalSetup
- 		AlternateShowDir="/home/mythtv/Showings"
-
+ 		echo "PrimaryShowDir='$PrimaryShowDir'">>./mythicalSetup
+ 	
 
 
 
 
  		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalSetup
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
- 		test "$AlternateShowDir1" = "" && PrimaryShowDir1="~/Showings"
+ 		test "$AlternateShowDir1" = "" && AlternateShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./PrimaryShowDir
  		 AlternateShowDir=`cat ./AlternateShowDir`
 		fi
- 		test "$AlternateShowDir" = "" && AlternateShowDir=$PrimaryShowDir1
+ 		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
  		echo "$AlternateShowDir">./AlternateShowDir
  		echo "AlternateShowDir='$AlternateShowDir'">>./mythicalSetup
  		AlternateShowDir="/home/mythtv/Showings"
