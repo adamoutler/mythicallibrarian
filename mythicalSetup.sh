@@ -345,7 +345,7 @@ echo " ###Database Settings###">>./mythicalSetup
 
 
 		test -f ./PrimaryShowDir && PrimaryShowDir1=`cat ./PrimaryShowDir`
- 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="~/Showings" ||
+ 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$PrimaryShowDir1" 12 50 "$PrimaryShowDir1" 2>./PrimaryShowDir
  		 PrimaryShowDir=`cat ./PrimaryShowDir`
@@ -361,7 +361,7 @@ echo " ###Database Settings###">>./mythicalSetup
 
  		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalSetup
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
- 		test "$AlternateShowDir1" = "" && PrimaryShowDir1="~/Showings" ||
+ 		test "$AlternateShowDir1" = "" && PrimaryShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./PrimaryShowDir
  		 AlternateShowDir=`cat ./AlternateShowDir`
