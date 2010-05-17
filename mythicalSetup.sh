@@ -216,7 +216,7 @@ if [ "$UserChoosesFolder" = "0" ]; then
 fi
  test "$movedir" = "" && movedir=$movedir1
  echo $movedir > ./movedir
- echo "MoveDir=\"$movedir\"">>./mythicalSetup
+ echo "MoveDir=$movedir">>./mythicalSetup
  test !-d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
 
 
@@ -231,7 +231,7 @@ if [ "$UserChoosesFolder" = "0" ]; then
 fi
  test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
  echo $AlternateMovedir > ./AlternateMoveDir
- echo "AlternateMoveDir=\"$AlternateMoveDir\"">> ./mythicalSetup
+ echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalSetup
   test !-d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalSetup
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalSetup
@@ -320,7 +320,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		fi
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
- 		echo "PrimaryMovieDir=\"$PrimaryMovieDir\"">>./mythicalSetup
+ 		echo "PrimaryMovieDir=$PrimaryMovieDir">>./mythicalSetup
  	 	test !-d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
 
 
@@ -333,7 +333,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		fi
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
  		echo "$AlternateMovieDir">./AlternateMovieDir
- 		echo "AlternateMovieDir=\"$AlternateMovieDir\"">>./mythicalSetup
+ 		echo "AlternateMovieDir=$AlternateMovieDir">>./mythicalSetup
  	 	test !-d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir"
 
 
@@ -351,7 +351,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		fi
  		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
  		echo "$PrimaryShowDir">./AlternateShowDir
- 		echo "PrimaryShowDir=\"$PrimaryShowDir\"">>./mythicalSetup
+ 		echo "PrimaryShowDir=$PrimaryShowDir">>./mythicalSetup
  	 	test !-d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
 
 
@@ -366,7 +366,7 @@ echo " ###Database Settings###">>./mythicalSetup
 		fi
  		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
  		echo "$AlternateShowDir">./AlternateShowDir
- 		echo "AlternateShowDir=\"$AlternateShowDir\"">>./mythicalSetup
+ 		echo "AlternateShowDir=$AlternateShowDir">>./mythicalSetup
   	 	test !-d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
 
