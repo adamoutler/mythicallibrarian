@@ -178,7 +178,7 @@ if [ "$DownloadML" = "Latest" ]; then
  		if [ $startwrite = 2 ]; then
  			clear
 			parsing="$parsing""."
-			test "$parsing" = "Stand-by Parsing mythicalLibrarian......." && parsing=""
+			test "$parsing" = "Stand-by Parsing mythicalLibrarian......." && parsing="Stand-by Parsing mythicalLibrarian"
 			echo $parsing
  			echo -e "$line" >> ./librarian
  		fi
