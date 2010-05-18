@@ -71,17 +71,17 @@ else
 			echo "Step 6a. from Mac OSX install DVD"
 			echo "Step 6a-1. Insert your mac OS X DVD  and select X11. This should not harm any of your documents or programs unless you select reinstallation instead of upgrade."
 			echo "Step 6a-2. Navigate to 'Optional Installs' and run 'Optional Installs.pkg'"
-			echo "step 6a-3. run through the easy setup and select X11"
+			echo "step 6a-3. Run through the easy setup and select X11"
 			echo "Step 6B. Obtain a copy of xorg-server and build it on your Mac"
 			read -n1 -p "Press any key to continue..." arbitraryVariable
 			clear
 			echo "Step 7. install Xcode"
- 			echo "step 7a.from DVD"
- 			echo "step 7a-1. insert your mac OS X install DVD"
-			echo "Step 7a-2. navigate to 'Optional Installs/Xcode Tools' and run 'XcodeTools.pkg'"
+ 			echo "step 7a. From DVD:"
+ 			echo "step 7a-1. Insert your mac OS X install DVD"
+			echo "Step 7a-2. Navigate to 'Optional Installs/Xcode Tools' and run 'XcodeTools.pkg'"
 			echo "Step 7a-3. Run through the easy setup."
  			echo "-----OR-----"						
- 			echo "Step 7b. from Mac Dev Center"
+ 			echo "Step 7b. From Mac Dev Center:"
  			echo "Step 7b-1. Log into the Mac Dev Center here:"
 			echo " http://developer.apple.com/technologies/xcode.html"  
 			echo "If you are not registered as a developer, it is free with your AppleID and takes 5 minutes"
@@ -93,6 +93,7 @@ else
 			echo "Step 7b-3. Double-click to Mount the Xcode dmg file"
  			echo "Step 7b-4. Double-click to run the Xcode pkg file and run through the easy installer"
 			read -n1 -p "Press any key to continue..." arbitraryVariable
+			clear
 			echo "step 10. Open the terminal and type the following"
 			echo "sudo port install tre"
 			echo "step 11. type the following"
@@ -119,7 +120,7 @@ if [ ! -f "./librarian" ]; then
 else
 
  lastupdated="`cat ./lastupdated`"
- DownloadML=$(dialog --title "Version and Build options" --menu "Download an update first then Build mythicalLibrarian" 10 70 15 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)	
+test "$LinuxDep" = "1" && DownloadML=$(dialog --title "Version and Build options" --menu "Download an update first then Build mythicalLibrarian" 10 70 15 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)	
 if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated"
