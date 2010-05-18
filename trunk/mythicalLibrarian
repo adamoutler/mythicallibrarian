@@ -1538,7 +1538,8 @@
  ShowName=$InputTitle
  test "$ShowName" = "" && mythicalHelp
  epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
- originalext=`echo "${InputPath#*.}"`
+ ExtensionPrep="`basename $InputPath`"
+ originalext=`echo "${ExtensionPrep#*.}"`
  originaldirname=`dirname "$InputPath"`
  FileBaseName=${InputPath##*/}  
  FileName="$InputPath"
