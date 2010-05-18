@@ -272,7 +272,7 @@ if [ "$mythtv" = "1" ]; then
 echo "">>./mythicalSetup
 echo " ###Database Settings###">>./mythicalSetup
 	echo " #Guide data type">> ./mythicalSetup
- 	dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it" 10 25
+ 	dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it?  note: No will bypass TVDB lookups" 12 25
 	test $? = 0 && database=1 || database=0
 
 	if [ "$database" = "1" ] || [ "$database" = "0" ]; then
