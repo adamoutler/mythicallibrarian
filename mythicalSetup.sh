@@ -599,6 +599,12 @@ test "$passed" = "0" && echo "Installation and tests completed successfully"  ||
 
 
 if [ "$mythtv" = "1" ]; then
+ test `which mysql >/dev/null` && foundMysql=0||foundMysql=1
+ if [ "$foundMysql" = "0" ]; then
+  PATH="$PATH:/usr/local/mysql:/usr/local/mysql/bin"
+  test `which mysql >/dev/null` && echo PATH="$PATH:/usr/local/mysql:/usr/local/mysql/bin"| tee ~/.profile ~/../mythtv/.profile 
+ fi
+ 
  JobFoundInSlot=0
  counter=0
  SlotToUse=0
