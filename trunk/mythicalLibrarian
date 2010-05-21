@@ -1706,7 +1706,7 @@
  		TotalEpisodeMatches.log="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
 		(( ++$FuzzyLogicError ))
 		rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
-		echo "$FuzzyLogicError>"$mythicalLibrarian"/TotalEpisodeMatches.log
+		echo "$FuzzyLogicError">"$mythicalLibrarian"/TotalEpisodeMatches.log
 	
  		echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
 		absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
