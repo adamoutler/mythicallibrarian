@@ -1669,11 +1669,48 @@
  	 
  ##FUZZY LOGIC SUBTITLE MATCH##
 	if [ "$absolouteEpisodeNumber" = "" ]; then
- 		 	absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 	fi
+ 		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+  		echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
+ 	else 
+ 		absolouteEpisodeNumberBackup=$absolouteEpisodeNumber
+ 		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ]; then
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  			echo "%%%%%%%%%%%%ABSOLOUTE EPISODE NUMBER DOES NOT JIVE WITH FUZZY%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
+ 			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
+			(( ++$FuzzyLogicError ))
+			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
+			echo "$FuzzyLogicError>"$mythicalLibrarian"/FuzzyLogicError.log
+			
+ 			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
+ 			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
+			(( ++$FuzzyLogicError ))
+			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
+			echo "$FuzzyLogicError>"$mythicalLibrarian"/FuzzyLogicError.log
+   		fi
 
 
- 	echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
+
+	fi
+		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
+ 		TotalEpisodeMatches.log="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
+		(( ++$FuzzyLogicError ))
+		rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
+		echo "$FuzzyLogicError>"$mythicalLibrarian"/TotalEpisodeMatches.log
+	
+ 		echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
+		absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
+
 
  	echo "DEFINED ABSOLOUTE EPISODE NUMBER: $absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
   
