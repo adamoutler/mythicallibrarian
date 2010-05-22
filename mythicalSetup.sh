@@ -425,7 +425,7 @@ fi
 
 
 echo " ###Reporting/Communications###">>./myhticalPrep
-
+ 
 	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./myhticalPrep
 	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
  	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
