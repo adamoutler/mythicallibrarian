@@ -1699,7 +1699,7 @@
 
 	fi
 		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
- 		FuzzyLogicMatches="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`
+ 		FuzzyLogicMatches="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
 		(( ++$FuzzyLogicMatches ))
 		rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
 		echo "$FuzzyLogicMatches">"$mythicalLibrarian"/TotalEpisodeMatches.log
