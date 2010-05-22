@@ -1045,7 +1045,7 @@
  		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
  		while read line
  		do
- 			(( ++ $mythicalLibrarianCounter ))
+ 			(( ++$mythicalLibrarianCounter ))
  			SupportFile=`echo $line|cut -d"'" -f2`
  		 	MainFile=`echo $line|cut -d"'" -f4`
  			ls "$MainFile" > /dev/null 2>&1
@@ -1603,7 +1603,7 @@
  #loop through all show names received by TheTvDb and match Zap2it ID.
  	while read line 
  	do
- 		(( ++ $mythicalLibrarianCounter ))
+ 		(( ++$mythicalLibrarianCounter ))
  		serieslinenumber=$mythicalLibrarianCounter
  		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$line"
  		DownloadAndParse
@@ -1688,23 +1688,24 @@
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
  			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
-			(( ++ $FuzzyLogicError ))
+			(( ++$FuzzyLogicError ))
 			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
 			echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
-			
+			absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
+ 			echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
    		fi
 
 
 
 	fi
 		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
- 		TotalEpisodeMatches.log="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
-		(( ++ $FuzzyLogicError ))
+ 		FuzzyLogicMatches="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`
+		(( ++$FuzzyLogicMatches ))
 		rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
-		echo "$FuzzyLogicError">"$mythicalLibrarian"/TotalEpisodeMatches.log
-	
- 		echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
-		absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
+		echo "$FuzzyLogicMatches">"$mythicalLibrarian"/TotalEpisodeMatches.log
+		echo "TOTAL MATCHES:$FuzzyLogicMatches FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
+
+
 
 
  	echo "DEFINED ABSOLOUTE EPISODE NUMBER: $absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
