@@ -233,7 +233,7 @@ fi
  test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
  echo $AlternateMovedir > ./AlternateMoveDir
  echo "AlternateMoveDir=$AlternateMoveDir">> ./myhticalPrep
-  test !-d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
+ test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./myhticalPrep
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./myhticalPrep
 
