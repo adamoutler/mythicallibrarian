@@ -1690,7 +1690,7 @@
  			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
 			(( ++ $FuzzyLogicError ))
 			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
-			echo "$FuzzyLogicError>"$mythicalLibrarian"/FuzzyLogicError.log
+			echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
 			
    		fi
 
