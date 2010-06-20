@@ -1021,10 +1021,9 @@
 
  MaintenanceWarning () {
  	echo " --You have entered Maintenance mode."
- 	echo " mythicalLibrarian will conduct standard maintenance while"
- 	echo " perfoming maintenance on it's records.  Please ensure that"
- 	echo " All network attached storage and removable storage drives"
- 	echo " are connected and mounted properly before continuing"
+ 	echo " mythicalLibrarian will perform maintenance on it's records."  
+	echo " Please ensure that All network attached storage and removable"
+	echo " storage drives are connected and mounted properly before continuing"
  	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? y/(n)>" yesorno
  	if [ "$yesorno" != "y" ]; then
  		echo "" 
