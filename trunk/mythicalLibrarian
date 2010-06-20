@@ -1105,7 +1105,7 @@
  				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
  				 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
  						echo "Removing database from:$folderToCheck"
- 			 			rm -Rf $folderToCheck
+ 			 			rm -Rf "$folderToCheck"
  					fi
  				fi
  			 fi
