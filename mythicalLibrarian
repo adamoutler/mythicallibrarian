@@ -492,7 +492,7 @@
  	echo -e '<?xml version="1.0" encoding="ISO-8859-1" ?>' > $rssDir/$TEMPrssFile
  	echo -e '<rss version="2.0">' >> $rssDir/$TEMPrssFile
  	echo -e '<channel>' >> $rssDir/$TEMPrssFile
- 	echo -e '\t<title>mythticalLibrarian</title>' >> $rssDir/$TEMPrssFile
+ 	echo -e '\t<title>mythicalLibrarian</title>' >> $rssDir/$TEMPrssFile
  	echo -e '\t<link>http://xbmc.org</link>' >> $rssDir/$TEMPrssFile
  	echo -e '\t<description>mythicalLibrary Daily Report Information</description>' >> $rssDir/$TEMPrssFile
  
