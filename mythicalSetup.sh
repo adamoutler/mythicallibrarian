@@ -7,10 +7,10 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 test "$SUDO_USER" = "" && SUDO_USER=`whoami`
-echo $SUDO_USER
+echo "This package is being set-up as: $SUDO_USER."
+echo "The operating system is `uname` based."
+echo "Please note these items if reporting bugs"
 test "`uname`" != "Darwin" && LinuxDep=1 || LinuxDep=0
-test "$LinuxDep" = "0" && read -n1 -p " I see you have a Apple Macintosh! While mythicalLibrarian is still primarily Linux based, it is striving to become a cross-platform utility.  Please report any bugs in the mythicalLibrarian thread on forum.XBMC.org.  Press any key to continue..." arbitraryVariable 
-
 
 if which dialog >/dev/null; then
 	echo "Verified dialog exists"
@@ -68,10 +68,11 @@ else
 			echo "Step 5. Verify X11 is installed on your system.  It can be found in the finder under"
 			echo " Applications->Utilities->X11"
 			echo "If it is not there, you have two options:"
-			echo "Step 6a. from Mac OSX install DVD"
-			echo "Step 6a-1. Insert your mac OS X DVD  and select X11. This should not harm any of your documents or programs unless you select reinstallation instead of upgrade."
-			echo "Step 6a-2. Navigate to 'Optional Installs' and run 'Optional Installs.pkg'"
-			echo "step 6a-3. Run through the easy setup and select X11"
+			echo "Step 6A. from Mac OSX install DVD"
+			echo "Step 6A-1. Insert your mac OS X DVD  and select X11. This should not harm any of your documents or programs unless you select reinstallation instead of upgrade."
+			echo "Step 6A-2. Navigate to 'Optional Installs' and run 'Optional Installs.pkg'"
+			echo "step 6A-3. Run through the easy setup and select X11"
+                        echo "-----OR-----"
 			echo "Step 6B. Obtain a copy of xorg-server and build it on your Mac"
 			read -n1 -p "Press any key to continue..." arbitraryVariable
 			clear
@@ -120,11 +121,12 @@ if [ ! -f "./librarian" ]; then
 else
 
  lastupdated="`cat ./lastupdated`"
-DownloadML=$(dialog --title "Version and Build options" --menu "Download an update first then Build mythicalLibrarian" 10 70 15 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)	
+DownloadML=$(dialog --title "Version and Build options" --menu "Download an update first then Build mythicalLibrarian" 10 70 15 " Latest" "Download and switch to SVN $svnrev" " Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)	
 if [ "$?" = "1" ]; then
  	clear
- 	echo "mythicalLibrarian was not updated"
- 	echo "please re-run mythicalSetup"
+ 	echo "mythicalLibrarian was not updated."
+ 	echo "Please re-run mythicalSetup."
+        echo "Done."
  	exit 1
 fi
 fi
