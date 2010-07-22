@@ -409,7 +409,7 @@
  
  #Get the seriesid based on the showname
   	seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
- 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
+ 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
  	return 0
  }
 
@@ -795,7 +795,7 @@
  DownloadAndParse () {
  #Get the seriesid based on the showname
  	 seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
- 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"&"/g`
+ 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
  #Create folder for database if it does not exist
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
  	mkdir $mythicalLibrarian/"$NewShowName"
@@ -1548,7 +1548,7 @@
  ignoreList
  SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Format Show name for Sending to www.TheTvDb.com and XBMC
- tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g`
+ tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g|sed s/"&"/"%26"/g`
 
 
  #Check and make doover.sh if it does not exist
