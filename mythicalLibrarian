@@ -813,7 +813,7 @@
  
  #Parse file into usable data only
  	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep '<Time>'|sed s/"<Time>"/""/g|sed s/"<\/Time>"//g>"$mythicalLibrarian/$NewShowName/current.tim"
-        test -f "$mythicalLibrarian/$NewShowName/current.tim" && rm -f "$mythicalLibrarian/$NewShowName/current.tim" && mv "$mythicalLibrarian/$NewShowName/current.tim" "$mythicalLibrarian/$NewShowName/current.time"
+        test -f "$mythicalLibrarian/$NewShowName/current.tim" && rm -f "$mythicalLibrarian/$NewShowName/current.time" && mv "$mythicalLibrarian/$NewShowName/current.tim" "$mythicalLibrarian/$NewShowName/current.time"
   	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
  
  #If file exist for last updated time, then get value 
