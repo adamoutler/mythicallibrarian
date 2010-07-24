@@ -691,7 +691,7 @@
   	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
-  	rating=`printf "%0.f\n" $stars`
+  	rating=`printf "%0.f" $stars`
   	test $rating != "" && let rating=$rating*2
  	test $rating = "" && rating=1
  
@@ -726,7 +726,7 @@
   	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
-  	rating=`printf "%0.f\n" $stars`
+  	rating=`printf "%0.f" $stars`
   	test $rating != "" && let rating=$rating*2
  	test $rating = "" && rating=1
  
