@@ -995,9 +995,9 @@
  	if [ -f "$mythicalLibrarian/titleIgnore" ]; then 
  		ignoreTest=`grep "$InputTitle" "$mythicalLibrarian/titleIgnore"`
  		test "$InputTitle" = "$ignoreTest" && JobType=titleIgnore && runJob
- 
+  		return 0
 	fi
- 	return 0
+
  		if [ -f "$mythicalLibrarian/categoricIgnore" ]; then
   		ignoreTest=`grep "$ShowCategory" "$mythicalLibrarian/categoricIgnore"`
  		test "$ShowCategory" = "$ignoreTest" && JobType=categoricIgnore && runJob
@@ -1104,6 +1104,14 @@
  			 if [ -d "$folderToCheck" ]; then
  				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
  				 	if [ "$folderToCheck" != "$mythicalLibrarian/mythicalSetup" ]; then
+
+#################
+################
+#################TODO############# ADD SHOWTRANSLATIONS, ML.CONF. IGNORE LIST AND OTHER FILES# UNDO REDO AND OTHERS#########################################
+################
+#################
+###################
+
  						echo "Removing database from:$folderToCheck"
  			 			rm -Rf "$folderToCheck"
  					fi
@@ -1171,8 +1179,12 @@
  		exit 0
  	fi
  	exit 1
-}
-
+ }
+ 
+ setGroupPermissions (){
+ 	chmod g=rw "$MoveDir/$ShowFileName.$originalext"
+ }
+ 
  #####MYTHICAL DIAGNOSTICS#####
  #This function provides a functions check on mythicalLibrarian
  mythicalDiagnostics () {
@@ -1536,6 +1548,8 @@
  GrabTitleAndSubtitle
  ShowName=$InputTitle
  test "$ShowName" = "" && mythicalHelp
+
+ #split on semicolon, there will only be one episode looked up.  Remove nonfilesystem compliant chars.
  epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  ExtensionPrep="`basename $InputPath`"
  originalext=`echo "${ExtensionPrep#*.}"`
@@ -1543,8 +1557,9 @@
  FileBaseName=${InputPath##*/}  
  FileName="$InputPath"
 
- #Check for show translations relating to the show in question.
+ #Check for show Title translations relating to the show in question.
  ShowTranslations
+ #Do not process files in files categoricIgnore or titleIgnore, just exit
  ignoreList
  SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Format Show name for Sending to www.TheTvDb.com and XBMC
@@ -1673,7 +1688,7 @@
  	else 
  		absolouteEpisodeNumberBackup=$absolouteEpisodeNumber
  		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ]; then
+ 		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -2001,6 +2016,7 @@
  			performLoggingForMoveMode
  			dailyreport 
  			generaterss 
+ 	 	        test "$SYMLINK" = "DISABLED" && setGroupPermissions
   			jobtype=MoveModeSuccessful		
  			RunJob
  
@@ -2055,6 +2071,7 @@
  		performLoggingForLinkMode
  		dailyreport
  		generaterss
+ 	        test "$SYMLINK" = "DISABLED" && setGroupPermissions
    		jobtype=LinkModeSuccessful		
  		RunJob
  
