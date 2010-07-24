@@ -404,7 +404,7 @@
  #This function provides fuzzy logic matching of a show name and returns a seriesid
  FuzzySeriesMatch () {
 
- 	showname=`echo "$ShowName"|sed s/"&amp;"/"&"/g`
+ 	showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
  	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
@@ -850,10 +850,10 @@
 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"| sed s/"  <zap2it_id>"/""/g|sed s/"<\/zap2it_id>"/""/g| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
 
  #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g|sed 's/;.*//'| sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 
  #Get actual show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 
  #Get OriginalAirDate
  			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"| sed s/"  <FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g>"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
@@ -1601,8 +1601,8 @@
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
- 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/'&amp;'/'&'/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
+ 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
