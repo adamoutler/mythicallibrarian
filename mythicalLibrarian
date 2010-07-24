@@ -814,7 +814,6 @@
  #Parse file into usable data only
  	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep "<Time>"|sed s/"<Time>"/""/g|sed s/"<\/Time>"/""/g>"$mythicalLibrarian/$NewShowName/current.time"
   	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
- 	test -f "$mythicalLibrarian/$NewShowName/lastupdated.time" && LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
  
  #If file exist for last updated time, then get value 
  	if [ -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
