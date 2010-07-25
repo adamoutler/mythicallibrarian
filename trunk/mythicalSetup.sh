@@ -634,6 +634,7 @@ echo "permissions were set for user: $SUDO_USER"
 test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
 test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml"
 echo "mythicalLibrarian is located in /usr/local/bin"
+echo "log is located in ~/.mythicalLibrarian/output.log"
 echo "'mythicalLibrarian --help' for more information"
 echo "Done."
 
