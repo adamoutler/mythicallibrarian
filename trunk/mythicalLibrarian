@@ -1414,10 +1414,58 @@
  		echo "  Help: displays this message"
  		echo "======================================================="
  	fi
-	echo " ensure you have set the user settings properly and run"
+	echo " ensure you have set the user settings set properly and run"
  	echo " --mythicalDiagnostics before using mythicalLibrarian"
  	echo " in --scan mode or as a UserJob."
+	echo " More information is available in mythicalLibrarian --special"
 	exit 1
+ }
+
+ special (){
+	echo " ======showTranslations====="
+	echo " If you are having problems with incorrect guide data such"
+	echo " as improper titling, use showTranslations."
+	echo " ShowTranslations can be applied by creating a file called:"
+ 	echo " ~/.mythicalLibrarian/showTranslations"
+ 	echo " ##############################################################"
+ 	echo " #My Guide Show Title = www.TheTvDb.com Show Title            #"
+	echo " #Battlestar Gallactica = Battlestar Gallactica (2003)        #"
+	echo " #The Office = The Office (US)                                #"
+	echo " #Millionaire = Who Wants To Be A Millionaire                 #"
+	echo " #Aqua teen Hungerforce = Aqua Teen Hunger Force              #"
+	echo " ##############################################################"
+ 	echo ""
+ 	echo "======titleIgnore======"
+ 	echo " If wish to ignore all shows with a speciffic title, use titleIgnore"
+ 	echo " titleIgnore can be applied by creating a file called:"
+ 	echo " ~.mythicalLibrarian/titleIgnore"
+ 	echo " ##############################################################"
+ 	echo " #Show to ignore                                              #"
+	echo " #Battlestar Gallactica                                       #"
+	echo " #The Office                                                  #"
+	echo " #Millionaire                                                 #"
+	echo " #Aqua teen Hungerforce                                       #"
+	echo " ##############################################################"
+ 	echo ""
+ 	echo "======categoricIgnore======"
+ 	echo " If you wish to ignore all shows with a speciffic category, use"
+ 	echo " categoricIgnore"
+ 	echo " categoricIgnore can be applied by creating a file called:"
+ 	echo " ~.mythicalLibrarian/categoricIgnore"
+ 	echo " ##############################################################"
+ 	echo " #Category to ignore                                          #"
+	echo " #Sports                                                      #"
+	echo " #Sports Talk                                                 #"
+	echo " #College Sports                                              #"
+	echo " #Comedy                                                      #"
+	echo " ##############################################################"
+ 	echo "Done."
+ 	
+ 	
+ 	
+ 	
+ 	
+ 
  }
  
  #mythicalUpdater will download the Stable or SVN version of mythicalSetup
@@ -1520,6 +1568,9 @@
  		echo "done."
  		exit 0
 	;;
+ 	--special|-s)
+ 		special
+ 	;;
 	--version|-v|-ver|-V)
 		echo $mythicalVersion
 		exit 0
