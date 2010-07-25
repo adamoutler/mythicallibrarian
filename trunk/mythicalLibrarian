@@ -1459,6 +1459,25 @@
 	echo " #College Sports                                              #"
 	echo " #Comedy                                                      #"
 	echo " ##############################################################"
+ 	echo ""
+  	echo "======globalSettings====="
+  	echo " If you wish to override any settings in mythicalSetup, use"
+  	echo " globalSettings.  globalSettings allows you to take any setting"
+  	echo " from the top of the mythicalLibrarian file and make it perminant."
+  	echo " mythicalSetup will not change this file.  Your settings will"
+  	echo " remain static after upgrades."
+  	echo ""
+  	echo " globalSettings can be applied by creating a file called:"
+  	echo " /etc/mythicalLibrarian/globalSettings"
+ 	echo " ##############################################################"
+ 	echo " #SYMLINK=Disabled                                            #"
+  	echo " #AlternateMoveDir=/media/usbDrive                            #"
+ 	echo " #NotifyUserName="adam"                                       #"
+ 	echo " #XBMCIPs=( "user:password@192.168.1.110:8080" )              #"
+ 	echo " #Database=Disabled                                           #"               
+	echo " ##############################################################"
+
+
  	echo "Done."
  	
  	
