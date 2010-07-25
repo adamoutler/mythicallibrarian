@@ -1472,8 +1472,8 @@
  	echo " ##############################################################"
  	echo " #SYMLINK=Disabled                                            #"
   	echo " #AlternateMoveDir=/media/usbDrive                            #"
- 	echo " #NotifyUserName="adam"                                       #"
- 	echo " #XBMCIPs=( "user:password@192.168.1.110:8080" )              #"
+ 	echo " #NotifyUserName=adam                                         #"
+ 	echo " #XBMCIPs=( user:password@192.168.1.110:8080 )                #"
  	echo " #Database=Disabled                                           #"               
 	echo " ##############################################################"
 
