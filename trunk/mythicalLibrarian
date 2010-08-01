@@ -595,11 +595,18 @@
  #####LINK MODE LOGGING#####
  #This function performs logging for link mode
  performLoggingForLinkMode () {
+
+
+
+
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
  	echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/undo.sh"
+ 	echo "'$MoveDir/$ShowFileName.$originalext'" "'$InputPath'">>"$mythicalLibrarian"/created.tracking
+
+
  }
 
  #####INITIAL DATASE GRAB#####
