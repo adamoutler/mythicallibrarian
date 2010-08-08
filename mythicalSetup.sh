@@ -575,6 +575,11 @@ test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./myhticalPrep >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 
+AlternateMoveDir=`echo eval $AlternateMoveDir`
+AlternateMovieDir=`echo eval $AlternateMovieDir`
+AlternateShowDir=`echo eval $AlternateShowDir`
+
+
 test ! -d "/usr" && mkdir "/usr"
 test ! -d "/usr/local" && mkdir "/usr/local"
 test ! -d "/usr/local/bin" && mkdir "/usr/local/bin" && PATH=$PATH:/usr/local/bin && export PATH && echo "PATH=$PATH:/usr/local/bin">~/.profile
