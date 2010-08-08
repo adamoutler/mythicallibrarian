@@ -508,7 +508,7 @@ echo "DailyReport=Enabled">> ./myhticalPrep
 echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled" >> ./myhticalPrep 
 
 OldOutputLog="~/.mythicalLibrarian/output.log.old"
-test ! -f "$OldOutputLog" &&  || OldOutputLog=""
+test ! -f "$OldOutputLog" && OldOutputLog="$OldOutputLog" ||OldOutputLog="" 
 if [ OldOutputLog != "" ]; then
 	FileSize=`stat -c%s "$OldOutputLog"`
 	test $FileSize > 50000 && echo "DEBUGMODE=Disabled" >> ./myhticalPrep || echo "DEBUGMODE=Enabled" >> ./myhticalPrep
