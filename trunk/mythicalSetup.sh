@@ -506,7 +506,18 @@ fi
 echo " #DailyReport provides a local log of shows added to your library per day. Enabled|Disabled">> ./myhticalPrep
 echo "DailyReport=Enabled">> ./myhticalPrep
 echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled" >> ./myhticalPrep 
-echo "DEBUGMODE=Enabled" >> ./myhticalPrep
+
+test -f "$mythicalLibrarian/output.log.old" && OldOutputLog="$mythicalLibrarian/output.log.old" || OldOutputLog=""
+if [ OldOutputLog != "" ]; then
+	FileSize=$(stat -c%s "$OldOutputLog")
+	test $FileSize > 50000 && echo "DEBUGMODE=Enabled" >> ./myhticalPrep || echo "DEBUGMODE=Disabled" >> ./myhticalPrep
+else
+ 	echo "DEBUGMODE=Disabled" >> ./myhticalPrep
+fi
+
+
+
+	
 echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss." >> ./myhticalPrep 
 echo "maxItems=8">> ./myhticalPrep
 echo "#########################USER SETTINGS########################## ">> ./myhticalPrep

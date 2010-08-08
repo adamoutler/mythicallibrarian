@@ -777,23 +777,7 @@
  	return 0
  }
 
- #####REMOVE ENTRIES FROM LIBRARY#####
- #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
- SYMLINKDisabled () {
- 
- #Make sure we got input arguments and file is valid
- 	if [ ! -f "$InputPath" ]; then
- 	
- #Remove recording entry from mysql database
- 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
-  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
-		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
- 
- #Remove thumbnails
- 		rm -f "$originaldirname/$FileBaseName".*	
- 	fi 
- 	return 0
- }
+
  
 
 
@@ -1761,15 +1745,19 @@
  		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  			echo "%%%%%%%%%%%%%%%%% GUIDE DATA AND TVDB DATA DO NOT MATCH %%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%% Possible causes: small variations in episode name %%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad guide data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb airdate %%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb episode name %%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb zap2it id %%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-  			echo "%%%%%%%%%%%%ABSOLOUTE EPISODE NUMBER DOES NOT JIVE WITH FUZZY%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+
+
+                        echo "%%%%%ABSOLOUTE EPISODE AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
+ 			echo "CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
+ 			DEBUGMODE=Enabled
  			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
  			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
 			(( ++FuzzyLogicError ))
