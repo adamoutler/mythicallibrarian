@@ -1290,8 +1290,44 @@
  	echo -e "  mythicalTesting:           $mythicaltest"
  	echo -e "  Overall mythicalReadiness: $overallchecks"
  	echo -e "-----End of diagnostics-----"
+
+ 	
+	#Logging for failure messages
+	if [ "$notifytest" = "***FAILED***" ]; then
+ 	echo -e " Notifications to the DBUS have failed. mythicalLibrarian relies upon"
+ 	echo -e " librarian-notify-send and package lib-notify to display messages on"
+ 	echo -e " GNOME desktop interface. These messages will not be displayed. "
+	fi
+	if [ "$XBMCcomm" != "***PASSED***" ]; then
+ 	echo -e " XBMC Communications have failed.  Likely causes: Improper IP address,"
+ 	echo -e " or XBMC is not equipped to handle external network commands."
+ 	echo -e " mythicalLibrarian will not send messages or library update requests."
+	fi
+	if [ "$folderchecks" != "***PASSED***" ]; then
+	echo -e " The filesystem checks failed.  Likely causes: "
+ 	echo -e " The user named $SUDO_USER does not have permission to use the folder"
+ 	echo -e "  corrective action: sudo chown $SUDO_USER /Name/of/My_failed_folder"
+ 	echo -e " The folder belongs to a different group then the user named $SUDO_USER"
+ 	echo -e "  corrective action: sudo adduser mythtv $SUDO_USER"
+ 	echo -e "                     sudo adduser $SUDO_USER mythtv"
+ 	echo -e " The folder does not exist"
+ 	echo -e "  corrective action: mkdir /Name/of/My_failed_folder"
+	fi
+	if [ "$mythicaltest" != "***PASSED***" ]; then
+ 	echo -e " mythicalLibrarian has encountered an error.  This may be due to "
+ 	echo -e " lack of network connection.   If the problem persists, contact"
+ 	echo -e " outleradam here: http://forum.xbmc.org/showthread.php?t=65644"
+	fi
+	if [ "$overallchecks" != "***PASSED***" ]; then
+ 	echo -e " "
+ 	echo -e " These issues must be corrected in order for mythicalLibrarian to"
+ 	echo -e " perform correctly"
+	fi
+
  	test "$overallchecks" = "***FAILURE***" && exit 1
+
   	exit 0
+
  }
  
  #####DOOVER PROCESSING#####
