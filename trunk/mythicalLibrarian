@@ -134,7 +134,7 @@
  #DirTracking will check for and remove the folders created by mythicalLibrarian
  DirTracking=Enabled
  #the following line contains the API key from www.TheTvDb.Com. Default project code: 6DF511BB2A64E0E9
- APIkey=6DF511BB2A64E0E9
+ APIkey=0F3A338F0FCB29A2
  #Language setting
  Language=en
   
