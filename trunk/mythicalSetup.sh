@@ -1,7 +1,7 @@
 #! /bin/bash
  
 #This script will generate the user settings portion of mythicalLibrarian
-test -f "./myhticalPrep" && rm ./myhticalPrep
+test -f "./mythicalPrep" && rm ./mythicalPrep
 if [ "$(id -u)" != "0" ]; then
 	echo "You do not have sufficient privlidges to run this script. Try again with sudo configure"
 	exit 1
@@ -199,10 +199,10 @@ if [ "$DownloadML" = "Latest" ]; then
 
 fi
 
-test -f ./myhticalPrep && rm -f ./myhticalPrep
-echo "#! /bin/bash">./myhticalPrep
-echo " #######################USER SETTINGS##########################">>./myhticalPrep
-echo " ###Stand-alone mode values###">>./myhticalPrep
+test -f ./mythicalPrep && rm -f ./mythicalPrep
+echo "#! /bin/bash">./mythicalPrep
+echo " #######################USER SETTINGS##########################">>./mythicalPrep
+echo " ###Stand-alone mode values###">>./mythicalPrep
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
@@ -211,7 +211,7 @@ dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Fol
 
 test -f ./movedir && movedir1=`cat ./movedir`
 test "$movedir1" = "" && movedir1="~/Episodes"
-echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./myhticalPrep
+echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 "$movedir1" 2>./movedir
@@ -219,7 +219,7 @@ if [ "$UserChoosesFolder" = "0" ]; then
 fi
  test "$movedir" = "" && movedir=$movedir1
  echo $movedir > ./movedir
- echo "MoveDir=$movedir">>./myhticalPrep
+ echo "MoveDir=$movedir">>./mythicalPrep
  test ! -d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
 
 
@@ -227,79 +227,79 @@ fi
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
 test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
 dialog --infobox "If your primary folder fails, your files will be moved to $AternateMoveDir1 default" 10 30 
-echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./myhticalPrep
+echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
  AlternateMoveDir=`cat ./AlternateMoveDir`
 fi
  test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
  echo $AlternateMovedir > ./AlternateMoveDir
- echo "AlternateMoveDir=$AlternateMoveDir">> ./myhticalPrep
+ echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalPrep
  test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
-echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./myhticalPrep
-echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./myhticalPrep
+echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
+echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
 
-test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./myhticalPrep || echo "UseOriginalDir=Enabled">>./myhticalPrep
-echo " #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled">> ./myhticalPrep
+test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./mythicalPrep || echo "UseOriginalDir=Enabled">>./mythicalPrep
+echo " #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled">> ./mythicalPrep
 
-echo "UseShowNameAsDir=Enabled">>./myhticalPrep
-echo " #Internet access Timeout in seconds: Default Timeout=50 (seconds)">> ./myhticalPrep
+echo "UseShowNameAsDir=Enabled">>./mythicalPrep
+echo " #Internet access Timeout in seconds: Default Timeout=50 (seconds)">> ./mythicalPrep
 
-echo "Timeout=50">>./myhticalPrep
-echo " #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='70000' (almost a day)">> ./myhticalPrep
+echo "Timeout=50">>./mythicalPrep
+echo " #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='70000' (almost a day)">> ./mythicalPrep
 
-echo "UpdateDatabase=70000">>./myhticalPrep
-echo " #mythicalLibrarian working file dir: Default=~/.mythicalLibrarian (home/username/mythicalLibraian)">> ./myhticalPrep
+echo "UpdateDatabase=70000">>./mythicalPrep
+echo " #mythicalLibrarian working file dir: Default=~/.mythicalLibrarian (home/username/mythicalLibraian)">> ./mythicalPrep
 
-echo "mythicalLibrarian=~/.mythicalLibrarian">>./myhticalPrep
-echo " #FailSafe mode will enable symlinks to be formed in FailSafeDir if the move or symlink operation fails. Enabled|Disabled">> ./myhticalPrep
+echo "mythicalLibrarian=~/.mythicalLibrarian">>./mythicalPrep
+echo " #FailSafe mode will enable symlinks to be formed in FailSafeDir if the move or symlink operation fails. Enabled|Disabled">> ./mythicalPrep
 
-echo "FailSafeMode=Enabled">>./myhticalPrep
-echo " #FailSafeDir is used when the file cannot be moved to the MoveDir. FailSafe will not create folders. eg. /home/username">> ./myhticalPrep
-echo "FailSafeDir='/home/mythtv/FailSafe'">>./myhticalPrep
-echo " #DirTracking will check for and remove the folders created by mythicalLibrarian">> ./myhticalPrep
+echo "FailSafeMode=Enabled">>./mythicalPrep
+echo " #FailSafeDir is used when the file cannot be moved to the MoveDir. FailSafe will not create folders. eg. /home/username">> ./mythicalPrep
+echo "FailSafeDir='/home/mythtv/FailSafe'">>./mythicalPrep
+echo " #DirTracking will check for and remove the folders created by mythicalLibrarian">> ./mythicalPrep
 
-echo "DirTracking=Enabled">>./myhticalPrep
+echo "DirTracking=Enabled">>./mythicalPrep
 
-echo " #the following line contains the API key from www.TheTvDb.Com. Default project code: 6DF511BB2A64E0E9">> ./myhticalPrep
-echo "APIkey=6DF511BB2A64E0E9">>./myhticalPrep
-echo " #Language setting">>./myhticalPrep
-echo "Language=en">>./myhticalPrep
+echo " #the following line contains the API key from www.TheTvDb.Com. Default project code: 6DF511BB2A64E0E9">> ./mythicalPrep
+echo "APIkey=6DF511BB2A64E0E9">>./mythicalPrep
+echo " #Language setting">>./mythicalPrep
+echo "Language=en">>./mythicalPrep
 
 if [ "$mythtv" = "1" ]; then
 
-	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./myhticalPrep
+	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalPrep
 	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'"
 	dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
-		test $? = 0 && echo "SYMLINK=MOVE" >> ./myhticalPrep || echo "SYMLINK=Disabled" >> ./myhticalPrep
-echo "">>./myhticalPrep
-echo " ###Database Settings###">>./myhticalPrep
-	echo " #Guide data type">> ./myhticalPrep
+		test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
+echo "">>./mythicalPrep
+echo " ###Database Settings###">>./mythicalPrep
+	echo " #Guide data type">> ./mythicalPrep
  	dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it?  note: No will bypass TVDB lookups" 12 25
 	test $? = 0 && database=1 || database=0
 
 	if [ "$database" = "1" ] || [ "$database" = "0" ]; then
  
-		echo " #Database access Enabled|Disabled">> ./myhticalPrep
-		echo "Database=Enabled">>./myhticalPrep	
+		echo " #Database access Enabled|Disabled">> ./mythicalPrep
+		echo "Database=Enabled">>./mythicalPrep	
 
- 		echo " #Database Type Default=MythTV">> ./myhticalPrep
-		echo "DatabaseType=MythTV">>./myhticalPrep
+ 		echo " #Database Type Default=MythTV">> ./mythicalPrep
+		echo "DatabaseType=MythTV">>./mythicalPrep
 
- 		echo " #Guide data type">> ./myhticalPrep
-		test "$database" = 1 && echo "GuideDataType=SchedulesDirect">>./myhticalPrep || echo "GuideDataType=NoLookup">>./myhticalPrep
+ 		echo " #Guide data type">> ./mythicalPrep
+		test "$database" = 1 && echo "GuideDataType=SchedulesDirect">>./mythicalPrep || echo "GuideDataType=NoLookup">>./mythicalPrep
 
- 		echo " #MySQL User name: Default="mythtv"">> ./myhticalPrep
+ 		echo " #MySQL User name: Default="mythtv"">> ./mythicalPrep
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLuser1=`grep "DBUserName" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBUserName="/""/g`||mythtvusername="mythtv"
  		echo "$MySQLuser1" >./MySQLuser
 	    	dialog --inputbox "Enter your MYSQL Username. Default=$MySQLuser1" 9 40 "$MySQLuser1" 2>./MySQLuser
 		MySQLuser=`cat ./MySQLuser`
  		test "$MySQLuser" = "" && MySQLuser="$MySQLuser1"
  		echo "$MySQLuser">./MySQLuser
-		echo "MySQLuser=$MySQLuser">>./myhticalPrep
+		echo "MySQLuser=$MySQLuser">>./mythicalPrep
 
 
- 		echo " #MySQL Password: Default="mythtv"">> ./myhticalPrep	
+ 		echo " #MySQL Password: Default="mythtv"">> ./mythicalPrep	
  		
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPassword="/""/g`||mythtvusername="mythtv"
  		test ! -f "./MySQLpass" && echo "$MySQLpass1">./MySQLpass
@@ -307,14 +307,14 @@ echo " ###Database Settings###">>./myhticalPrep
  		MySQLpass=`cat ./MySQLpass`
  		test "$MySQLpass" = "" && MySQLpass="$MySQLpass1"
  		echo "$MySQLpass">./MySQLpass
-		echo "MySQLpass=$MySQLpass">>./myhticalPrep
+		echo "MySQLpass=$MySQLpass">>./mythicalPrep
 
- 		echo "#MySQL Myth Database: Default="mythconverg"">> ./myhticalPrep
- 		echo "MySQLMythDb=mythconverg">>./myhticalPrep
+ 		echo "#MySQL Myth Database: Default="mythconverg"">> ./mythicalPrep
+ 		echo "MySQLMythDb=mythconverg">>./mythicalPrep
 
 
 
- 		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./myhticalPrep 		
+ 		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./mythicalPrep 		
  		test -f ./PrimaryMovieDir && PrimaryMovieDir1=`cat ./PrimaryMovieDir`
  		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="~/Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
@@ -323,11 +323,11 @@ echo " ###Database Settings###">>./myhticalPrep
 		fi
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
- 		echo "PrimaryMovieDir=$PrimaryMovieDir">>./myhticalPrep
+ 		echo "PrimaryMovieDir=$PrimaryMovieDir">>./mythicalPrep
  	 	test ! -d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
 
 
- 		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./myhticalPrep
+ 		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalPrep
  		test -f ./AlternateMovieDir && AlternateMovieDir1=`cat ./AlternateMovieDir`
  		test "$AlternateMovieDir1" = "" && AlternateMovieDir1="~/Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
@@ -336,13 +336,13 @@ echo " ###Database Settings###">>./myhticalPrep
 		fi
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
  		echo "$AlternateMovieDir">./AlternateMovieDir
- 		echo "AlternateMovieDir=$AlternateMovieDir">>./myhticalPrep
+ 		echo "AlternateMovieDir=$AlternateMovieDir">>./mythicalPrep
  	 	test ! -d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir"
 
 
- 		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./myhticalPrep
+ 		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
  		dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows when it cannot obtain TVDB information?" 8 40
-  		test "$?" = "0" && echo " ShowStopper=Disabled">> ./myhticalPrep || echo " ShowStopper=Enabled">> ./myhticalPrep
+  		test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalPrep || echo " ShowStopper=Enabled">> ./mythicalPrep
  		
 
 
@@ -354,13 +354,13 @@ echo " ###Database Settings###">>./myhticalPrep
 		fi
  		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
  		echo "$PrimaryShowDir">./AlternateShowDir
- 		echo "PrimaryShowDir=$PrimaryShowDir">>./myhticalPrep
+ 		echo "PrimaryShowDir=$PrimaryShowDir">>./mythicalPrep
  	 	test ! -d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
 
 
 
 
- 		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./myhticalPrep
+ 		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalPrep
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
  		test "$AlternateShowDir1" = "" && AlternateShowDir1="~/Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
@@ -369,15 +369,15 @@ echo " ###Database Settings###">>./myhticalPrep
 		fi
  		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
  		echo "$AlternateShowDir">./AlternateShowDir
- 		echo "AlternateShowDir=$AlternateShowDir">>./myhticalPrep
+ 		echo "AlternateShowDir=$AlternateShowDir">>./mythicalPrep
   	 	test ! -d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
 
- 		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./myhticalPrep
- 		echo "CommercialMarkup=Enabled" >> ./myhticalPrep
+ 		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalPrep
+ 		echo "CommercialMarkup=Enabled" >> ./mythicalPrep
 
- 		echo " #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed">> ./myhticalPrep
- 		echo "CommercialMarkupCleanup=Enabled" >> ./myhticalPrep
+ 		echo " #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed">> ./mythicalPrep
+ 		echo "CommercialMarkupCleanup=Enabled" >> ./mythicalPrep
 
 	fi
 
@@ -385,73 +385,73 @@ elif [ $mythtv = 0 ]; then
 
  	
     	dialog --title "SYMLINK" --yesno "Do you want mythicalLibrarian to symlink to the original file after move?" 8 35
- 	test $? = 0 && echo "SYMLINK=MOVE" >> ./myhticalPrep || echo "SYMLINK=Disabled" >> ./myhticalPrep
+ 	test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
 
- 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./myhticalPrep
- 	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'">> ./myhticalPrep
-	echo "Database=Disabled" >> ./myhticalPrep
+ 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalPrep
+ 	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'">> ./mythicalPrep
+	echo "Database=Disabled" >> ./mythicalPrep
 
-	echo " #Database Type Default=MythTV">> ./myhticalPrep
-	echo "DatabaseType=none" >> ./myhticalPrep
+	echo " #Database Type Default=MythTV">> ./mythicalPrep
+	echo "DatabaseType=none" >> ./mythicalPrep
 
-	echo " #Guide data type">> ./myhticalPrep
- 	echo "GuideDataType=none" >> ./myhticalPrep
+	echo " #Guide data type">> ./mythicalPrep
+ 	echo "GuideDataType=none" >> ./mythicalPrep
 
  	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvusername=`grep "DBUserName" "/etc/mythtv/.mythtv/mysql.txt" |  sed s/"DBUserName="/""/g`||mythtvusername="mythtv"
-	echo " #MySQL User name: Default="$mythtvusername"">> ./myhticalPrep
- 	echo "MySQLuser=''" >> ./myhticalPrep
+	echo " #MySQL User name: Default="$mythtvusername"">> ./mythicalPrep
+ 	echo "MySQLuser=''" >> ./mythicalPrep
 
  	test -f "/home/mythtv/.mythtv/mysql.txt" && mythtvpassword=`grep "DBPassword=" "/etc/mythtv/.mythtv/mysql.txt" |  sed s/"DBPassword="/""/g`||mythtvusername="mythtv"
-	echo " #MySQL Password: Default="$mythtvpassword"">> ./myhticalPrep
- 	echo "MySQLpass=''" >> ./myhticalPrep
+	echo " #MySQL Password: Default="$mythtvpassword"">> ./mythicalPrep
+ 	echo "MySQLpass=''" >> ./mythicalPrep
 
-	echo " #MySQL Myth Database: Default="mythconverg"">> ./myhticalPrep
- 	echo "MySQLMythDb=''" >> ./myhticalPrep
+	echo " #MySQL Myth Database: Default="mythconverg"">> ./mythicalPrep
+ 	echo "MySQLMythDb=''" >> ./mythicalPrep
 
-	echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"">> ./myhticalPrep
- 	echo "PrimaryMovieDir=''" >> ./myhticalPrep
+	echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
+ 	echo "PrimaryMovieDir=''" >> ./mythicalPrep
 
-	echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./myhticalPrep
- 	echo "AlternateMovieDir=''" >> ./myhticalPrep
+	echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalPrep
+ 	echo "AlternateMovieDir=''" >> ./mythicalPrep
  
- 	echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./myhticalPrep
- 	echo " ShowStopper=Disabled">> ./myhticalPrep
+ 	echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
+ 	echo " ShowStopper=Disabled">> ./mythicalPrep
 
- 	echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./myhticalPrep
- 	echo "CommercialMarkup=Disabled" >> ./myhticalPrep
+ 	echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalPrep
+ 	echo "CommercialMarkup=Disabled" >> ./mythicalPrep
 
-	echo " #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed">> ./myhticalPrep
- 	echo "CommercialMarkupCleanup=Disabled" >> ./myhticalPrep
+	echo " #CommercialMarkupCleanup will execute a maintenance routine which will remove comskip files if they are not needed">> ./mythicalPrep
+ 	echo "CommercialMarkupCleanup=Disabled" >> ./mythicalPrep
 
 fi
 
 
-echo " ###Reporting/Communications###">>./myhticalPrep
+echo " ###Reporting/Communications###">>./mythicalPrep
  
-	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./myhticalPrep
+	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
 	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
  	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
 	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
  	DesktopUserName=`cat ./DesktopUserName`
  	test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
  	echo "$DesktopUserName">./DesktopUserName
-  	echo "NotifyUserName=$DesktopUserName" >>./myhticalPrep
+  	echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
 
- 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./myhticalPrep
+ 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
 	dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications?
 if Yes, the user must have no password sudo access." 10 45
 	test $? = 0 && notifications=1 || notifications=0
  	if [ "$notifications" = "1" ]; then
- 	echo "Notify=Enabled" >> ./myhticalPrep
+ 	echo "Notify=Enabled" >> ./mythicalPrep
 
 
 else
 
- 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./myhticalPrep
- 	echo "Notify=Disabled" >> ./myhticalPrep
+ 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
+ 	echo "Notify=Disabled" >> ./mythicalPrep
 
-	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./myhticalPrep
- 	echo "NotifyUserName='$DesktopUserName'" >> ./myhticalPrep
+	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
+ 	echo "NotifyUserName='$DesktopUserName'" >> ./mythicalPrep
 fi
 
 
@@ -462,117 +462,117 @@ dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to
 if [ "$notifications" = "1" ]; then
 
  		
-	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( '192.168.1.110:8080' '192.168.1.111:8080' 'XBOX:8080' )">> ./myhticalPrep
+	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( '192.168.1.110:8080' '192.168.1.111:8080' 'XBOX:8080' )">> ./mythicalPrep
 		  xbmcips1=`cat ./xbmcips` 
  		  test "$xbmcips1" = "" && xbmcips1="'192.168.1.100:8080'"
    	dialog --inputbox "Enter your XBMC IP Addresses and port in single quotes. eg. '192.168.1.110:8080' 'XBOX:8080' Default=$xbmcips1" 10 50 "$xbmcips1" 2>./xbmcips
                 xbmcips=`cat ./xbmcips`
   		  echo "$xbmcips">./xbmcips
- 		  echo "XBMCIPs=( $xbmcips )">>./myhticalPrep
+ 		  echo "XBMCIPs=( $xbmcips )">>./mythicalPrep
 		  
 	dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to update your library?" 9 30
 		  if [ $? = 0 ]; then
- 			echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./myhticalPrep
- 			 echo "XBMCUpdate=Enabled">>./myhticalPrep
- 			 echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./myhticalPrep
- 			 echo "XBMCNotify=Enabled">>./myhticalPrep
+ 			echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalPrep
+ 			 echo "XBMCUpdate=Enabled">>./mythicalPrep
+ 			 echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalPrep
+ 			 echo "XBMCNotify=Enabled">>./mythicalPrep
 
 		  else
 
-		 	 echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./myhticalPrep
- 			 echo "XBMCUpdate=Disabled">>./myhticalPrep
- 			 echo " #Send Nrotifications to XBMC UI when library is updated Enabled|Disabled">> ./myhticalPrep
+		 	 echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalPrep
+ 			 echo "XBMCUpdate=Disabled">>./mythicalPrep
+ 			 echo " #Send Nrotifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalPrep
  			 echo "XBMCNotify=Disabled"
  		  fi
 
-	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./myhticalPrep
-	echo "XBMCClean=Disabled">>./myhticalPrep
+	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./mythicalPrep
+	echo "XBMCClean=Disabled">>./mythicalPrep
 else
 
-	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./myhticalPrep
-	echo "XBMCIPs=''">>./myhticalPrep
+	echo " #Ip Address and port for XBMC Notifications Eg.XBMCIPs=( "192.168.1.110:8080" "192.168.1.111:8080" "XBOX:8080" )">> ./mythicalPrep
+	echo "XBMCIPs=''">>./mythicalPrep
 
-	echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./myhticalPrep
-	echo "XBMCUpdate=Disabled">>./myhticalPrep
+	echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalPrep
+	echo "XBMCUpdate=Disabled">>./mythicalPrep
 
-	echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./myhticalPrep
-	echo "XBMCNotify=Disabled">>./myhticalPrep
+	echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalPrep
+	echo "XBMCNotify=Disabled">>./mythicalPrep
 
- 	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./myhticalPrep
-	echo "XBMCClean=Disabled">>./myhticalPrep
+ 	echo " #Send a notification to XBMC to cleanup the library upon successful move job Enabled|Disabled">> ./mythicalPrep
+	echo "XBMCClean=Disabled">>./mythicalPrep
 
 fi 
 
-echo " #DailyReport provides a local log of shows added to your library per day. Enabled|Disabled">> ./myhticalPrep
-echo "DailyReport=Enabled">> ./myhticalPrep
-echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled" >> ./myhticalPrep 
+echo " #DailyReport provides a local log of shows added to your library per day. Enabled|Disabled">> ./mythicalPrep
+echo "DailyReport=Enabled">> ./mythicalPrep
+echo "#Enables debug mode.  This is a verbose mode of logging which should be used for troubleshooting.  Enabled|Disabled" >> ./mythicalPrep 
 
 OldOutputLog=`eval echo "~/.mythicalLibrarian/output.log.old"`
 test -f "$OldOutputLog" && OldOutputLog=$OldOutputLog || OldOutputLog="" 
 if [ OldOutputLog != "" ]; then
 	FileSize=`stat -c%s "${OldOutputLog}"`
-	test $FileSize > 50000 && echo "DEBUGMODE=Disabled" >> ./myhticalPrep || echo "DEBUGMODE=Enabled" >> ./myhticalPrep
+	test $FileSize > 50000 && echo "DEBUGMODE=Disabled" >> ./mythicalPrep || echo "DEBUGMODE=Enabled" >> ./mythicalPrep
 else
- 	echo "DEBUGMODE=Enabled" >> ./myhticalPrep
+ 	echo "DEBUGMODE=Enabled" >> ./mythicalPrep
 fi
 
 
 
 	
-echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss." >> ./myhticalPrep 
-echo "maxItems=8">> ./myhticalPrep
-echo "#########################USER SETTINGS########################## ">> ./myhticalPrep
-echo '########################## USER JOBS############################'>> ./myhticalPrep
-echo ' #The RunJob function is a place where you can put your custom script to be run at the end of execution'>> ./myhticalPrep
-echo ' #Though it may be at the top, this is actually the end of the program.  '>> ./myhticalPrep
+echo "#maxItems controls the number of items in the RSS. RSS Can be activated by creating a folder in /var/www/mythical-rss." >> ./mythicalPrep 
+echo "maxItems=8">> ./mythicalPrep
+echo "#########################USER SETTINGS########################## ">> ./mythicalPrep
+echo '########################## USER JOBS############################'>> ./mythicalPrep
+echo ' #The RunJob function is a place where you can put your custom script to be run at the end of execution'>> ./mythicalPrep
+echo ' #Though it may be at the top, this is actually the end of the program.  '>> ./mythicalPrep
 
-echo ' RunJob () {'>> ./myhticalPrep
-echo ' 	case $jobtype in'>> ./myhticalPrep
-echo ' #Successful Completion of mythicalLibrarian'>> ./myhticalPrep
-echo ' 		LinkModeSuccessful|MoveModeSuccessful)'>> ./myhticalPrep
-echo ' 			echo "SUCCESSFUL COMPLETEION TYPE: $jobtype"'>> ./myhticalPrep
-echo ' 			#Insert Custom User Job here '>> ./myhticalPrep
-echo ' 			'>> ./myhticalPrep
-echo ' 			#'>> ./myhticalPrep
-echo ' 			exit 0'>> ./myhticalPrep
-echo ' 			;;'>> ./myhticalPrep
-echo ' #File system error occoured'>> ./myhticalPrep
-echo ' 		PermissionError0Length|NoFileNameSupplied|PermissionErrorWhileMoving|FailSafeModeComplete|LinkModeFailed)'>> ./myhticalPrep
-echo ' 			echo "FILE SYSTEM ERROR:$jobtype"'>> ./myhticalPrep
-echo ' 			#Insert Custom User Job here '>> ./myhticalPrep
-echo ' 			'>> ./myhticalPrep
-echo ' 			#'>> ./myhticalPrep
-echo '   			exit 1'>> ./myhticalPrep
-echo ' 			;;'>> ./myhticalPrep
-echo ' '>> ./myhticalPrep
-echo ' #Information error occoured'>> ./myhticalPrep
-echo ' 		TvDbIsIncomplete|GenericShow)'>> ./myhticalPrep
-echo ' 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"'>> ./myhticalPrep
-echo '  			#Insert Custom User Job here '>> ./myhticalPrep
-echo ' 			'>> ./myhticalPrep
-echo ' 			#'>> ./myhticalPrep
-echo '  			exit 0'>> ./myhticalPrep
-echo ' 			;;'>> ./myhticalPrep
-echo ' #Generic error occoured'>> ./myhticalPrep
-echo '  		GenericUnspecifiedError)'>> ./myhticalPrep
-echo '  			echo "UNKNOWN ERROR OCCOURED:$jobtype"'>> ./myhticalPrep
-echo '  			#Insert Custom User Job here  '>> ./myhticalPrep
-echo ' 			'>> ./myhticalPrep
-echo ' 			#'>> ./myhticalPrep
-echo '  			exit 3 '>> ./myhticalPrep
-echo ' 			;;'>> ./myhticalPrep
-echo ' esac'>> ./myhticalPrep
-echo ' #Custom exit point may be set anywhere in program by typing RunJob on any new line'>> ./myhticalPrep
-echo ' #Insert Custom User Job here '>> ./myhticalPrep
-echo ' '>> ./myhticalPrep
-echo ' #'>> ./myhticalPrep
-echo ' exit 4'>> ./myhticalPrep
-echo ''>> ./myhticalPrep
-echo ' }'>> ./myhticalPrep
-echo ''>> ./myhticalPrep
+echo ' RunJob () {'>> ./mythicalPrep
+echo ' 	case $jobtype in'>> ./mythicalPrep
+echo ' #Successful Completion of mythicalLibrarian'>> ./mythicalPrep
+echo ' 		LinkModeSuccessful|MoveModeSuccessful)'>> ./mythicalPrep
+echo ' 			echo "SUCCESSFUL COMPLETEION TYPE: $jobtype"'>> ./mythicalPrep
+echo ' 			#Insert Custom User Job here '>> ./mythicalPrep
+echo ' 			'>> ./mythicalPrep
+echo ' 			#'>> ./mythicalPrep
+echo ' 			exit 0'>> ./mythicalPrep
+echo ' 			;;'>> ./mythicalPrep
+echo ' #File system error occoured'>> ./mythicalPrep
+echo ' 		PermissionError0Length|NoFileNameSupplied|PermissionErrorWhileMoving|FailSafeModeComplete|LinkModeFailed)'>> ./mythicalPrep
+echo ' 			echo "FILE SYSTEM ERROR:$jobtype"'>> ./mythicalPrep
+echo ' 			#Insert Custom User Job here '>> ./mythicalPrep
+echo ' 			'>> ./mythicalPrep
+echo ' 			#'>> ./mythicalPrep
+echo '   			exit 1'>> ./mythicalPrep
+echo ' 			;;'>> ./mythicalPrep
+echo ' '>> ./mythicalPrep
+echo ' #Information error occoured'>> ./mythicalPrep
+echo ' 		TvDbIsIncomplete|GenericShow)'>> ./mythicalPrep
+echo ' 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"'>> ./mythicalPrep
+echo '  			#Insert Custom User Job here '>> ./mythicalPrep
+echo ' 			'>> ./mythicalPrep
+echo ' 			#'>> ./mythicalPrep
+echo '  			exit 0'>> ./mythicalPrep
+echo ' 			;;'>> ./mythicalPrep
+echo ' #Generic error occoured'>> ./mythicalPrep
+echo '  		GenericUnspecifiedError)'>> ./mythicalPrep
+echo '  			echo "UNKNOWN ERROR OCCOURED:$jobtype"'>> ./mythicalPrep
+echo '  			#Insert Custom User Job here  '>> ./mythicalPrep
+echo ' 			'>> ./mythicalPrep
+echo ' 			#'>> ./mythicalPrep
+echo '  			exit 3 '>> ./mythicalPrep
+echo ' 			;;'>> ./mythicalPrep
+echo ' esac'>> ./mythicalPrep
+echo ' #Custom exit point may be set anywhere in program by typing RunJob on any new line'>> ./mythicalPrep
+echo ' #Insert Custom User Job here '>> ./mythicalPrep
+echo ' '>> ./mythicalPrep
+echo ' #'>> ./mythicalPrep
+echo ' exit 4'>> ./mythicalPrep
+echo ''>> ./mythicalPrep
+echo ' }'>> ./mythicalPrep
+echo ''>> ./mythicalPrep
 
 test -f ./mythicalLibrarian && rm ./mythicalLibrarian
-cat ./myhticalPrep >./mythicalLibrarian
+cat ./mythicalPrep >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 
 AlternateMoveDir=`echo eval $AlternateMoveDir`
