@@ -608,6 +608,25 @@
 
  }
 
+ writeJobToDooverQue (){
+   echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ }
+
+ doFailSafeMode(){
+  	echo "FAILSAFE FLAG WAS SET CHECK PERMISSIONS AND FOLDERS">>"$mythicalLibrarian"/output.log
+ 	echo "FAILSAFE FLAG WAS SET"
+ 	if [ $FailSafeMode = "Enabled" ]; then
+ 		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
+ 		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
+ 		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
+ 		ln -s "$InputPath" "$FailSafeDir/$ShowFileName.$originalext"
+ 		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
+ 		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
+ 	fi
+ 
+ 	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
+ }
+
  #####INITIAL DATASE GRAB#####
  ##This function grabs title and subtitle from the database for use in the rest of the script
  GrabTitleAndSubtitle () {
@@ -760,7 +779,7 @@
 
  #####REMOVE ENTRIES FROM LIBRARY#####
  #remove mythtv recording's pictures and database entries.  Thanks to barney_1.
- SYMLINKDisabled () {
+ DeleteRelevantDatabaseFilesAndPictures () {
  
  #Make sure we got input arguments and file is valid
  	if [ ! -f "$InputPath" ]; then
@@ -873,6 +892,140 @@
  	fi
  fi
  	return 0
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ fuzzyLogicDoesNotJiveMessage(){
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  	echo "%%%%%%%%%%%%%%%%% GUIDE DATA AND TVDB DATA DO NOT MATCH %%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%% Possible causes: small variations in episode name %%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad guide data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb airdate %%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb episode name %%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb zap2it id %%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ }
+ InvalidFileErrorMessage(){
+ 	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%INPUT FILE NAME NON EXISTANT CHECK FILE NAME AND PERMISSIONS%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ }
+ tvDbIsIncomplete(){
+ 	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+	echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
+ 	echo "ENABLE HANDLING OF UNRECOGNIZED SHOWS TO PROCESS THIS FILE"
+ 	echo "TO PREVENT THIS ERROR IN THE FUTURE ENABLE HANDLING OF UNRECOGNIZED SHOWS">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+ }
+
+ Wrote0LengthFile(){
+	test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%WROTE 0 LENGTH FILE%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ }
+ PermissionErrorWhileMoving(){
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%PERMISSION ERROR WHILE MOVING%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	test $Notify ="Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
+ }
+ SymlinkNotCreated() {
+  	echo "PERMISSION ERROR OR FILE SYSTEM DOES NOT SUPPORT SYMLINKS:$MoveDir"
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%LINK PERMISSION ERROR: SYMLINK NOT CREATED%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
+ }
+
+ #####GENERIC UNSPECIFIED ERROR#####
+ #This function provides an error message on generic errors
+ genericUnspecifiedError(){	
+ 	echo "NO MATCH FOUND.  TROUBLESHOOTING: Check www.TheTvDb TO SEE IF $InputTitle EXISTS. ">>"$mythicalLibrarian"/output.log
+ 	echo "CHECK EPISODE NAME $InputSubtitle. CHECK INTERNET CONNECTION. CHECK API KEY.">>"$mythicalLibrarian"/output.log
+ 	echo "NOT ENOUGH INFORMATION PULLED FROM DATABASE TO IDENTIFY FILE AS MOVIE OR EPISODE">>"$mythicalLibrarian"/output.log
+ 	echo "CHECK www.TheTvDb.com  RUN mythicalLibrarian LINK COMMAND PROMPT.">>"$mythicalLibrarian"/output.log
+ 	echo "FOR MORE INFORMATION SEE http://xbmc.org/wiki/index.php?title=mythicalLibrarian">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian/output.log">>"$mythicalLibrarian"/output.log
+ }
+
+
+
+ determinePrimaryOrAlternateFolderUsage(){
+ #Command line, no database Episodes: Determine where File will fit
+ 	FailSafeState=0
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+
+ #Episode handling: Determine where File will fit
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+ 
+ #Movie handling: Determine where file will fit
+ 	test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
+ 	test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
+
+ #Show Handling: Determing Where File will fit
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryShowDirWritable" != "1" && PrimaryShowDir="$AlternateShowDir"
+ 	test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
  }
 
  MakeFolder() {
@@ -1784,18 +1937,7 @@
  		absolouteEpisodeNumberBackup=$absolouteEpisodeNumber
  		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
  		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-  			echo "%%%%%%%%%%%%%%%%% GUIDE DATA AND TVDB DATA DO NOT MATCH %%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%% Possible causes: small variations in episode name %%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad guide data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb airdate %%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb episode name %%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb zap2it id %%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-
-
+ 			fuzzyLogicDoesNotJiveMessage
                         echo "%%%%%ABSOLOUTE EPISODE AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
  			echo "CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
  			DEBUGMODE=Enabled
@@ -1931,12 +2073,8 @@
  #####INVALID FILE HANDLING####
  #If file to be moved does not exist, then report
  if [ ! -f "$InputPath" ] && [ "$InputPath" != "testfile.ext" ]; then
- 	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
- 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%INPUT FILE NAME NON EXISTANT CHECK FILE NAME AND PERMISSIONS%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ 	InvalidFileErrorMessage
+ 	writeJobToDooverQue
  	if [ $Notify = Enabled ]; then
  	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
  	fi
@@ -1949,17 +2087,9 @@
  if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
  	if [ "$ShowStopper" = "Enabled" ]; then 
 
- 		echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
-  		echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
 
- 		echo  "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
- 		echo "ERROR: INFORMATION COULD NOT BE OBTAINED"
- 		echo "ENABLE HANDLING OF UNRECOGNIZED SHOWS TO PROCESS THIS FILE"
- 		echo "TO PREVENT THIS ERROR IN THE FUTURE ENABLE HANDLING OF UNRECOGNIZED SHOWS">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
+ 		tvDbIsIncomplete
+ 		writeJobToDooverQue
 		jobtype=NameCouldNotBeAssigned
  		runjob
  	else
@@ -1978,24 +2108,8 @@
  	fi
  fi
  
- #Command line, no database Episodes: Determine where File will fit
- FailSafeState=0
- test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
- test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
 
- #Episode handling: Determine where File will fit
- test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
- test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
- 
- #Movie handling: Determine where file will fit
- test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" && PrimaryMovieDir="$AlternateMoveDir"
- test "$mythicalLibrarianProgramIDCheck" = "MV" -a "$PrimaryMovieDirWritable" != "1" -a "$AlternateMovieDirWritable" != "1" && FailSafeState=1
-
- #Show Handling: Determing Where File will fit
- test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryShowDirWritable" != "1" && PrimaryShowDir="$AlternateShowDir"
- test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
- 
-  
+  determinePrimaryOrAlternateFolderUsage
   
  #####OUTPUT FILE NAME FORMATTING#####
  #universally not accepted file system characters:  |\?*<":>+[]/ 
@@ -2022,19 +2136,9 @@
  #####FAILSAFE HANDLING#####
  #If failsafe state is set then create link in FailSafeMode
  if [ $FailSafeState = "1" ]; then
-  	echo "FAILSAFE FLAG WAS SET CHECK PERMISSIONS AND FOLDERS">>"$mythicalLibrarian"/output.log
- 	echo "FAILSAFE FLAG WAS SET"
- 	if [ $FailSafeMode = "Enabled" ]; then
- 		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
- 		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
- 		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
- 		ln -s "$InputPath" "$FailSafeDir/$ShowFileName.$originalext"
- 		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
- 		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
- 	fi
- 
- 	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
- 	echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+
+ 	doFailSafeMode
+ 	writeJobToDooverQue
   	jobtype=FailSafeModeComplete
  	RunJob
  fi
@@ -2103,12 +2207,13 @@
  			echo "TO: $MoveDir/$ShowFileName.$originalext "
  
  #If symlink=disabled, remove database entries
-  			test "$SYMLINK" = "Disabled" && SYMLINKDisabled 
+  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures 
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
  
- #Generate NFO files for shows
+
+ #Additional features, notifications, rss, daily report.
  	 	 	test  "$RequiresNFO" = "1" && GenerateTVShowNFO
  	 	 	test  "$RequiresNFO" = "1" && GenerateEpisodeNFO
    			XBMCAutomate 
@@ -2122,21 +2227,15 @@
  #if file was not moved, then fail  
  		elif [ ! -s "$MoveDir/$ShowFileName.$originalext" ]; then
  			rm -f "$MoveDir/$ShowFileName.$originalext"
- 			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%WROTE 0 LENGTH FILE%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 			echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+			writeJobToDooverQue
+ 			Wrote0LengthFile
  			jobtype=PermissionError0Length
  			RunJob
 
  		fi
  	elif [ ! -f "$MoveDir/$ShowFileName.$originalext" ]; then
-  		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%PERMISSION ERROR WHILE MOVING%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
+ 		writeJobToDooverQue
+ 		PermissionErrorWhileMoving
  	  	jobtype=PermissionErrorWhileMoving
  		RunJob
  	fi
@@ -2158,12 +2257,13 @@
  			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName linked to $MoveDir" info
  		fi
 
- #Move comskip data
+ #Move comskip data to proper folder
   	 	if [ "$CommercialMarkup" = "Created" ]; then
  			mv "$mythicalLibrarian"/markupframes.txt "$MoveDir/$ShowFileName.txt"
  			echo "$MoveDir/$ShowFileName.txt">>"$mythicalLibrarian"/created.tracking
  		fi
 
+ #Additional features, notifications, rss, daily report.
  	 	test  "$RequiresNFO" = "1"  && GenerateTVShowNFO
 	 	test  "$RequiresNFO" = "1"  && GenerateEpisodeNFO 
  		XBMCAutomate 
@@ -2176,35 +2276,27 @@
  
  #If link failure, send notification and fail
  	elif [ ! -L "$MoveDir/$ShowFileName.$originalext" ]; then
- 		echo "PERMISSION ERROR OR FILE SYSTEM DOES NOT SUPPORT SYMLINKS:$MoveDir"
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%LINK PERMISSION ERROR: SYMLINK NOT CREATED%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
- 		echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ 		 echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+		 SymlinkNotCreated
+ 		 writeJobToDooverQue
+
  	fi
  	jobtype=LinkModeFailed
 	RunJob
 
  fi 
  
+
  #####GENERIC UNSPECIFIED ERROR#####
  #if no match is found then send error messages
  if [ "$exx" = "" ]; then 
- 	echo "NO MATCH FOUND.  TROUBLESHOOTING: Check www.TheTvDb TO SEE IF $InputTitle EXISTS. ">>"$mythicalLibrarian"/output.log
- 	echo "CHECK EPISODE NAME $InputSubtitle. CHECK INTERNET CONNECTION. CHECK API KEY.">>"$mythicalLibrarian"/output.log
- 	echo "NOT ENOUGH INFORMATION PULLED FROM DATABASE TO IDENTIFY FILE AS MOVIE OR EPISODE">>"$mythicalLibrarian"/output.log
- 	echo "CHECK www.TheTvDb.com  RUN mythicalLibrarian LINK COMMAND PROMPT.">>"$mythicalLibrarian"/output.log
- 	echo "FOR MORE INFORMATION SEE http://xbmc.org/wiki/index.php?title=mythicalLibrarian">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian/output.log">>"$mythicalLibrarian"/output.log
+	genericUnspecifiedError
  fi
  
  
  #send notification if enabled
  test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "mythicalLibrarian operation failed See "$mythicalLibrarian"/output.log for more information" error
- echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
+ writeJobToDooverQue
  jobtype=GenericUnspecifiedError
  RunJob
 
