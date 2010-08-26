@@ -1676,7 +1676,7 @@
  mythicalUpdater () {
  	test ! -d "$mythicalLibrarian" && mkdir "$mythicalLibrarian"
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
- 	cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
+ 	test -f $mythicalLibrarian/output.log && cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
 
  	if [ ! -f "../output.log" ]; then 
 	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
