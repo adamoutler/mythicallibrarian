@@ -509,13 +509,7 @@ echo "#Enables debug mode.  This is a verbose mode of logging which should be us
 
 OldOutputLog=`eval echo "~/.mythicalLibrarian/output.log.old"`
 test -f "$OldOutputLog" && OldOutputLog=$OldOutputLog || OldOutputLog="" 
-if [ OldOutputLog != "" ]; then
-	FileSize=`stat -c%s "${OldOutputLog}"`
-	test $FileSize > 50000 && echo "DEBUGMODE=Disabled" >> ./mythicalPrep || echo "DEBUGMODE=Enabled" >> ./mythicalPrep
-else
- 	echo "DEBUGMODE=Enabled" >> ./mythicalPrep
-fi
-
+echo "DEBUGMODE=Enabled" >> ./mythicalPrep
 
 
 	
