@@ -1266,20 +1266,20 @@
  	checkext=$InputTitle
 	if [ "$checkext" = "" ]; then
 	 	echo "Cannot process blank file extensions"
-		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
-		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
 		exit 1
 	elif [ "${checkext:0:2}" = "./" ]; then
  		echo "please specify the full path to the file"
- 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
-		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+ 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1
 	fi
  	scanpath=$InputSubtitle
  	if [ "$scanpath" = "" ]; then
 		echo "please supply a path"
- 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder" "ext"'
-		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos" "mpg"'
+ 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1 
 	fi
  	echo "--You have entered scan Mode."
