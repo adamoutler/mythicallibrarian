@@ -1786,10 +1786,11 @@
  #####ENVIRONMENTAL VARIABLES CONTINUED#####
 
  #Initial log entry 
- echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
- echo "$mythicalVersion">>"$mythicalLibrarian"/output.log
+  mythicalPlatform="`uname`"
+echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
+ echo "$mythicalVersion on $mythicalPlatform">>"$mythicalLibrarian"/output.log
  echo "$mythicalVersion" 
- mythicalPlatform="`uname`"
+
  InputFileBasename=`basename $InputPath`
 
  #If not specified, grab Title and subtitle from database using basename for reference
@@ -1823,7 +1824,7 @@
  
  
  #####MAINTENANCE#####
- #Loop through the list of created comskip files from comskip.tracking and remove orphans.
+ #Loop through the list of created comskip files from dir.tracking, created.tracking and remove orphans.
  DoMaintenance
   
 
@@ -1840,7 +1841,7 @@
  echo "PLOT: $plot"
   
  
- #####SEARCH FOR SHOW NAME#####
+ #####SEARCH FOR SHOW NAME AND GET SID #####
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $epn">>"$mythicalLibrarian"/output.log
  	echo "FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
@@ -1858,7 +1859,7 @@
 
 
  
- ######DOWNLOAD/PARSE/IDENTIFICATION OF SHOW NAME######
+ ######USE SID TO DOWNLOAD/PARSE/IDENTIFY SHOW NAME######
  if [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	mythicalLibrarianCounter=0
  
@@ -1878,6 +1879,7 @@
  			MatchedShowName=$NewShowName
  			MatchedSeriesID=$seriesid
  			MatchedSeriesLineNumber=$serieslinenumber
+ 			break
  		fi
  	done < "$mythicalLibrarian"/shn.txt
  	if [ -n "$MatchedShowName" ]; then
