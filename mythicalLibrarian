@@ -1891,8 +1891,10 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  	else
  
  #when no match is found:
- 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION Please update TheTvDb.com">>"$mythicalLibrarian"/output.log
- 		echo "USING FUZZY LOGIC FOR EPISODE RECOGNITION Please update TheTvDb.com"
+ 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION.">>"$mythicalLibrarian"/output.log
+ 		echo "Please update TheTvDb.com">>"$mythicalLibrarian"/output.log
+ 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."
+		echo "Please update TheTvDb.com"
 
  #Use fuzzy logic to make the best match of the show name as a last resort
  	 	FuzzySeriesMatch
