@@ -1936,7 +1936,8 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  ##FUZZY LOGIC SUBTITLE MATCH##
 	if [ "$absolouteEpisodeNumber" = "" ]; then
  		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
-  		echo FUZZY Exx NUMBER:$absolouteEpisodeNumber 
+  		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$absolouteEpisodeNumber"
+ 		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
  	else 
  		absolouteEpisodeNumberBackup=$absolouteEpisodeNumber
  		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
