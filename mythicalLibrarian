@@ -2173,14 +2173,12 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  fi
 
 
- if [ "$InputPath" = "testfile.ext" ]; then
- 	if [ "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
- 	if [ "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
- 	if [ "$(ls -A ./Showings)" ]; then rmdir ./Showings "Not Empty" ; fi
- 	
-
  #For debugging purposes only
-        exit 0 
+ if [ "$InputPath" = "testfile.ext" ]; then
+ 	test -d ./Episodes && if [ ! "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
+ 	test -d ./Movies && if [ ! "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
+ 	test -d ./Showings && if [ ! "$(ls -A ./Showings)" ]; then rmdir ./Showings "Not Empty" ; fi
+ 	exit 0 
  fi
  
  #####SH Identification Type Handling #####
