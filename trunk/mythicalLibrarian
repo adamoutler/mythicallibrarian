@@ -1076,23 +1076,25 @@
  	 
   	 test "$originaldirname" = "" && thisfolder="./" || thisfolder="/"
  	 MoveDir="$originaldirname$thisfolder""Episodes"
- 	 test ! -d "$MoveDir" && mkdir "$MoveDir"
+		
+ 	 test ! -d "$MoveDir" && mkdir "$MoveDir" && echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
+ 	
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  	 AlternateMoveDir="$originaldirname$thisfolder""Episodes"
  	 
- 	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir"
+ 	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
  	 PrimaryMovieDir="$originaldirname$thisfolder""Movies"
- 	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir"
+ 	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" && echo "$PrimaryMovieDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
  	 AlternateMovieDir="$originaldirname$thisfolder""Movies"
-  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir" && echo "$AlternateMovieDir">>"$mythicalLibrarian"/dir.tracking
  #PrimaryShowDir is where generic episodes will be placed
- 	 PrimaryShowDir="$originaldirname$thisfolder""Showings"
-  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+ 	 PrimaryShowDir="$originaldirname$thisfolder""Showings" 
+  	 test ! -d "$PrimaryShowDir" && mkdir "$$PrimaryShowDir"&& echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
-  	 AlternateShowDir="$originaldirname$thisfolder""Showings"
-  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
+  	 AlternateShowDir="$originaldirname$thisfolder""Showings" 
+  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"&& echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
  }
 
  #####GENERATE tvshow.nfo#####
@@ -1836,15 +1838,15 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  	
   fi
   #Report found data
- echo "RECSTART:$ShowStartTime MOVIEYEAR:$MovieAirDate SERIESDATE:$OriginalAirDate"
- echo "PROGRAMID:$ProgramID ShowCategory:$ShowCategory STARS:$stars RATING:$rating"
+ echo "RECSTART:$ShowStartTime DATE:$MovieAirDate $OriginalAirDate"
+ echo "PROGRAMID:$ProgramID ShowCategory:$ShowCategory"
  echo "PLOT: $plot"
   
  
  #####SEARCH FOR SHOW NAME AND GET SID #####
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $epn">>"$mythicalLibrarian"/output.log
- 	echo "FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
+ 	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
  
  
  
@@ -1898,6 +1900,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
 
  #Use fuzzy logic to make the best match of the show name as a last resort
  	 	FuzzySeriesMatch
+ 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid">>"$mythicalLibrarian"/output.log
  		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
  		DownloadAndParse
  	fi
@@ -1926,7 +1929,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  			absolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Subtract 1 to compensate for original series airdate
  			let absolouteEpisodeNumber=$absolouteEpisodeNumber-1
- 			echo DB ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON ORIG AIR DATE:$OriginalAirDate 
+ 			echo "ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
  		fi
  #Remove no match found, "-1" = ""
  		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=""
@@ -1968,7 +1971,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
 
 
 
- 	echo "DEFINED ABSOLOUTE EPISODE NUMBER: $absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
+
   
  #if line match is obtained, then gather new episode name, Sxx and Exx
  	if [ "$absolouteEpisodeNumber" !=  ""  ]; then
@@ -1987,7 +1990,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  
  #if series id is not obtained send failure message
  elif [ -z "$seriesid" ]; then 
- 	echo "series was not found the tvdb or this is a movie may be down try using a showtranslation for $InputTitle">>"$mythicalLibrarian"/output.log
+ 	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
   	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
  		exx=$null
@@ -2001,7 +2004,8 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  #######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
- 	 echo "FILE IS A LINK ACTIVATING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log 
+ 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log 
+ 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"
  	 SYMLINK=LINK
  fi 
  
@@ -2018,8 +2022,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  	AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
  fi
  
- OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
- WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
+
  
  #Call permissions check from function.  Write small file, delete, get results
  checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
@@ -2037,7 +2040,9 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  	checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
  	AlternateShowDirWritable=$TMoveDirWritable
  fi
- 
+
+ OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
+ WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
  checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
  OriginalDirWritable=$TMoveDirWritable
  checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
@@ -2053,7 +2058,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
  	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
- 	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify DEBUG MODE:$DEBUGMODE-">>"$mythicalLibrarian"/output.log
+ 	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
@@ -2168,8 +2173,15 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  fi
 
 
+ if [ "$InputPath" = "testfile.ext" ]; then
+ 	if [ "$(ls -A ./Episodes)" ]; then rm ./Episodes ; fi
+ 	if [ "$(ls -A ./Movies)" ]; then rm ./Movies ; fi
+ 	if [ "$(ls -A ./Showings)" ]; then rm ./Showings "Not Empty" ; fi
+ 	
+
  #For debugging purposes only
-  test "$InputPath" = "testfile.ext" && exit 0
+        exit 0 
+ fi
  
  #####SH Identification Type Handling #####
  #if the ProgramID does not meet criteria, then end the program

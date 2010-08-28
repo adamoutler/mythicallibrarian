@@ -232,8 +232,8 @@ if [ "$UserChoosesFolder" = "0" ]; then
  dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
  AlternateMoveDir=`cat ./AlternateMoveDir`
 fi
- test "$AlternateMovedir" = "" && movedir=$AlternateMoveDir1
- echo $AlternateMovedir > ./AlternateMoveDir
+ test "$AlternateMoveDir" = "" && AlternateMoveDir=$AlternateMoveDir1
+ echo $AlternateMoveDir > ./AlternateMoveDir
  echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalPrep
  test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
@@ -569,9 +569,9 @@ test -f ./mythicalLibrarian && rm ./mythicalLibrarian
 cat ./mythicalPrep >./mythicalLibrarian
 cat ./librarian >>./mythicalLibrarian
 
-AlternateMoveDir=`echo eval $AlternateMoveDir`
-AlternateMovieDir=`echo eval $AlternateMovieDir`
-AlternateShowDir=`echo eval $AlternateShowDir`
+AlternateMoveDir=`echo $AlternateMoveDir`
+AlternateMovieDir=`echo $AlternateMovieDir`
+AlternateShowDir=`echo $AlternateShowDir`
 
 
 test ! -d "/usr" && mkdir "/usr"
