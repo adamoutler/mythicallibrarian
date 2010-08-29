@@ -1370,8 +1370,9 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "Testing file system permissions"
 
 
-
- 	test "$UseOriginalDir" = "Enabled" && UseOriginalDir
+ 	test "$UseOriginalDir" = "Enabled" && echo "UseOriginalDir is selected."
+  	test "$UseOriginalDir" = "Enabled" && echo "Testing with current folder"
+	test "$UseOriginalDir" = "Enabled" && UseOriginalDir
 
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
