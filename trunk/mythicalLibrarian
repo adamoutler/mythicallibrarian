@@ -1083,8 +1083,9 @@ AlternateMoveDir=$AlternateMoveDir
  	
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  	 AlternateMoveDir="$originaldirname$thisfolder""Episodes"
- 	 echo wootwootwoot
+
  	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
+         echo " test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking"
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
  	 PrimaryMovieDir="$originaldirname$thisfolder""Movies"
  	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" && echo "$PrimaryMovieDir">>"$mythicalLibrarian"/dir.tracking
