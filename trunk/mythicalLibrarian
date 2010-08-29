@@ -1070,6 +1070,8 @@
 
  #####USE ORIGINAL DIR#####
  #If UseOriginalDir is set, then this changes movedir to original dir.
+PrimaryMovieDir=$PrimaryMovieDir
+AlternateMoveDir=$AlternateMoveDir
 
  UseOriginalDir () {
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
@@ -1081,7 +1083,7 @@
  	
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  	 AlternateMoveDir="$originaldirname$thisfolder""Episodes"
- 	 
+ 	 echo wootwootwoot
  	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
  	 PrimaryMovieDir="$originaldirname$thisfolder""Movies"
@@ -1091,10 +1093,10 @@
   	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir" && echo "$AlternateMovieDir">>"$mythicalLibrarian"/dir.tracking
  #PrimaryShowDir is where generic episodes will be placed
  	 PrimaryShowDir="$originaldirname$thisfolder""Showings" 
-  	 test ! -d "$PrimaryShowDir" && mkdir "$$PrimaryShowDir"&& echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$PrimaryShowDir" && mkdir "$$PrimaryShowDir" && echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
   	 AlternateShowDir="$originaldirname$thisfolder""Showings" 
-  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"&& echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir" && echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
  }
 
  #####GENERATE tvshow.nfo#####
