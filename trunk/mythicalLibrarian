@@ -1076,26 +1076,24 @@ AlternateMoveDir=$AlternateMoveDir
  UseOriginalDir () {
  #Set originaldir name if none was supplied
   	 test "$originaldirname" = "" && originaldirname=$(pwd)
- 	 echo "$originaldirname"
-         echo $originaldirname
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  	 MoveDir="$originaldirname/Episodes"
- 	 test ! -d "$MoveDir" && mkdir "$MoveDir" && echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
+ 	 test ! -d "$MoveDir" && mkdir "$MoveDir" 
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  	 AlternateMoveDir="$originaldirname/Episodes"
- 	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
+ 	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
  	 PrimaryMovieDir="$originaldirname/Movies"
- 	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" && echo "$PrimaryMovieDir">>"$mythicalLibrarian"/dir.tracking
+ 	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" 
  #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
  	 AlternateMovieDir="$originaldirname/Movies"
-  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir" && echo "$AlternateMovieDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
  #PrimaryShowDir is where generic episodes will be placed
  	 PrimaryShowDir="$originaldirname/Showings" 
-  	 test ! -d "$PrimaryShowDir" && mkdir "$PrimaryShowDir" && echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$PrimaryShowDir" && mkdir "$PrimaryShowDir" 
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
   	 AlternateShowDir="$originaldirname/Showings" 
-  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir" && echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
  }
 
  #####GENERATE tvshow.nfo#####
