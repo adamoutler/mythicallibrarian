@@ -2177,7 +2177,7 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  if [ "$InputPath" = "testfile.ext" ]; then
  	test -d ./Episodes && if [ ! "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
  	test -d ./Movies && if [ ! "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
- 	test -d ./Showings && if [ ! "$(ls -A ./Showings)" ]; then rmdir ./Showings "Not Empty" ; fi
+ 	test -d ./Showings && if [ ! "$(ls -A ./Showings)" ]; then rmdir ./Showings; fi
  	exit 0 
  fi
  

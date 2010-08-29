@@ -1,5 +1,7 @@
 #! /bin/bash
- 
+mythicalLibrarian=~/.mythicalLibrarian/
+mkdir $mythicalLibrarian
+
 #This script will generate the user settings portion of mythicalLibrarian
 test -f "./mythicalPrep" && rm ./mythicalPrep
 if [ "$(id -u)" != "0" ]; then
@@ -220,7 +222,7 @@ fi
  test "$movedir" = "" && movedir=$movedir1
  echo $movedir > ./movedir
  echo "MoveDir=$movedir">>./mythicalPrep
- test ! -d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
+ test ! -d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir" && sudo -u $SUDO_USER echo "$movedir">>"$mythicalLibrarian"/dir.tracking
 
 
 
@@ -235,7 +237,7 @@ fi
  test "$AlternateMoveDir" = "" && AlternateMoveDir=$AlternateMoveDir1
  echo $AlternateMoveDir > ./AlternateMoveDir
  echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalPrep
- test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
+ test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"&&  sudo -u $SUDO_USER echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
 
@@ -324,7 +326,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
  		echo "PrimaryMovieDir=$PrimaryMovieDir">>./mythicalPrep
- 	 	test ! -d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
+ 	 	test ! -d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"&& sudo -u $SUDO_USER echo "$PrimaryMovieDir">>"$mythicalLibrarian"/dir.tracking
 
 
  		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalPrep
@@ -337,7 +339,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
  		echo "$AlternateMovieDir">./AlternateMovieDir
  		echo "AlternateMovieDir=$AlternateMovieDir">>./mythicalPrep
- 	 	test ! -d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir"
+ 	 	test ! -d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir" && sudo -u $SUDO_USER echo "$movedir">>"$mythicalLibrarian"/dir.tracking
 
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
