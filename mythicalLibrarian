@@ -1095,7 +1095,7 @@ AlternateMoveDir=$AlternateMoveDir
   	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir" && echo "$AlternateMovieDir">>"$mythicalLibrarian"/dir.tracking
  #PrimaryShowDir is where generic episodes will be placed
  	 PrimaryShowDir="$originaldirname$thisfolder""Showings" 
-  	 test ! -d "$PrimaryShowDir" && mkdir "$$PrimaryShowDir" && echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
+  	 test ! -d "$PrimaryShowDir" && mkdir "$PrimaryShowDir" && echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
   	 AlternateShowDir="$originaldirname$thisfolder""Showings" 
   	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir" && echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
