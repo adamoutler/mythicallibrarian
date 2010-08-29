@@ -1075,6 +1075,8 @@ AlternateMoveDir=$AlternateMoveDir
 
  UseOriginalDir () {
  #Set originaldir name if none was supplied
+  	 test "$originaldirname" = "./" && originaldirname=$(pwd)
+   	 test "$originaldirname" = "." && originaldirname=$(pwd)        
   	 test "$originaldirname" = "" && originaldirname=$(pwd)
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  	 MoveDir="$originaldirname/Episodes"
