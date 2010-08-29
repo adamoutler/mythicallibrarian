@@ -1074,30 +1074,25 @@ PrimaryMovieDir=$PrimaryMovieDir
 AlternateMoveDir=$AlternateMoveDir
 
  UseOriginalDir () {
+ #Set originaldir name if none was supplied
+  	 test "$originaldirname" = "" && originaldirname=$(pwd)
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
- 	 
-  	 test "$originaldirname" = "" && thisfolder=$(pwd)"/" || thisfolder="/"
- 	 MoveDir="$originaldirname$thisfolder""Episodes"
-
-		
+ 	 MoveDir="$originaldirname/Episodes"
  	 test ! -d "$MoveDir" && mkdir "$MoveDir" && echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
- 	
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
- 	 AlternateMoveDir="$originaldirname$thisfolder""Episodes"
-
+ 	 AlternateMoveDir="$originaldirname/Episodes"
  	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking
-         echo " test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" && echo "$AlternateMoveDir">>"$mythicalLibrarian"/dir.tracking"
  #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. "~/videos"
- 	 PrimaryMovieDir="$originaldirname$thisfolder""Movies"
+ 	 PrimaryMovieDir="$originaldirname/Movies"
  	 test ! -d "$PrimaryMovieDir" && mkdir "$PrimaryMovieDir" && echo "$PrimaryMovieDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateMoveDir will act as a Seccondary move dir if the primary move dir fails
- 	 AlternateMovieDir="$originaldirname$thisfolder""Movies"
+ 	 AlternateMovieDir="$originaldirname/Movies"
   	 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir" && echo "$AlternateMovieDir">>"$mythicalLibrarian"/dir.tracking
  #PrimaryShowDir is where generic episodes will be placed
- 	 PrimaryShowDir="$originaldirname$thisfolder""Showings" 
+ 	 PrimaryShowDir="$originaldirname/Showings" 
   	 test ! -d "$PrimaryShowDir" && mkdir "$PrimaryShowDir" && echo "$PrimaryShowDir">>"$mythicalLibrarian"/dir.tracking
  #AlternateShowDir will act as a Seccondary Show Dir if the primary show dir fails
-  	 AlternateShowDir="$originaldirname$thisfolder""Showings" 
+  	 AlternateShowDir="$originaldirname/Showings" 
   	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir" && echo "$AlternateShowDir">>"$mythicalLibrarian"/dir.tracking
  }
 
