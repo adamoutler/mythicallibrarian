@@ -588,14 +588,21 @@ test ! -d "/usr/local/bin" && mkdir "/usr/local/bin" && PATH=$PATH:/usr/local/bi
 #basic mythtv username check
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
 
+if [ "$UserChoosesFolder" = "0" ]; then
+ 	test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
+ 	test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
+ 	test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
+ 	test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
+ 	test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
+fi
 
-test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
-test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
-test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
-test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
-test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
-test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
+test -d "/var/www" && test ! -d "/var/www/mythical-rss" &&  mkdir /var/www/mythical-rss 
+test -d "/var/www/mythical-rss" && RssEnabled=1
+test -d ~/.mythicalLibrarian && chmod 775 ~/.mythicalLibrarian
+chmod 711 ~/.mythicalLibrarian/mythicalSetup
+
+
 
 
 #Change ownership
@@ -624,7 +631,7 @@ test "$mythtv" = "1" && chown -hR "mythtv":"mythtv"  "$AlternateMoveDir" "$Alter
 test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 
 
-sudo -u $SUDO_USER mythicalLibrarian -m
+sudo -u $SUDO_USER /usr/local/bin/mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
@@ -654,7 +661,14 @@ if [ "$mythtv" = "1" ]; then
  else
   echo ADDING JOB to slot $SlotToUse
   if [ "$SlotToUse" != "0" ]; then
-   mythicalcheck=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"`
+   CheckForTableEntry=`mysql -uroot -proot -e "use mythconverg; select * from settings where value like 'UserJob$SlotToUse';"`
+   test "$CheckForTableEntry" = "" && mysql -uroot -proot -e "use mythconverg; INSERT into settings SET value = 'UserJob$SlotToUse';"
+
+ 
+
+ 	mythicalcheck=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"`
+
+
   else
    echo "Could not add mythcialLibrarian MythTV UserJob because no slots were available"
   fi
@@ -663,8 +677,9 @@ fi
 test "${mythicalcheck:0:5}" = "ERROR" && echo 'Access denied to update user job.  User job must be added manually.  /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"'
 echo "permissions were set for user: $SUDO_USER"
 test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
-test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml"
-echo "mythicalLibrarian is located in /usr/local/bin"
+test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml" 
+test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian"
+echo "mythicalLibrarian is located in /usr/local/bin" 
 echo "log is located in ~/.mythicalLibrarian/output.log"
 echo "'mythicalLibrarian --help' for more information"
 echo "Done."
