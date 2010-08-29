@@ -1076,8 +1076,9 @@ AlternateMoveDir=$AlternateMoveDir
  UseOriginalDir () {
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  	 
-  	 test "$originaldirname" = "" && thisfolder="./" || thisfolder="/"
+  	 test "$originaldirname" = "" && thisfolder=$(pwd)"/" || thisfolder="/"
  	 MoveDir="$originaldirname$thisfolder""Episodes"
+
 		
  	 test ! -d "$MoveDir" && mkdir "$MoveDir" && echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
  	
