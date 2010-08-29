@@ -212,7 +212,7 @@ dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Fol
 	test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
 
 test -f ./movedir && movedir1=`cat ./movedir`
-test "$movedir1" = "" && movedir1="~/Episodes"
+test "$movedir1" = "" && movedir1="./Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 
 if [ "$UserChoosesFolder" = "0" ]; then 
@@ -227,7 +227,7 @@ fi
 
 
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
-test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
+test "$AlternateMoveDir1" = "" && AlternateMoveDir1="./Episodes"
 dialog --infobox "If your primary folder fails, your files will be moved to $AternateMoveDir1 default" 10 30 
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
@@ -575,22 +575,40 @@ AlternateMoveDir=`echo $AlternateMoveDir`
 AlternateMovieDir=`echo $AlternateMovieDir`
 AlternateShowDir=`echo $AlternateShowDir`
 
+test "$mythtv" = "1" && dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian.  Note, this will generally be mythtv." 10 40 "$SUDO_USER" 2>./UserName || dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian." 10 40 "$SUDO_USER" 2>./UserName
+ 	UserName=`cat ./UserName`
 
-test ! -d "/usr" && mkdir "/usr"
+
+#basic linux setup checks for POSIX compliance
+test ! -d "/usr" && sudo -U mkdir "/usr"
 test ! -d "/usr/local" && mkdir "/usr/local"
 test ! -d "/usr/local/bin" && mkdir "/usr/local/bin" && PATH=$PATH:/usr/local/bin && export PATH && echo "PATH=$PATH:/usr/local/bin">~/.profile
+
+
+#basic mythtv username check
 test "$mythtv" = "1" && test ! -d "/home/mythtv" && mkdir "/home/mythtv"
+
+
 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
 test ! -d "$AlternateMovieDir" && mkdir "$AlternateMovieDir"
 test ! -d ~/.mythicalLibrarian && mkdir ~/.mythicalLibrarian
 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
-chown $SUDO_USER:$SUDO_USER ~/.mythicalLibrarian
-chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test ! -d /home/mythtv/Episodes && mkdir /home/mythtv/Episodes
 test ! -d "/home/mythtv/Failsafe" && mkdir "/home/mythtv/Failsafe"
 test -d "/var/www" && test ! -d "/var/www/mythical-rss" && mkdir /var/www/mythical-rss
+
+
+#Change ownership
+chown $UserName:$UserName ~/.mythicalLibrarian
+chown -hR "$UserName" ~/.mythicalLibrarian
+chown -hR "$UserName" /var/www/mythical-rss
+
+
+
 test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
+test "$mythtv" = "1" && useradd -G $SUDO_USER mythtv >/dev/null 2>&1 
 clear
+
 echo "mythicalLibrarian will now conduct mythicalDiagnostics"
 read -n1 -p "Press any key to continue to online testing...."
 echo ""
