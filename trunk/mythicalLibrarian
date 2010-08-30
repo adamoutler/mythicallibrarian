@@ -1956,11 +1956,9 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
 			(( ++FuzzyLogicError ))
 			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
 			echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
-			absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
  			echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
    		fi
-
-
+		absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
 
 	fi
 		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
