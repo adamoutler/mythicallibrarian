@@ -208,7 +208,8 @@ echo " ###Stand-alone mode values###">>./mythicalPrep
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Would you like to use your original recordings folder or would you like to choose your own folder to place recordings?  note: Using Original will place an Episodes Movies and Showings folder in your default recording folder(s)." 15 60
+dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  15 60
+
 	test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
 
 test -f ./movedir && movedir1=`cat ./movedir`
