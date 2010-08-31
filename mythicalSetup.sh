@@ -684,7 +684,14 @@ test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located
 test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian"
 echo "mythicalLibrarian is located in /usr/local/bin" 
 echo "log is located in ~/.mythicalLibrarian/output.log"
-echo "'mythicalLibrarian --help' for more information"
+if [ $UserChoosesFolder = 1 ]; then
+ echo "Renamed video files will be placed in new folders within original."
+ test "$mythtv" = "1" && echo "ie. /var/lib/mythtv/recordings/Episodes, /Movies and /Showings."
+ test "$mythtv" != "1" && echo "ie. /path_to_original_file/Episodes, /Movies and /Showings."
+else
+ echo "User specified folders are to be used for placement of recordings."
+fi
+echo "type 'mythicalLibrarian --help' for more information"
 echo "Done."
 
 exit 0
