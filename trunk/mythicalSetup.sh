@@ -123,7 +123,8 @@ if [ ! -f "./librarian" ]; then
 else
 
  lastupdated="`cat ./lastupdated`"
-DownloadML=$(dialog --title "Version and Build options" --menu "Download an update first then Build mythicalLibrarian" 10 70 15 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)	
+DownloadML=$(dialog --title "Version and Build options" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nFirst select the version, Latest or Stable to be downloaded\nThen select Build using the new version" 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
+
 if [ "$?" = "1" ]; then
  	clear
  	echo "mythicalLibrarian was not updated."
