@@ -984,7 +984,7 @@
  	echo "%%%%%%%%%%%%%%%%%%%%PERMISSION ERROR WHILE MOVING%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 	test $Notify ="Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
+ 	test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
  }
  SymlinkNotCreated() {
   	echo "PERMISSION ERROR OR FILE SYSTEM DOES NOT SUPPORT SYMLINKS:$MoveDir"
