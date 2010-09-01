@@ -1791,7 +1791,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  #Initial log entry 
   mythicalPlatform="`uname`"
-echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
+ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log 
  echo "$mythicalVersion on $mythicalPlatform">>"$mythicalLibrarian"/output.log
  echo "$mythicalVersion" 
 
@@ -1822,15 +1822,14 @@ echo "@@@@@@@@@@@NEW SEARCH INITIATED AT `date`@@@@@@@@@@@@@@">>"$mythicalLibrar
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
- 
+  #####MAINTENANCE#####
+ #Loop through the list of created comskip files from dir.tracking, created.tracking and remove orphans.
+ DoMaintenance
+
+
  #Setup paths if useoriginaldir is active.
  test "$UseOriginalDir" = "Enabled" && UseOriginalDir
  
- 
- #####MAINTENANCE#####
- #Loop through the list of created comskip files from dir.tracking, created.tracking and remove orphans.
- DoMaintenance
-  
 
  #####GATHER INFORMATION FROM  DATABASE#####
   #Get information if database is enabled
