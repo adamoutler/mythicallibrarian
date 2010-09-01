@@ -678,7 +678,7 @@ if [ "$mythtv" = "1" ]; then
  fi
 fi
 test "${mythicalcheck:0:5}" = "ERROR" && echo 'Access denied to update user job.  User job must be added manually.  /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"'
-echo "permissions were set for user: $SUDO_USER"
+echo "permissions were set for user: $UserName"
 test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
 test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml" 
 test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian"
