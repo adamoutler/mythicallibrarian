@@ -1080,7 +1080,7 @@ AlternateMoveDir=$AlternateMoveDir
   	 test "$originaldirname" = "" && originaldirname=$(pwd)
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  	 MoveDir="$originaldirname/Episodes"
- 	 test ! -d "$MoveDir" && echo makingdir $MoveDir && mkdir "$MoveDir" 
+ 	 test ! -d "$MoveDir" && mkdir "$MoveDir" 
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  	 AlternateMoveDir="$originaldirname/Episodes"
  	 test ! -d "$AlternateMoveDir" && mkdir "$AlternateMoveDir" 
