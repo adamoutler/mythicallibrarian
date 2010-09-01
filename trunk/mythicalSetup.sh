@@ -637,7 +637,7 @@ sudo -u $SUDO_USER /usr/local/bin/mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
-test "$passed" = "0" && echo "Installation and tests completed successfully"  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
+test "$passed" = "0" && echo "Installation and tests completed successfully."  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
 
 if [ "$mythtv" = "1" ]; then
@@ -678,20 +678,21 @@ if [ "$mythtv" = "1" ]; then
  fi
 fi
 test "${mythicalcheck:0:5}" = "ERROR" && echo 'Access denied to update user job.  User job must be added manually.  /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"'
-echo "permissions were set for user: $UserName"
+echo "permissions were set for user: $UserName."
 test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
-test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml" 
-test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian"
+test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml ." 
+test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian."
 echo "mythicalLibrarian is located in /usr/local/bin" 
-echo "log is located in ~/.mythicalLibrarian/output.log"
+echo "The mythicalLibrarian log is located in ~/.mythicalLibrarian/output.log"
 if [ $UserChoosesFolder = 1 ]; then
  echo "Renamed video files will be placed in new folders within original."
- test "$mythtv" = "1" && echo "ie. /var/lib/mythtv/recordings/Episodes, /Movies and /Showings."
- test "$mythtv" != "1" && echo "ie. /path_to_original_file/Episodes, /Movies and /Showings."
+ test "$mythtv" = "1" && echo -e "  ie. /var/lib/mythtv/recordings/Episodes, /Movies and /Showings."
+ test "$mythtv" != "1" && echo -e "  ie. /path_to_original_file/Episodes, /Movies and /Showings."
 else
  echo "User specified folders are to be used for placement of recordings."
 fi
-echo "type 'mythicalLibrarian --help' for more information"
+test "$mythtv" = "1" && echo -e "Check the mythicalLibrarian checkbox when setting up recordings."
+echo "For more information, type 'mythicalLibrarian --help'"
 echo "Done."
 
 exit 0
