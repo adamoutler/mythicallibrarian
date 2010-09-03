@@ -229,7 +229,7 @@ fi
  test "$movedir" = "" && movedir=$movedir1
  echo $movedir > ./movedir
  echo "MoveDir=$movedir">>./mythicalPrep
- test ! -d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
+ test "$UserChoosesFolder" = "0" && test ! -d "$movedir" && sudo -u $SUDO_USER mkdir "$movedir"
 
 
 
@@ -244,7 +244,7 @@ fi
  test "$AlternateMoveDir" = "" && AlternateMoveDir=$AlternateMoveDir1
  echo $AlternateMoveDir > ./AlternateMoveDir
  echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalPrep
- test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
+ test "$UserChoosesFolder" = "0" && test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
 echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
 
@@ -333,7 +333,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$PrimaryMovieDir" = "" && PrimaryMovieDir=$PrimaryMovieDir1
  		echo "$PrimaryMovieDir">./PrimaryMovieDir
  		echo "PrimaryMovieDir=$PrimaryMovieDir">>./mythicalPrep
- 	 	test ! -d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
+ 	 	test "$UserChoosesFolder" = "0" && test ! -d "$PrimaryMovieDir" && sudo -u $SUDO_USER mkdir "$PrimaryMovieDir"
 
 
  		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalPrep
@@ -346,7 +346,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$AlternateMovieDir" = "" && AlternateMovieDir=$AlternateMovieDir1
  		echo "$AlternateMovieDir">./AlternateMovieDir
  		echo "AlternateMovieDir=$AlternateMovieDir">>./mythicalPrep
- 	 	test ! -d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir" 
+ 	 	test "$UserChoosesFolder" = "0" && test ! -d "$AlternateMovieDir" && sudo -u $SUDO_USER mkdir "$AlternateMovieDir" 
 
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
@@ -364,7 +364,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
  		echo "$PrimaryShowDir">./AlternateShowDir
  		echo "PrimaryShowDir=$PrimaryShowDir">>./mythicalPrep
- 	 	test ! -d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
+ 	 	test "$UserChoosesFolder" = "0" && test ! -d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
 
 
 
@@ -379,7 +379,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test "$AlternateShowDir" = "" && AlternateShowDir=$AlternateShowDir1
  		echo "$AlternateShowDir">./AlternateShowDir
  		echo "AlternateShowDir=$AlternateShowDir">>./mythicalPrep
-  	 	test ! -d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
+  	 	test "$UserChoosesFolder" = "0" && test ! -d "$AlternateShowDir" && sudo -u $SUDO_USER mkdir "$AlternateShowDir"
 
 
  		echo " #CommercialMarkup will generate comskip files for recordings when they are moved. Enabled|Disabled">> ./mythicalPrep
