@@ -122,10 +122,12 @@ if [ ! -f "./librarian" ]; then
  	echo "Stable `date`">./lastupdated
 else
 
- lastupdated="`cat ./lastupdated`"
-DownloadML=$(dialog --title "Version and Build options" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nFirst select the version, Latest or Stable to be downloaded\nThen select Build using the new version" 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
+test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
+rm ./bypassDownload
+test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
+test $bypassDownload = 0 && DownloadML=$(dialog --title "Version and Build options" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nFirst select the version, Latest or Stable to be downloaded\nThen select Build using the new version" 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
 
-if [ "$?" = "1" ]; then
+if [ "$?" = "1" ] && [ bypassDownload != 1 ] ; then
  	clear
  	echo "mythicalLibrarian was not updated."
  	echo "Please re-run mythicalSetup."
@@ -135,6 +137,7 @@ fi
 fi
 clear
 if [ "$DownloadML" = "Stable" ]; then
+ 	touch ./bypassDownload
  	echo "Stable "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
@@ -168,6 +171,7 @@ if [ "$DownloadML" = "Stable" ]; then
 
 fi
 if [ "$DownloadML" = "Latest" ]; then
+ 	touch ./bypassDownload
   	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
