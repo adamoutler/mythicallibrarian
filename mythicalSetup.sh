@@ -278,7 +278,7 @@ echo "Language=en">>./mythicalPrep
 if [ "$mythtv" = "1" ]; then
 
 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalPrep
-	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'"
+	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'">> ./mythicalPrep
 	dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
 		test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
 echo "">>./mythicalPrep
