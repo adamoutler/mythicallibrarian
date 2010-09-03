@@ -123,11 +123,12 @@ if [ ! -f "./librarian" ]; then
 else
 
 test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
-rm ./bypassDownload
+test -f ./bypassDownload && rm ./bypassDownload
+
 test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
 test $bypassDownload = 0 && DownloadML=$(dialog --title "Version and Build options" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nFirst select the version, Latest or Stable to be downloaded\nThen select Build using the new version" 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
 
-if [ "$?" = "1" ] && [ bypassDownload != 0 ] ; then
+if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
  	clear
  	echo "mythicalLibrarian was not updated."
  	echo "Please re-run mythicalSetup."
