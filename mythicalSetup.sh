@@ -126,7 +126,7 @@ test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
 test -f ./bypassDownload && rm ./bypassDownload
 
 test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
-test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN) or Stable to be downloaded" 10 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version" 2>&1 >/dev/tty)
+test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN) or Stable to be downloaded" 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version" 2>&1 >/dev/tty)
 
 if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
  	clear
