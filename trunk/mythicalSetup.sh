@@ -1,6 +1,6 @@
 #! /bin/bash
 mythicalLibrarian=~/.mythicalLibrarian/
-mkdir $mythicalLibrarian
+test ! -d $mythicalLibrarian && mkdir $mythicalLibrarian
 
 #This script will generate the user settings portion of mythicalLibrarian
 test -f "./mythicalPrep" && rm ./mythicalPrep
