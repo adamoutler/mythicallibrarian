@@ -683,7 +683,7 @@ test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1
 test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml ." 
 test "$RssEnabled" != "1" && echo "No RSS Feeds will be used on this server. Configure /var/www/mythical-rss to link to web server for access by mythicalLibrarian."
 echo "mythicalLibrarian is located in /usr/local/bin" 
-echo "The mythicalLibrarian log is located in ~/.mythicalLibrarian/output.log"
+echo "mythicalLibrarian's log is located in "~/".mythicalLibrarian/output.log"
 if [ $UserChoosesFolder = 1 ]; then
  echo "Renamed video files will be placed in new folders within original."
  test "$mythtv" = "1" && echo -e "  ie. /var/lib/mythtv/recordings/Episodes, /Movies and /Showings."
