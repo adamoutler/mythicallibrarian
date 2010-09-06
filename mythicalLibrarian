@@ -386,48 +386,55 @@
  	TMoveDirWritable=0
 
 ###DEBUG Increase logging level
- 	if [ "$2" != "" ] && [ "$1" != "" ]; then
- 		if [ -d "$3" ]; then
-	 		if [ $1 -lt $2 ]; then
-	 			echo "Testing write permission on $3">$3/arbitraryfile.ext 
-	 			if [ -f "$3/arbitraryfile.ext" ] ; then
-	 				if [ -s "$3/arbitraryfile.ext" ]; then
-	 					rm -f "$3/arbitraryfile.ext"
-	 					test ! -f "$3/arbitraryfile.ext" && TMoveDirWritable=1 || TMoveDirWritable=0
-	 				else
-	 					TMoveDirWritable=0
-	 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE"
-	 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE">"$mythicalLibrarian/output.log"
-					fi
-				else
-	  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED"
-					test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\""
- 					test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\""
-        				echo "QUICK FIX: sudo chown $MyUserName \"$3\""
-	  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED">"$mythicalLibrarian/output.log"
-					test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\"">"$mythicalLibrarian/output.log"
- 					test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\"">"$mythicalLibrarian/output.log"
-        				echo "QUICK FIX: sudo chown $MyUserName \"$3\"">"$mythicalLibrarian/output.log"
-	 			fi
-	 		elif [ -z "$2" ] || [ $1 -ge $2 ]; then
-	 		 	TMoveDirWritable=0
-		 		echo "INSUFFICIENT FREE SPACE ON $3"
- 				echo "QUICK FIX: Remove unnecessary files"
-		 		echo "INSUFFICIENT FREE SPACE ON $3">"$mythicalLibrarian/output.log"
- 				echo "QUICK FIX: Remove unnecessary files">"$mythicalLibrarian/output.log"
-			fi
-		else
-			echo "FOLDER DOES NOT EXIST: $3"
-			echo "QUICK FIX: mkdir \"$3\""
-			echo "FOLDER DOES NOT EXIST: $3">"$mythicalLibrarian/output.log"
-			echo "QUICK FIX: mkdir \"$3\"">"$mythicalLibrarian/output.log"
- 		fi
+ 	if [ "$2" != "" ]; then
+ 		 [ "$1" != "" ]; then
+ 			if [ -d "$3" ]; then
+		 		if [ $1 -lt $2 ]; then
+		 			echo "Testing write permission on $3">$3/arbitraryfile.ext 
+		 			if [ -f "$3/arbitraryfile.ext" ] ; then
+		 				if [ -s "$3/arbitraryfile.ext" ]; then
+		 					rm -f "$3/arbitraryfile.ext"
+		 					test ! -f "$3/arbitraryfile.ext" && TMoveDirWritable=1 || TMoveDirWritable=0
+		 				else
+		 					TMoveDirWritable=0
+		 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE"
+		 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE">"$mythicalLibrarian/output.log"
+						fi
+					else
+		  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED"
+						test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\""
+ 						test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\""
+ 	       				echo "QUICK FIX: sudo chown $MyUserName \"$3\""
+		  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED">"$mythicalLibrarian/output.log"
+						test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\"">"$mythicalLibrarian/output.log"
+ 						test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\"">"$mythicalLibrarian/output.log"
+ 	       				echo "QUICK FIX: sudo chown $MyUserName \"$3\"">"$mythicalLibrarian/output.log"
+		 			fi
+		 		elif [ -z "$2" ] || [ $1 -ge $2 ]; then
+		 		 	TMoveDirWritable=0
+			 		echo "INSUFFICIENT FREE SPACE ON $3"
+ 					echo "QUICK FIX: Remove unnecessary files"
+			 		echo "INSUFFICIENT FREE SPACE ON $3">"$mythicalLibrarian/output.log"
+ 					echo "QUICK FIX: Remove unnecessary files">"$mythicalLibrarian/output.log"
+				fi
+			else
+				echo "FOLDER DOES NOT EXIST: $3"
+				echo "QUICK FIX: mkdir \"$3\""
+				echo "FOLDER DOES NOT EXIST: $3">"$mythicalLibrarian/output.log"
+				echo "QUICK FIX: mkdir \"$3\"">"$mythicalLibrarian/output.log"
+ 			fi
 
-	else 
-		echo "COULD NOT READ FILESIZE OR FREE SPACE"
+		else 
+			echo "COULD NOT READ FILESIZE ON $InputPath"
+			echo "QUICK FIX: chmod -R 666 \"$InputPath\""
+			echo "COULD NOT READ FILESIZE ON $InputPath">"$mythicalLibrarian/output.log"
+			echo "QUICK FIX: chmod -R 666 \"$InputPath\"">"$mythicalLibrarian/output.log"
+	else
+ 		echo "COULD NOT READ FREE SPACE on \"$originaldirname\""
 		echo "QUICK FIX: chmod -R 666 \"$originaldirname\""
-		echo "COULD NOT READ FILESIZE OR FREE SPACE">"$mythicalLibrarian/output.log"
- 	fi
+		echo "COULD NOT READ FREE SPACE on \"$originaldirname\"">"$mythicalLibrarian/output.log"
+		echo "QUICK FIX: chmod -R 666 \"$originaldirname\"">"$mythicalLibrarian/output.log"
+	fi
 
  	return 0
  }
