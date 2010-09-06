@@ -429,6 +429,7 @@
 			echo "QUICK FIX: chmod -R 666 \"$InputPath\""
 			echo "COULD NOT READ FILESIZE ON $InputPath">"$mythicalLibrarian/output.log"
 			echo "QUICK FIX: chmod -R 666 \"$InputPath\"">"$mythicalLibrarian/output.log"
+ 		fi
 	else
  		echo "COULD NOT READ FREE SPACE on \"$originaldirname\""
 		echo "QUICK FIX: chmod -R 666 \"$originaldirname\""
