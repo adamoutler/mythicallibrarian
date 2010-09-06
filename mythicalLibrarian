@@ -387,7 +387,7 @@
 
 ###DEBUG Increase logging level
  	if [ "$2" != "" ]; then
- 		 [ "$1" != "" ]; then
+ 		 if [ "$1" != "" ]; then
  			if [ -d "$3" ]; then
 		 		if [ $1 -lt $2 ]; then
 		 			echo "Testing write permission on $3">$3/arbitraryfile.ext 
