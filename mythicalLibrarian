@@ -381,21 +381,54 @@
  #CheckPermissions by writing a small file then deleting it, checking along the way.
  #CheckPermissions takes file size, free space on dir, and the dir, then it performs
  #tests.  the result will be $TMoveDirWritable as a 1 or a 0 for writable or not.
+ #$1=filesize $2=freespace $3=folder to check
  checkpermissions () { 
  	TMoveDirWritable=0
- 	if [ "$2" != "" ] && [ "$1" != "" ] && [ $1 -lt $2 ]; then
- 		echo "Testing write permission on $3">$3/arbitraryfile.ext 
- 		if [ -f "$3/arbitraryfile.ext" -a -s "$3/arbitraryfile.ext" ]; then
- 			rm -f "$3/arbitraryfile.ext"
- 			test ! -f "$3/arbitraryfile.ext" && TMoveDirWritable=1 || TMoveDirWritable=0
- 		else
- 			TMoveDirWritable=0
- 			echo "CHECK PERMISSIONS ON $MoveDir"
+
+###DEBUG Increase logging level
+ 	if [ "$2" != "" ] && [ "$1" != "" ]; then
+ 		if [ -d "$3" ]; then
+	 		if [ $1 -lt $2 ]; then
+	 			echo "Testing write permission on $3">$3/arbitraryfile.ext 
+	 			if [ -f "$3/arbitraryfile.ext" ] ; then
+	 				if [ -s "$3/arbitraryfile.ext" ]; then
+	 					rm -f "$3/arbitraryfile.ext"
+	 					test ! -f "$3/arbitraryfile.ext" && TMoveDirWritable=1 || TMoveDirWritable=0
+	 				else
+	 					TMoveDirWritable=0
+	 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE"
+	 					echo "CREATED $3/arbitraryfile.ext BUT COULD NOT WRITE DATA INTO THE FILE">"$mythicalLibrarian/output.log"
+					fi
+				else
+	  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED"
+					test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\""
+ 					test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\""
+        				echo "QUICK FIX: sudo chown $MyUserName \"$3\""
+	  				echo "$MyUserName TRIED TO WRITE TO $3 --FAILED">"$mythicalLibrarian/output.log"
+					test ! -r "$3" && echo "QUICK FIX: sudo chmod a+r \"$3\"">"$mythicalLibrarian/output.log"
+ 					test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\"">"$mythicalLibrarian/output.log"
+        				echo "QUICK FIX: sudo chown $MyUserName \"$3\"">"$mythicalLibrarian/output.log"
+	 			fi
+	 		elif [ -z "$2" ] || [ $1 -ge $2 ]; then
+	 		 	TMoveDirWritable=0
+		 		echo "INSUFFICIENT FREE SPACE ON $3"
+ 				echo "QUICK FIX: Remove unnecessary files"
+		 		echo "INSUFFICIENT FREE SPACE ON $3">"$mythicalLibrarian/output.log"
+ 				echo "QUICK FIX: Remove unnecessary files">"$mythicalLibrarian/output.log"
+			fi
+		else
+			echo "FOLDER DOES NOT EXIST: $3"
+			echo "QUICK FIX: mkdir \"$3\""
+			echo "FOLDER DOES NOT EXIST: $3">"$mythicalLibrarian/output.log"
+			echo "QUICK FIX: mkdir \"$3\"">"$mythicalLibrarian/output.log"
  		fi
- 	elif [ -z "$2" ] || [ $1 -ge $2 ]; then
- 	 	TMoveDirWritable=0
-	 	echo "UNUSABLE SPACE-CHECK:$3"
-	fi
+
+	else 
+		echo "COULD NOT READ FILESIZE OR FREE SPACE"
+		echo "QUICK FIX: chmod -R 666 \"$originaldirname\""
+		echo "COULD NOT READ FILESIZE OR FREE SPACE">"$mythicalLibrarian/output.log"
+ 	fi
+
  	return 0
  }
  
@@ -1684,14 +1717,15 @@ AlternateMoveDir=$AlternateMoveDir
 
  	if [ ! -f "../output.log" ]; then 
 	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
-		exit 1
+		SetExitBit=1
  	fi
 
  	if [ "$(id -u)" != "0" ]; then
 		echo "You do not have sufficient privlidges to run this script."
  		echo "Try again with sudo mythicalLibrarian --update"
-		exit 1
+		SetExitBit=1
 	fi	
+ 	test $SetExitBit = 1 && exit 1
 	sudo -u $SUDO_USER echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 
