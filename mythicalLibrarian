@@ -414,7 +414,6 @@
 				echo "FOLDER DOES NOT EXIST: $3" |tee -a "$mythicalLibrarian/output.log"
 				echo "QUICK FIX: mkdir \"$3\"" |tee -a "$mythicalLibrarian/output.log"
  			fi
-
 		else 
 			echo "COULD NOT READ FILESIZE ON $InputPath" |tee -a "$mythicalLibrarian/output.log"
 			echo "QUICK FIX: chmod -R 666 \"$InputPath\"" |tee -a "$mythicalLibrarian/output.log"
@@ -1619,22 +1618,26 @@ AlternateMoveDir=$AlternateMoveDir
  		echo "  eg. sudo mythicalLibrarian --update"
  		echo ""
  		echo "-d|--doover"
-  		echo "  eg. sudo mythicalLibrarian --doover"
  		echo "  doover: reruns previously failed jobs sequentially"
+  		echo "  eg. sudo mythicalLibrarian --doover"
  		echo ""
  		echo "-u|--undo"
  		echo "  undo: returns all files to original states"
  		echo "  eg. sudo mythicalLibrarian --undo"
  		echo ""
  		echo "-?|-h|--help"
- 		echo "  example: mythicalLibrarian --help"
  		echo "  Help: displays this message"
+ 		echo "  example: mythicalLibrarian --help"
+ 		echo ""
+ 		echo "--special"
+ 		echo "  Special Help: displays extended configuration help."
+ 		echo "  example: mythicalLibrarian --special"
  		echo "======================================================="
  	fi
 	echo " ensure you have set the user settings set properly and run"
  	echo " --mythicalDiagnostics before using mythicalLibrarian"
  	echo " in --scan mode or as a UserJob."
-	echo " More information is available in mythicalLibrarian --special"
+ 	echo " For more information type: mythicalLibrarian --special"
 	exit 1
  }
 
