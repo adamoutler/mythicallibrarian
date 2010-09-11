@@ -1597,6 +1597,11 @@ AlternateMoveDir=$AlternateMoveDir
  #####HELP#####
  #This function provides a helpful message.
  mythicalHelp () {
+ 	if [ "$InputPath" = "%DIR%/%FILE%"
+ 	 	UserJobOutsideMythTV
+ 		jobType="GenericUnspecifiedError"
+ 		runJob
+ 	fi 
  	echo " mythicalLibrarian --:invalid pattern"
 	echo ""
  	echo "usage: mythicalLibrarian 'path/to/file' ['title'] ['subtitle']"
@@ -1780,9 +1785,9 @@ AlternateMoveDir=$AlternateMoveDir
  test -f ~/mythicalLibrarian/mythicalLibrarian.conf && . ~/mythicalLibrarian/mythicalLibrarian.conf
  
 
- InputTitle=$2
- InputSubtitle=$3
- InputPath=$1
+ InputTitle="$2"
+ InputSubtitle="$3"
+ InputPath="$1"
  test "$InputPath" != "testfile.ext" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
 
@@ -1792,10 +1797,6 @@ AlternateMoveDir=$AlternateMoveDir
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
  case $InputPath in 
-
- 	%DIR%/%FILE%)
- 	 	UserJobOutsideMythTV
-	;;
 
 	--scan|-s)
  		mythicalScan		
