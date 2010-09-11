@@ -1787,6 +1787,7 @@ AlternateMoveDir=$AlternateMoveDir
  test "$InputPath" = "" && mythicalHelp
 
   MythTVUserJobString="%DIR%/%FILE%"
+ echo $InputPath
 
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
