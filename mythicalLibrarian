@@ -965,7 +965,14 @@
 
 
 
-
+ UserJobOutsideMythTV(){
+ 	echo -e " ERROR: MythTV User Job is only valid when run as a user job by MythTV"
+  	echo -e " When outside MythTV call the file directly, EG."
+ 	echo -e " mythicalLibrarian /path_to/file.ext"
+ 	echo -e "   --or when looking up a non database Episode--"
+ 	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\"" 
+  	exit 1
+ }
 
 
  fuzzyLogicDoesNotJiveMessage(){
@@ -1782,6 +1789,11 @@ AlternateMoveDir=$AlternateMoveDir
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
  case $InputPath in 
+
+ 	%DIR%/%FILE%)
+ 	 	UserJobOutsideMythTV
+	;;
+
 	--scan|-s)
  		mythicalScan		
  	;;
