@@ -1792,7 +1792,7 @@ AlternateMoveDir=$AlternateMoveDir
  #check for command line switches
  case $InputPath in 
 
- 	$MythTVUserJobString)
+ 	%DIR%/%FILE%)
  	 	UserJobOutsideMythTV
 	;;
 
