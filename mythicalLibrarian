@@ -1786,11 +1786,13 @@ AlternateMoveDir=$AlternateMoveDir
  test "$InputPath" != "testfile.ext" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
 
+  MythTVUserJobString="%DIR%/%FILE%"
+
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
  case $InputPath in 
 
- 	%DIR%/%FILE%)
+ 	$MythTVUserJobString)
  	 	UserJobOutsideMythTV
 	;;
 
