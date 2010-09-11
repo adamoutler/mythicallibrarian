@@ -970,7 +970,8 @@
   	echo -e " When outside MythTV call the file directly, EG."
  	echo -e " mythicalLibrarian /path_to/file.ext"
  	echo -e "   --or when looking up a non database Episode--"
- 	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\"" 
+ 	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\""
+  	echo -e "done." 
   	exit 1
  }
 
@@ -1649,7 +1650,8 @@ AlternateMoveDir=$AlternateMoveDir
 	echo " ensure you have set the user settings set properly and run"
  	echo " --mythicalDiagnostics before using mythicalLibrarian"
  	echo " in --scan mode or as a UserJob."
- 	echo " For more information type: mythicalLibrarian --special"
+ 	echo " For more information type: mythicalLibrarian --help or --special"
+ 	echo " done."
 	exit 1
  }
 
