@@ -1597,7 +1597,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####HELP#####
  #This function provides a helpful message.
  mythicalHelp () {
- 	if [ "$InputPath" = "%DIR%/%FILE%"
+ 	if [ "$InputPath" = "%DIR%/%FILE%" ]; then 
  	 	UserJobOutsideMythTV
  		jobType="GenericUnspecifiedError"
  		runJob
