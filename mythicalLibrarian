@@ -1293,6 +1293,7 @@ AlternateMoveDir=$AlternateMoveDir
  	 	done < "$mythicalLibrarian/cleanup"
 		rm "$mythicalLibrarian/cleanup"
 	fi
+ 	mkdir "$mythicalLibrarian/mythicalSetup"
 }
 
 
