@@ -966,10 +966,10 @@
 
 
  UserJobOutsideMythTV(){
- 	echo -e " ERROR: MythTV User Job is only valid when run as a user job by MythTV"
+ 	echo -e " ERROR: MythTV User Job is only valid when run as a user job by MythTV."
   	echo -e " When outside MythTV call the file directly, EG."
  	echo -e " mythicalLibrarian /path_to/file.ext"
- 	echo -e "   --or when looking up a non database Episode--"
+ 	echo -e "   --OR when looking up a non database Episode--"
  	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\""
   	echo -e "done." 
   	exit 1
@@ -1582,6 +1582,7 @@ AlternateMoveDir=$AlternateMoveDir
 		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER "$mythicalLibrarian/undo.sh"
 		test -f "$mythicalLibrarian/doover.sh" && cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		test -f "$mythicalLibrarian/doover.sh" && rm -f "$mythicalLibrarian/doover.sh"
+ 		removedead=1
  		DoMaintenance
  		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
