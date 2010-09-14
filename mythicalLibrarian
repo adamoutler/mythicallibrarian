@@ -1339,7 +1339,7 @@ AlternateMoveDir=$AlternateMoveDir
  	 	done < "$mythicalLibrarian/cleanup"
 		rm "$mythicalLibrarian/cleanup"
 	fi
- 	mkdir "$mythicalLibrarian/mythicalSetup"
+ 	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
 }
 
 
