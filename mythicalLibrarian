@@ -936,7 +936,7 @@
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
  if [ "$InputOption" != "--BypassPermissionsCheck" ] && [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$USER" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
-  	test "$SUDO_USER" != "" && UserName=$SUDO_USER || UserName=$USER
+  	UserName=$USER
  	echo -e " USER NAME:$UserName ATTEMPTED TO RENAME A MYTHTV OWNED FILE"|tee -a "$mythicalLibrarian"/output.log
  	echo -e " mythicalLibrarian HAS PREVENTED THIS UNAUTHORIZED FILE ACTION"|tee -a "$mythicalLibrarian"/output.log
  	echo -e " THIS IS A SAFETY FEATURE TO PRESERVE FILE PERMISSIONS."|tee -a "$mythicalLibrarian"/output.log
