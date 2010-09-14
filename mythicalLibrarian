@@ -945,7 +945,7 @@
  	echo -e " THIS IS A SAFETY FEATURE TO PRESERVE FILE PERMISSIONS."|tee -a "$mythicalLibrarian"/output.log
  	echo -e " PLEASE RUN THE FOLLOWING TO SET PROPER PERMISSIONS WHEN RENAMING FILES:"|tee -a "$mythicalLibrarian"/output.log
  	echo -e " sudo su mythtv"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " mythicalLibrarian \"$1\" \"$2\" \"$3\""|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\""|tee -a "$mythicalLibrarian"/output.log
  	echo -e " OR AT YOUR OWN RISK BYPASS THIS CHECK BY ADDING --BypassPermissionsCheck"|tee -a "$mythicalLibrarian"/output.log
  	echo -e " AT THE END OF THE LINE YOU JUST RAN."|tee -a "$mythicalLibrarian"/output.log
  	echo -e " "|tee -a "$mythicalLibrarian"/output.log
