@@ -997,7 +997,8 @@
  	echo -e "   --OR when looking up a non database Episode--"
  	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\""
   	echo -e "done." 
-  	exit 1
+  	jobtype="GenericUnspecifiedError"
+ 	RunJob
  }
 
  DisplayShowWarning(){
