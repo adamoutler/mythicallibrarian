@@ -950,7 +950,7 @@
  	echo -e " AT THE END OF THE LINE YOU JUST RAN."|tee -a "$mythicalLibrarian"/output.log
  	echo -e " "|tee -a "$mythicalLibrarian"/output.log
  	echo -e " Done."|tee -a "$mythicalLibrarian"/output.log
-   	$jobtype="PermissionErrorWhileMoving"
+   	jobtype="PermissionErrorWhileMoving"
  	RunJob
  fi
  }
