@@ -920,12 +920,37 @@
  fi
  	return 0
  }
+ 
+ DoTestFileExit (){
+	test -d ./Episodes && if [ ! "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
+ 	test -d ./Movies && if [ ! "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
+ 	test -d ./Showings && if [ ! "$(ls -A ./Showings)" ]; then rmdir ./Showings; fi
+ 	exit 0 
+ }
 
+ #Function DoMythTVPermissionsCheck will check to see if the file is 
+ #file is owned by mythtv and cause mythicalLibrarian to exit with a
+ #descriptive message if certain criteria are met.
+ DoMythTVPermissionsCheck(){
 
-
-
-
-
+# if no bypass, and file is owned by mythtv, and username is not mythtv
+# and system is set to use mythtv database, and symlink is move 
+ if [ "$InputOption" != "--BypassPermissionsCheck" ] && [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$USER" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
+  	test "$SUDO_USER" != "" && UserName=$SUDO_USER || UserName=$USER
+ 	echo -e " USER NAME:$UserName ATTEMPTED TO RENAME A MYTHTV OWNED FILE"|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " mythicalLibrarian HAS PREVENTED THIS UNAUTHORIZED FILE ACTION"|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " THIS IS A SAFETY FEATURE TO PRESERVE FILE PERMISSIONS."|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " PLEASE RUN THE FOLLOWING TO SET PROPER PERMISSIONS WHEN RENAMING FILES:"|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " sudo su mythtv"|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " mythicalLibrarian \"$1\" \"$2\" \"$3\""|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " OR AT YOUR OWN RISK BYPASS THIS CHECK BY ADDING --BypassPermissionsCheck"|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " AT THE END OF THE LINE YOU JUST RAN."|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " "|tee -a "$mythicalLibrarian"/output.log
+ 	echo -e " Done."|tee -a "$mythicalLibrarian"/output.log
+   	$jobtype="PermissionErrorWhileMoving"
+ 	RunJob
+ fi
+ }
 
 
 
@@ -973,6 +998,26 @@
  	echo -e " mythicalLibrarian /path_to/file.ext \"Title of Show\" \"Subtitle of show\""
   	echo -e "done." 
   	exit 1
+ }
+
+ DisplayShowWarning(){
+ 	echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
+ 	echo "WARNING:%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ }
+ 
+ DisplayCompletedMoveMessage(){
+ 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
+ 	echo "MOVED: $InputPath"
+ 	echo "TO: $MoveDir/$ShowFileName.$originalext "
+ }
+
+ DisplayEpiShowMessage(){
+ 	echo "WARNING: EPISODE INFORMATION COULD NOT BE OBTAINED"
+ 	echo "HANDLING AS A GENERAL SHOWING"
+ 	echo "Please consider helping out and adding to thetvdb."
+ 	echo "WARNING:SHOW WAS CONSIDERED AN EPISODE BUT INFORMAITON WAS NOT OBTAINABLE">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "HANDLING EPISODE AS GENERAL SHOWING AND DUMPING INTO --doover USER JOB">>"$mythicalLibrarian"/output.log
  }
 
 
@@ -1792,6 +1837,7 @@ AlternateMoveDir=$AlternateMoveDir
  InputTitle="$2"
  InputSubtitle="$3"
  InputPath="$1"
+ InputOption="$4"
  test "$InputPath" != "testfile.ext" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
 
@@ -1926,7 +1972,7 @@ AlternateMoveDir=$AlternateMoveDir
  		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$line"
  		DownloadAndParse
  		ParsedZap2itSeriesID=`cat "$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"`
-       	if [ "$ParsedZap2itSeriesID" = "$Zap2itSeriesID" ]; then
+       		if [ "$ParsedZap2itSeriesID" = "$Zap2itSeriesID" ]; then
  
  #Mark matched Zap2it ID
   			echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$seriesid"
@@ -1946,15 +1992,12 @@ AlternateMoveDir=$AlternateMoveDir
  	else
  
  #when no match is found:
- 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION.">>"$mythicalLibrarian"/output.log
- 		echo "Please update TheTvDb.com">>"$mythicalLibrarian"/output.log
- 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."
-		echo "Please update TheTvDb.com"
+ 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
+ 		echo "Please update TheTvDb.com"| tee -a "$mythicalLibrarian"/output.log
 
  #Use fuzzy logic to make the best match of the show name as a last resort
  	 	FuzzySeriesMatch
- 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid">>"$mythicalLibrarian"/output.log
- 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
+ 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"|tee -a "$mythicalLibrarian"/output.log
  		DownloadAndParse
  	fi
  elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$InputSubtitle" != "" ]; then
@@ -1999,7 +2042,7 @@ AlternateMoveDir=$AlternateMoveDir
  		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
  		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			fuzzyLogicDoesNotJiveMessage
-                        echo "%%%%%ABSOLOUTE EPISODE AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
+                        echo "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
  			echo "CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
  			DEBUGMODE=Enabled
  			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
@@ -2055,8 +2098,7 @@ AlternateMoveDir=$AlternateMoveDir
  #######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
- 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE">>"$mythicalLibrarian"/output.log 
- 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"
+ 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"|tee -a"$mythicalLibrarian"/output.log 
  	 SYMLINK=LINK
  fi 
  
@@ -2160,12 +2202,7 @@ AlternateMoveDir=$AlternateMoveDir
  		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
   		mythicalLibrarianProgramIDCheck=SH
 		NewShowName=$SafeShowName
- 		echo "WARNING: EPISODE INFORMATION COULD NOT BE OBTAINED"
- 		echo "HANDLING AS A GENERAL SHOWING"
- 		echo "Please consider helping out and adding to thetvdb."
- 		echo "WARNING:SHOW WAS CONSIDERED AN EPISODE BUT INFORMAITON WAS NOT OBTAINABLE">>"$mythicalLibrarian"/output.log
-  		echo "%%%%%%%%%%%%Please consider helping out and adding to thetvdb%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		echo "HANDLING EPISODE AS GENERAL SHOWING AND DUMPING INTO --doover USER JOB">>"$mythicalLibrarian"/output.log
+ 		DisplayEpiShowMessage 
  	fi
  fi
  
@@ -2223,22 +2260,14 @@ AlternateMoveDir=$AlternateMoveDir
   
  fi
 
+ test "$InputPath" = "testfile.ext" && DoTestFileExit
+ DoMythTVPermissionsCheck
 
- #For debugging purposes only
- if [ "$InputPath" = "testfile.ext" ]; then
- 	test -d ./Episodes && if [ ! "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
- 	test -d ./Movies && if [ ! "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
- 	test -d ./Showings && if [ ! "$(ls -A ./Showings)" ]; then rmdir ./Showings; fi
- 	exit 0 
- fi
- 
- #####SH Identification Type Handling #####
- #if the ProgramID does not meet criteria, then end the program
- 	if [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
- 		echo "GENERIC GUIDE DATA WAS SUPPLIED TYPE: $ProgramIDType- $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
- 		echo "WARNING:%%%%%%%%%%PROGRAM GUIDE DATA IS NOT COMPLETE%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
- 		
- 	fi
+
+ test  "$mythicalLibrarianProgramIDCheck" = "SH" && DisplayShowWarning
+
+
+
  
  
  #####MOVE MODE HANDLING#####
@@ -2264,13 +2293,10 @@ AlternateMoveDir=$AlternateMoveDir
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
  				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
- 				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"
- 				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS">>"$mythicalLibrarian"/output.log
+ 				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"|tee -a "$mythicalLibrarian"/output.log
   			fi
- 
-  		 	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
- 			echo "MOVED: $InputPath"
- 			echo "TO: $MoveDir/$ShowFileName.$originalext "
+  			DisplayCompletedMoveMessage
+
  
  #If symlink=disabled, remove database entries
   			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures 
