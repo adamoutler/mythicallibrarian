@@ -584,7 +584,7 @@ AlternateShowDir=`echo $AlternateShowDir`
 
 
 
-test "$mythtv" = "1" && dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian.  Note, this will generally be mythtv." 10 40 "$SUDO_USER" 2>./UserName || dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian." 10 40 "mythtv" 2>./UserName || echo $SUDO_USER>./UserName
+test "$mythtv" = "1" && dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian.  Note, this will generally be mythtv." 10 40 "mythtv" 2>./UserName || dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian." 10 40 "$SUDO_USER" 2>./UserName || echo $SUDO_USER>./UserName
  	UserName=`cat ./UserName`
 
 
