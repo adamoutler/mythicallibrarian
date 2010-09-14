@@ -1351,6 +1351,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####SCAN MODE#####
  #This function will scan a folder and process the entire library
  mythicalScan () {
+ 	DoMythTVPermissionsCheck
  	checkext=$InputTitle
 	if [ "$checkext" = "" ]; then
 	 	echo "Cannot process blank file extensions"
@@ -1369,22 +1370,22 @@ AlternateMoveDir=$AlternateMoveDir
  		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1 
-	fi
+ 	fi
  	echo "--You have entered scan Mode."
-	echo " mythicalLibrarian will conduct a scan of the folder:"
+ 	echo " mythicalLibrarian will conduct a scan of the folder:"
  	echo " $scanpath"
  	echo " searching for file types:$checkext. Each file will be"
-	echo " processed through mythicalLibrarian. This mode will" 
-	echo " only work when database access functional."
+ 	echo " processed through mythicalLibrarian. This mode will" 
+ 	echo " only work when database access functional."
  	echo " please scan a single file to test capabilities before"
-	echo " running the scan mode of operation using the following"
-	echo " eg. mythicalLibrarian /path/to/file.ext"
+ 	echo " running the scan mode of operation using the following"
+ 	echo " eg. mythicalLibrarian /path/to/file.ext"
  	echo " mythicalLibrarian will first run the doovers to prevent"
  	echo " clobbering and creation of unnescessary links."
-	echo " This operation can be reversed using the following command:"
+ 	echo " This operation can be reversed using the following command:"
  	echo " sudo mythicalLibrarian --undo"
  	echo " Data loss can occour if this operation is interupted."
-	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
+ 	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? (y)/n>" yesorno
  	echo ""
  	test "$yesorno" = "" && yesorno="y"
  	if [ "$yesorno" = "y" ]; then
@@ -1393,7 +1394,11 @@ AlternateMoveDir=$AlternateMoveDir
  		echo $scanpath $checkext
   		while read line
  		do
-			test ! -L "$line" && test ! -S "$line" && test ! -d "$line" && mythicalLibrarian "$line"	
+ 			if [ "$InputOption" = "--BypassPermissionsCheck" ]; then
+ 	 			test ! -L "$line" && test ! -S "$line" && test ! -d "$line" && mythicalLibrarian "$line" "--BypassPermissionsCheck"			
+ 			else
+ 				test ! -L "$line" && test ! -S "$line" && test ! -d "$line" && mythicalLibrarian "$line" 
+ 			fi
  		done<"$mythicalLibrarian/scan.temp"
  		rm "$mythicalLibrarian/scan.temp"
  		exit 0
