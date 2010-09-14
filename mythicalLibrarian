@@ -1849,9 +1849,7 @@ AlternateMoveDir=$AlternateMoveDir
  InputOption="$4"
  test "$InputPath" != "testfile.ext" && test ! -f "$InputPath" && test "$InputTitle" = "" && test "${InputPath:0:1}" != "-" && mythicalHelp
  test "$InputPath" = "" && mythicalHelp
-
-  MythTVUserJobString="%DIR%/%FILE%"
- echo $InputPath
+ MythTVUserJobString="%DIR%/%FILE%"
 
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
