@@ -535,6 +535,7 @@ echo ' #Successful Completion of mythicalLibrarian'>> ./mythicalPrep
 echo ' 		LinkModeSuccessful|MoveModeSuccessful)'>> ./mythicalPrep
 echo ' 			echo "SUCCESSFUL COMPLETEION TYPE: $jobtype"'>> ./mythicalPrep
 echo ' 			#Insert Custom User Job here '>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobSucessful && cat -A /etc/mythicalLibrarian/JobSucessful >> ./mythicalPrep
 echo ' 			'>> ./mythicalPrep
 echo ' 			#'>> ./mythicalPrep
 echo ' 			exit 0'>> ./mythicalPrep
@@ -543,6 +544,7 @@ echo ' #File system error occoured'>> ./mythicalPrep
 echo ' 		PermissionError0Length|NoFileNameSupplied|PermissionErrorWhileMoving|FailSafeModeComplete|LinkModeFailed)'>> ./mythicalPrep
 echo ' 			echo "FILE SYSTEM ERROR:$jobtype"'>> ./mythicalPrep
 echo ' 			#Insert Custom User Job here '>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobFilesystemError && cat -A  /etc/mythicalLibrarian/JobFilesystemError >> ./mythicalPrep
 echo ' 			'>> ./mythicalPrep
 echo ' 			#'>> ./mythicalPrep
 echo '   			exit 1'>> ./mythicalPrep
@@ -552,21 +554,44 @@ echo ' #Information error occoured'>> ./mythicalPrep
 echo ' 		TvDbIsIncomplete|GenericShow)'>> ./mythicalPrep
 echo ' 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"'>> ./mythicalPrep
 echo '  			#Insert Custom User Job here '>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobInformationError && cat -A /etc/mythicalLibrarian/JobInformationError >> ./mythicalPrep
 echo ' 			'>> ./mythicalPrep
 echo ' 			#'>> ./mythicalPrep
 echo '  			exit 0'>> ./mythicalPrep
 echo ' 			;;'>> ./mythicalPrep
 echo ' #Generic error occoured'>> ./mythicalPrep
 echo '  		GenericUnspecifiedError)'>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobGenericError && cat -A /etc/mythicalLibrarian/JobGenericError >> ./mythicalPre
 echo '  			echo "UNKNOWN ERROR OCCOURED:$jobtype"'>> ./mythicalPrep
 echo '  			#Insert Custom User Job here  '>> ./mythicalPrep
 echo ' 			'>> ./mythicalPrep
 echo ' 			#'>> ./mythicalPrep
 echo '  			exit 3 '>> ./mythicalPrep
 echo ' 			;;'>> ./mythicalPrep
+echo ' #Insufficent data error occoured'>> ./mythicalPrep
+echo ' 	 		NameCouldNotBeAssigned)'>> ./mythicalPrep
+echo ' 	 		 	echo "NAME COULD NOT BE ASSIGNED BASED UPON DATA SUPPLIED"'>> ./mythicalPrep
+echo ' 	 			#Insert Custom User Job here'>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobInsufficientData && cat -A /etc/mythicalLibrarian/JobInsufficientData  >> ./mythicalPrep
+echo ' 	 			'>> ./mythicalPrep
+echo ' 				#'>> ./mythicalPrep
+echo ' 				exit 3'>> ./mythicalPrep
+echo ' 				;;'>> ./mythicalPrep
+echo ' #Job was ignored by title or category'>> ./mythicalPrep
+echo ' 			titleIgnore|categoricIgnore)'>> ./mythicalPrep
+echo ' 			echo "Show Was ignored based on $jobtype"'>> ./mythicalPrep
+echo ' 				#Insert Custom User Job Here'>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobIgnoreList && cat -A /etc/mythicalLibrarian/JobIgnoreList >> ./mythicalPrep
+echo ' 				'>> ./mythicalPrep
+echo ' 				#'>> ./mythicalPrep
+echo ' 				exit 0'>> ./mythicalPrep
+echo ' 				;;'>> ./mythicalPrep
+
+
 echo ' esac'>> ./mythicalPrep
 echo ' #Custom exit point may be set anywhere in program by typing RunJob on any new line'>> ./mythicalPrep
 echo ' #Insert Custom User Job here '>> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobUnspecified && cat -A /etc/mythicalLibrarian/JobUnspecified >> ./mythicalPrep
 echo ' '>> ./mythicalPrep
 echo ' #'>> ./mythicalPrep
 echo ' exit 4'>> ./mythicalPrep
