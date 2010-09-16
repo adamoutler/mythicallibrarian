@@ -1795,7 +1795,7 @@ AlternateMoveDir=$AlternateMoveDir
  		echo "Try again with sudo mythicalLibrarian --update"
 		SetExitBit=1
 	fi	
- 	test $SetExitBit = 1 && exit 1
+ 	test "$SetExitBit" = "1" && exit 1
 	sudo -u $SUDO_USER echo "<<<UPDATER ACTIVATED>>>">"$mythicalLibrarian/output.log"
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
 
