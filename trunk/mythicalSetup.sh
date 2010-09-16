@@ -651,14 +651,14 @@ chmod 711 ~/.mythicalLibrarian/mythicalSetup
 
 
 #Change ownership
-chown $UserName:$UserName ~/.mythicalLibrarian
+chown -R $SUDO_USER ~/.mythicalLibrarian
 chown -hR "$UserName" ~/.mythicalLibrarian
 chown -hR "$UserName" /var/www/mythical-rss
 
 
 
-test "$mythtv" = "1" && useradd -G mythtv $SUDO_USER >/dev/null 2>&1 
-test "$mythtv" = "1" && useradd -G $SUDO_USER mythtv >/dev/null 2>&1 
+test "$mythtv" = "1" && useradd -G mythtv $UserName>/dev/null 2>&1 
+test "$mythtv" = "1" && useradd -G $UserName mythtv >/dev/null 2>&1 
 clear
 
 echo "mythicalLibrarian will now conduct mythicalDiagnostics"
@@ -673,14 +673,14 @@ cp ./mythicalLibrarian /usr/local/bin/mythicalLibrarian
 
 test "$mythtv" = "1" && chmod -R 775 "$AlternateMoveDir" "$AlternateMovieDir" $AlternateShowDir "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 test "$mythtv" = "1" && chown -hR "mythtv":"mythtv"  "$AlternateMoveDir" "$AlternateMovieDir" $AlternateShowDir "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
-test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
+test "$mythtv" != "1" && chown -hR "$UserName" "$AlternateMoveDir" "$AlternateMovieDir" "/home/mythtv/Failsafe" "/var/www/mythical-rss">/dev/null 2>&1 
 
 
 sudo -u $SUDO_USER /usr/local/bin/mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 
-test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
-test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
+test -d ~/.mythicalLibrarian && sudo chown -hR "$UserName" ~/.mythicalLibrarian
+test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$UserName" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed successfully."  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
 
