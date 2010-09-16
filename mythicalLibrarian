@@ -1355,13 +1355,21 @@ AlternateMoveDir=$AlternateMoveDir
  mythicalScan () {
  	DoMythTVPermissionsCheck
  	checkext=$InputTitle
-	if [ "$checkext" = "" ]; then
+	if [ "$SUDO_USER" != "" ]; then
+	 	echo "Do not run this command with sudo."
+		exit 1
+	elif [ "$checkext" = "" ]; then
 	 	echo "Cannot process blank file extensions"
 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
 		exit 1
 	elif [ "${checkext:0:2}" = "./" ]; then
  		echo "please specify the full path to the file"
+ 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
+		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
+ 		exit 1
+	elif [ ! -d $InputPath ]; then
+ 		echo "This folder does not exist.  "
  		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1
@@ -1373,6 +1381,7 @@ AlternateMoveDir=$AlternateMoveDir
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1 
  	fi
+ 	
  	echo "--You have entered scan Mode."
  	echo " mythicalLibrarian will conduct a scan of the folder:"
  	echo " $scanpath"
