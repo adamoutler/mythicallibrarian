@@ -710,6 +710,21 @@ if [ "$mythtv" = "1" ]; then
  fi
 fi
 test "${mythicalcheck:0:5}" = "ERROR" && echo 'Access denied to update user job.  User job must be added manually.  /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"'
+
+
+if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then 
+ echo "mythtv group was maintained" 
+else 
+ echo "Adding sudoers entry for mythtv"
+ 
+ echo "%mythtv ALL=(ALL) ALL" | sudo tee -a /etc/sudoers
+ echo " Please set a password for mythtv"
+ sudo passwd mythtv
+ useradd -g $SUDO_USER mythtv
+fi
+
+
+
 echo "permissions were set for user: $UserName."
 test `which ifconfig` && myip=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
 test "$RssEnabled" = "1" && test "$myip" != "" && echo "RSS Feed will be located at http://$myip/mythical-rss/rss.xml ." 
