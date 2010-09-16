@@ -716,9 +716,8 @@ if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then
  echo "mythtv group was maintained" 
 else 
  echo "Adding sudoers entry for mythtv"
- 
  echo "%mythtv ALL=(ALL) ALL" | sudo tee -a /etc/sudoers
- echo " Please set a password for mythtv"
+ echo " Please set a password for mythtv account access"
  sudo passwd mythtv
  useradd -g $SUDO_USER mythtv
 fi
