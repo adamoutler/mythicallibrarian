@@ -667,6 +667,15 @@ test "$mythtv" != "1" && chown -hR "$SUDO_USER:$SUDO_USER" "$AlternateMoveDir" "
 
 sudo -u $SUDO_USER /usr/local/bin/mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
+if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then 
+ echo "mythtv group was maintained" 
+else 
+ echo "Adding sudoers entry for mythtv"
+ echo "%mythtv ALL=(ALL) ALL" | sudo tee -a /etc/sudoers
+ echo " Please set a password for mythtv account access"
+ sudo passwd mythtv
+ useradd -g $SUDO_USER mythtv
+fi
 test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER":"$SUDO_USER" ~/.mythicalLibrarian
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$SUDO_USER":"$SUDO_USER" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed successfully."  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
@@ -712,15 +721,7 @@ fi
 test "${mythicalcheck:0:5}" = "ERROR" && echo 'Access denied to update user job.  User job must be added manually.  /usr/local/bin/mythicalLibrarian "%DIR%/%FILE%"'
 
 
-if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then 
- echo "mythtv group was maintained" 
-else 
- echo "Adding sudoers entry for mythtv"
- echo "%mythtv ALL=(ALL) ALL" | sudo tee -a /etc/sudoers
- echo " Please set a password for mythtv account access"
- sudo passwd mythtv
- useradd -g $SUDO_USER mythtv
-fi
+
 
 
 
