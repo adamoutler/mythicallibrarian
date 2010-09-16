@@ -616,6 +616,7 @@ if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then
 else 
  echo "Adding sudoers entry for mythtv"
  sudo useradd -g $SUDO_USER mythtv
+ sudo useradd -g mythtv $SUDO_USER
  echo "%mythtv ALL=(ALL) ALL" | sudo tee -a /etc/sudoers
  echo " Please set a password for mythtv account access"
  sudo passwd mythtv
