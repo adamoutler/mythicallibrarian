@@ -652,7 +652,7 @@ chmod 711 ~/.mythicalLibrarian/mythicalSetup
 
 #Change ownership
 chown -R $SUDO_USER ~/.mythicalLibrarian
-chown -hR "$UserName" ~/.mythicalLibrarian
+
 chown -hR "$UserName" /var/www/mythical-rss
 
 
