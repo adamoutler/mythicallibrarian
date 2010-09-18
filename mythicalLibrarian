@@ -274,14 +274,18 @@
  # Executed when the job is run.
 
  ###EXAMPLE JOB ###
-  # #Transcode your file the same way you always have, eg.
+  # #Transcode your file using the mythicalLibrarian variables
   #ffmpeg -i S:"$MoveDir/$ShowFileName.$originalext" -target ntsc-svcds:"$MoveDir/$ShowFileName.mp4"
-  #transcode --file= --target=$MoveDir/$ShowFileName.mkv
   # #remove the mythicalLibrarian symlink
-  #rm "$MoveDir/$ShowFileName.$originalext"
+  #rm "$InputPath"
   # #make a new symlink
-  #ln -s  "$MoveDir/$ShowFileName.mkv" "$InputPath"
-  # #Reenable the communications
+  #ln -s  "$MoveDir/$ShowFileName.mp4" "$InputPath"
+  # #Set the new file extension
+  #originalext=mp4  
+  # #Create tracking entry for the file 
+  #performLoggingForMoveMode 
+  # ####Move the .txt(comskip) and .nfo(Information) files if needed.
+  # enable the XBMC communications
   #XBMCUpdate=Enabled
   #XBMCClean=Enabled
   #XBMCNotify=Enabled
@@ -638,8 +642,8 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh" && chmod 775 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 775 "$mythicalLibrarian/doover.sh"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
 
  	echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
@@ -660,8 +664,8 @@
 
 
 
- 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 775 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 775 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
  	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
@@ -973,7 +977,7 @@
 # and system is set to use mythtv database, and symlink is move 
 
  if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ $InputTitle != "--BypassPermissionsCheck" ]; then
- 	if  && [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
+ 	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
  		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
  		echo -e " ##############################  ERROR  #################################"|tee -a "$mythicalLibrarian"/output.log
