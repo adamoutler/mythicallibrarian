@@ -638,8 +638,8 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh" && chmod 777 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh" && chmod 775 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 775 "$mythicalLibrarian/doover.sh"
 
 
  	echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
@@ -660,8 +660,8 @@
 
 
 
- 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 777 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 775 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 775 "$mythicalLibrarian/doover.sh"
         
  	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
@@ -971,24 +971,27 @@
 
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
- if [ "$InputOption" != "--BypassPermissionsCheck" ] && [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
-  	UserName=$USER
- 	echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " ##############################  ERROR  #################################"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " USER NAME:$UserName ATTEMPTED TO RENAME A MYTHTV OWNED FILE"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " mythicalLibrarian HAS PREVENTED THIS UNAUTHORIZED FILE ACTION"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " THIS IS A SAFETY FEATURE TO PRESERVE FILE PERMISSIONS."|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " PLEASE RUN THE FOLLOWING TO SET PROPER PERMISSIONS WHEN RENAMING FILES:"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " sudo su mythtv"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\""|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " OR AT YOUR OWN RISK BYPASS THIS CHECK BY ADDING --BypassPermissionsCheck"|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " AT THE END OF THE LINE YOU JUST RAN."|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " "|tee -a "$mythicalLibrarian"/output.log
- 	echo -e " Done."|tee -a "$mythicalLibrarian"/output.log
-   	jobtype="PermissionErrorWhileMoving"
- 	RunJob
- fi
+
+ if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ $InputTitle != "--BypassPermissionsCheck" ]; then
+ 	if  && [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
+  		UserName=$USER
+ 		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " ##############################  ERROR  #################################"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " USER NAME:$UserName ATTEMPTED TO RENAME A MYTHTV OWNED FILE"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " mythicalLibrarian HAS PREVENTED THIS UNAUTHORIZED FILE ACTION"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " THIS IS A SAFETY FEATURE TO PRESERVE FILE PERMISSIONS."|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " PLEASE RUN THE FOLLOWING TO SET PROPER PERMISSIONS WHEN RENAMING FILES:"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " sudo su mythtv"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\""|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " OR AT YOUR OWN RISK BYPASS THIS CHECK BY ADDING --BypassPermissionsCheck"|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " AT THE END OF THE LINE YOU JUST RAN."|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " "|tee -a "$mythicalLibrarian"/output.log
+ 		echo -e " Done."|tee -a "$mythicalLibrarian"/output.log
+   		jobtype="PermissionErrorWhileMoving"
+ 		RunJob
+ 	fi
+ fi 
  }
 
 
