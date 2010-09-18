@@ -203,7 +203,7 @@
  			exit 0
  			;;
 
- #Information error occoured
+ #Information was not obtainable
  		TvDbIsIncomplete)
  			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"
   			#Insert Custom User Job here 
@@ -229,7 +229,7 @@
  			#
   			exit 2 
  			;;
-
+ #User elected not to process jobs which can not be properly categorized
  		NameCouldNotBeAssigned)
  		 	echo "NAME COULD NOT BE ASSIGNED BASED UPON DATA SUPPLIED"
  			#Insert Custom User Job here
@@ -237,6 +237,7 @@
 			#
 			exit 3
 			;;
+ #User elected to use a title/category ignore file
  		titleIgnore|categoricIgnore)
  			echo "Show Was ignored based on $jobtype"
 			#Insert Custom User Job Here
@@ -257,6 +258,37 @@
  ################################################################
  ############Adept personel only beyond this point###############
  ################################################################
+
+ ####USER JOBS####
+ # mythicalLibrarian --update (mythicalSetup) will merge user jobs into mythicalLibrarian automagically.
+ # Put your desired commands into one of the following files.  You may need to create the folder
+ # /etc/mythicalLibrarian/JobSucessful
+ # /etc/mythicalLibrarian/JobInformationError
+ # /etc/mythicalLibrarian/JobGenericError
+ # /etc/mythicalLibrarian/JobFilesystemError
+ # /etc/mythicalLibrarian/JobInsufficientData
+ # /etc/mythicalLibrarian/JobIgnoreList
+ # /etc/mythicalLibrarian/JobUnspecified
+ #
+ # After running mythicalSetup, the user job will be encorperated into the mythicalLibrarian script and 
+ # Executed when the job is run.
+
+ ###EXAMPLE JOB ###
+  # #Transcode your file the same way you always have, eg.
+  #ffmpeg -i S:"$MoveDir/$ShowFileName.$originalext" -target ntsc-svcds:"$MoveDir/$ShowFileName.mp4"
+  #transcode --file= --target=$MoveDir/$ShowFileName.mkv
+  # #remove the mythicalLibrarian symlink
+  #rm "$MoveDir/$ShowFileName.$originalext"
+  # #make a new symlink
+  #ln -s  "$MoveDir/$ShowFileName.mkv" "$InputPath"
+  # #Reenable the communications
+  #XBMCUpdate=Enabled
+  #XBMCClean=Enabled
+  #XBMCNotify=Enabled
+  # #Tell mythicalLibrarian to do XBMC communications
+  #XBMCAutomate
+ 
+ 
 
 
  #The following is a list of variables which can be used as a part of user jobs at the end of mythicalLibrarian
@@ -306,6 +338,8 @@
 
  ####MOVIES####
  #$MovieAirDate = the original year the movie aired
+
+ 
 
 
 
@@ -956,43 +990,6 @@
  	RunJob
  fi
  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
  UserJobOutsideMythTV(){
@@ -1818,7 +1815,9 @@ AlternateMoveDir=$AlternateMoveDir
  	echo " MythTV Database settings, and various operational modes. Upon"
  	echo " completion, a diagnostic will be run.  This is designed to be" 
 	echo " a fully automated process.  Please pay attention and report any"
-	echo " errors which may occour during this process."
+	echo " errors which may occour during this process. If this update fails"
+ 	echo " The first time, please try again.  mythicalLibrarian will make"
+ 	echo " configuration changes."
  	read -n1 -p " Do you wish to continue? y/(n) >" yesorno
  	echo ""
  	test "$yesorno" != "y" && exit 0
@@ -1828,7 +1827,6 @@ AlternateMoveDir=$AlternateMoveDir
  	sudo chmod +x ./mythicalSetup.sh
  	./mythicalSetup.sh
  	exit $?
- 	exit 0
  }
 
   		
