@@ -204,7 +204,7 @@
  			;;
 
  #Information was not obtainable
- 		TvDbIsIncomplete)
+ 		TvDbIsIncomplete|GenericShow)
  			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"
   			#Insert Custom User Job here 
  			
@@ -263,7 +263,7 @@
  # mythicalLibrarian --update (mythicalSetup) will merge user jobs into mythicalLibrarian automagically.
  # Put your desired commands into one of the following files.  You may need to create the folder
  # /etc/mythicalLibrarian/JobSucessful
- # /etc/mythicalLibrarian/JobInformationError
+ # /etc/mythicalLibrarian/JobInformationNotComplete
  # /etc/mythicalLibrarian/JobGenericError
  # /etc/mythicalLibrarian/JobFilesystemError
  # /etc/mythicalLibrarian/JobInsufficientData
@@ -421,9 +421,8 @@
  #tests.  the result will be $TMoveDirWritable as a 1 or a 0 for writable or not.
  #$1=filesize $2=freespace $3=folder to check
  checkpermissions () { 
+ #set Test variable to 0.  It will be a 1 if everything passes.
  	TMoveDirWritable=0
-
-###DEBUG Increase logging level
  	if [ "$2" != "" ]; then
  		 if [ "$1" != "" ]; then
  			if [ -d "$3" ]; then
