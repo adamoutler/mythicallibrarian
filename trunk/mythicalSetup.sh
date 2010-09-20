@@ -554,7 +554,7 @@ echo ' #Information error occoured'>> ./mythicalPrep
 echo ' 		TvDbIsIncomplete|GenericShow)'>> ./mythicalPrep
 echo ' 			echo "INSUFFICIENT INFORMATION WAS SUPPLIED:$jobtype"'>> ./mythicalPrep
 echo '  			#Insert Custom User Job here '>> ./mythicalPrep
-test -f /etc/mythicalLibrarian/JobInformationError && cat -A /etc/mythicalLibrarian/JobInformationError >> ./mythicalPrep
+test -f /etc/mythicalLibrarian/JobInformationNotComplete && cat -A /etc/mythicalLibrarian/JobInformationNotComplete >> ./mythicalPrep
 echo ' 			'>> ./mythicalPrep
 echo ' 			#'>> ./mythicalPrep
 echo '  			exit 0'>> ./mythicalPrep
