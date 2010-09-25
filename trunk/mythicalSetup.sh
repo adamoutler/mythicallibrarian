@@ -714,12 +714,11 @@ if [ "$mythtv" = "1" ]; then
  else
   echo ADDING JOB to slot $SlotToUse
   if [ "$SlotToUse" != "0" ]; then
-   CheckForTableEntry=`mysql -uroot -proot -e "use mythconverg; select * from settings where value like 'UserJob$SlotToUse';"`
-   test "$CheckForTableEntry" = "" && mysql -uroot -proot -e "use mythconverg; INSERT into settings SET value = 'UserJob$SlotToUse';"
+   CheckForTableEntry=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; select * from settings where value like 'UserJob$SlotToUse';"`
+   test "$CheckForTableEntry" = "" && mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; INSERT into settings SET value = 'UserJob$SlotToUse';"
+   mythicalcheck=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"`
+     mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; UPDATE settings SET data='1' WHERE value='DeletesFollowLinks';"
 
- 
-
- 	mythicalcheck=`mysql -u$MySQLuser -p$MySQLpass -e "use mythconverg; UPDATE settings SET data='/usr/local/bin/mythicalLibrarian \"%DIR%/%FILE%\"' WHERE value='UserJob$SlotToUse'; UPDATE settings SET data='mythicalLibrarian' WHERE value='UserJobDesc$SlotToUse'; UPDATE settings SET data='1' WHERE value='JobAllowUserJob$SlotToUse';"`
 
 
   else
