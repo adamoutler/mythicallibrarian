@@ -1131,12 +1131,14 @@
  		echo "CREATING FOLDER: $MoveDir">>"$mythicalLibrarian"/output.log
 		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
  		mkdir "$MoveDir"
+ 		chmod 775 "$MoveDir"
  	fi
  
  #Make the Season folder if it is applicable and does not exist
  	if [ "$SeasonNumber" != "" ]; then
  		MoveDir="$MoveDir/Season $SeasonNumber" 
 		test ! -d "$MoveDir" && mkdir "$MoveDir"
+ 		chmod 775 "$MoveDir"
 		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
  	fi
  
