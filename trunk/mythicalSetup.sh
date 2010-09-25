@@ -214,14 +214,19 @@ echo " ###Stand-alone mode values###">>./mythicalPrep
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  15 60
 
-	test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
+if [ "$mythtv" = "1" ]; then
+ dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will let mythtv choose and create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your MythTV recordings folder or would you like to choose a custom folder to place recordings?"  16 60
+else 
+ dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  16 
+fi
+
+test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
+
 
 test -f ./movedir && movedir1=`cat ./movedir`
 test "$movedir1" = "" && movedir1="./Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
-
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 "$movedir1" 2>./movedir
  movedir=`cat ./movedir`
