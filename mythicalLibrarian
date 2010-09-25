@@ -269,11 +269,11 @@
  # /etc/mythicalLibrarian/JobInsufficientData
  # /etc/mythicalLibrarian/JobIgnoreList
  # /etc/mythicalLibrarian/JobUnspecified
- #
  # After running mythicalSetup, the user job will be encorperated into the mythicalLibrarian script and 
  # Executed when the job is run.
 
  ###EXAMPLE JOB ###
+ # /etc/mythicalLibrarian/JobSucessful:
   # #Transcode your file using the mythicalLibrarian variables
   #ffmpeg -i S:"$MoveDir/$ShowFileName.$originalext" -target ntsc-svcds:"$MoveDir/$ShowFileName.mp4"
   # #remove the mythicalLibrarian symlink
@@ -2324,7 +2324,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  
  #If symlink=disabled, remove database entries
-  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures 
+  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures && chmod 775 "$MoveDir/$ShowFileName.$originalext"
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
