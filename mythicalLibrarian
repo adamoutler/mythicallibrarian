@@ -697,16 +697,11 @@
  ##This function grabs title and subtitle from the database for use in the rest of the script
  GrabTitleAndSubtitle () {
  	if [ "$InputTitle" = "" ]; then
-  		if [ PythonBindings != True ]; then
- 		InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
-
-     #get year for movies 
- 		InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
-
- 		else if [ PythonBindings ! True ]; then
-		
+  		if [ $PythonBindings != True ]; then
+ 			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
+			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
+ 		else if [ $PythonBindings ! True ]; then
                 	#####PYTHON BINDINGS CODE HERE
-
 		fi
 
  	fi
@@ -718,7 +713,7 @@
  #This function gathers information from the mythtv database for use in the program
  GetMythTVDatabase () {
  
- 	if [ PythonBindings != True ]; then
+ 	if [ $PythonBindings != True ]; then
 
  #Obtain MythTV Database Information
  	 	echo "Accessing MythTV DataBase:"
@@ -773,10 +768,10 @@
  			GenComSkip
  		fi
  		return 0
- 	else if [ PythonBindings = True ]; then
-   
+ 
+	else if [ #PythonBindings = True ]; then
    		####This is the place for the python bindings code
-
+		return 0 
  	fi
  }
  
