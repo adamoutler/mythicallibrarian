@@ -33,17 +33,41 @@ test = db.getRecorded(chanid=filename[:4],starttime=filename[5:-4])
 
 #Import all information from database regarding file
 
+'''
 #print out data (just for testing)
 for x in test.items():
     print x[0] + " = " + str(x[1])
+'''
 
+####
+#Commercial skip information
+####
+# gathers all markup into two lists:
+# markupstart
+# markupstop
+####
+markup = test.markup
+markupstart = []
+markupstop = []
+
+
+for data in markup:
+    if data.type == 4:
+        markupstart.append(data.mark)
+    if data.type == 5:
+        markupstop.append(data.mark)
+
+####
 #write data to a text file
+####
 with open("showData.txt", 'w') as f:
+    #iterate through each Recorded() data item and write it to the file
     for x in test.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
-
-#TODO: Commercial skip information
-#markup = test.markup
-#for data in markup
+    f.write("--------FRAME START--------\n")
+    for data in markupstart: f.write(str(data) + "\n")
+    f.write("--------FRAME STOP---------\n")
+    for data in markupstop: f.write(str(data) + "\n")
+    f.write("--------END FRAMES---------\n")
 
 
