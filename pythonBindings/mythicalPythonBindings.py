@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+
+
+
+#requires libmyth-pythonsudo 
 import sys, os
 filename = sys.argv[1]
 #filename = "2151_20100923200000.mpg"
@@ -25,6 +29,22 @@ for line in lines:
 
 
 #Get data from mythtv database
+'''
+from MythTV import MythDB
+filename = '1004_20100823003000.mpg'
+db = MythDB()
+# do some error handling here so we can return a better failure on error
+try:
+    rec = db.searchRecorded(basename=filename).next()
+except StopIteration:
+    # thrown when pulling data from an empty iterator
+    raise Exception('Recording Not Found')
+chanid, starttime = rec.chanid, rec.starttime
+print chanid
+print starttime
+'''
+
+
 from MythTV import MythDB
 db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword)
 test = db.getRecorded(basename=filename)
