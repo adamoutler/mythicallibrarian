@@ -5,10 +5,9 @@
 
 #requires libmyth-python python-lxml
 import sys, os
-print sys.argv.
-if sys.argv.count >= 2:
+try:
 	filename = sys.argv[1]
-else:
+except:
 	filename = "2151_20100923200000.mpg"
 
 #Read database settings from ~/.mythtv/mysql.txt
@@ -50,22 +49,23 @@ print starttime
 
 from MythTV import MythDB
 
-filename = '100420100823003000.mpg'
+filename = '1006_20100823173000.mpg'
 
 try: 
  	db = MythDB() 
 except:
  	db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword) 
 
-
-recs = db.searchRecorded(basename=filename)
-if len(recs) == 0:
+try:
+    rec = db.searchRecorded(basename=filename).next()
+except StopIteration:
     raise Exception('Recording Not Found')
-chanid, starttime = recs[0].chanid, recs[0].starttime
+chanid, starttime = rec.chanid, rec.starttime
 print chanid
 print starttime
 
-test = db.getRecorded(basename=filename)
+
+
 
 
 
