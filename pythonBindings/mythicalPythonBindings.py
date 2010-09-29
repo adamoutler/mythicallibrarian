@@ -27,7 +27,7 @@ for line in lines:
 #Get data from mythtv database
 from MythTV import MythDB
 db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword)
-test = db.getRecorded(chanid=filename[:4],starttime=filename[5:-4])
+test = db.getRecorded(basename=filename)
 
 
 
