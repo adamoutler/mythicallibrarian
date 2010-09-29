@@ -3,10 +3,13 @@
 
 
 
-#requires libmyth-pythonsudo 
+#requires libmyth-python python-lxml
 import sys, os
-filename = sys.argv[1]
-#filename = "2151_20100923200000.mpg"
+print sys.argv.
+if sys.argv.count >= 2:
+	filename = sys.argv[1]
+else:
+	filename = "2151_20100923200000.mpg"
 
 #Read database settings from ~/.mythtv/mysql.txt
 mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt"
@@ -46,7 +49,22 @@ print starttime
 
 
 from MythTV import MythDB
-db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword)
+
+filename = '100420100823003000.mpg'
+
+try: 
+ 	db = MythDB() 
+except:
+ 	db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword) 
+
+
+recs = db.searchRecorded(basename=filename)
+if len(recs) == 0:
+    raise Exception('Recording Not Found')
+chanid, starttime = recs[0].chanid, recs[0].starttime
+print chanid
+print starttime
+
 test = db.getRecorded(basename=filename)
 
 
