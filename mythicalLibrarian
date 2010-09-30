@@ -339,7 +339,7 @@
  #####EPISODES####
  #$exx = Episode Number or "Movie" in case of a movie
  #$sxx = Season number or blank in case of movie
- #$seriesid = TheTVDB series ID
+ #$SeriesID = TheTVDB series ID
  #$TvDbTime = current tvdb time
  #$LastUpdated = last updated time (for Episodes only others wil be blank) 
  #$absolouteEpisodeNumber = tvdb order numbering
@@ -475,7 +475,7 @@
  	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
-  	seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
+  	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
  	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
  	return 0
  }
@@ -568,7 +568,7 @@
  	echo -e "\t\t\t<title>$NewShowName</title>">>$rssDir/$TEMPrssFile
   	
 	if [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
- 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$seriesid</link>">>$rssDir/$TEMPrssFile 
+ 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$SeriesID</link>">>$rssDir/$TEMPrssFile 
 	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
  		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$showname</link>">>$rssDir/$TEMPrssFile 
  	else
@@ -736,7 +736,7 @@
   		Plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
  
  #Get rating from basename to identify program
- 		Stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select Stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"Stars"/""/g`
+ 		Stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"Stars"/""/g`
 
  #get show start time to identify program ----future development
  		ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
@@ -882,17 +882,17 @@
  #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
  DownloadAndParse () {
  #Get the seriesid based on the showname
- 	 seriesid=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
+ 	 SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
  	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
  #Create folder for database if it does not exist
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
  	mkdir $mythicalLibrarian/"$NewShowName"
  	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
  fi
- echo "SEARCH FOUND:""$NewShowName" "ID#:" $seriesid >>"$mythicalLibrarian"/output.log
+ echo "SEARCH FOUND:""$NewShowName" "ID#:" $SeriesID >>"$mythicalLibrarian"/output.log
  
  #If series ID is obtained, then get show information.
- if [ "$seriesid" != "" ] ; then
+ if [ "$SeriesID" != "" ] ; then
  
  
  #####GET SERIES INFORMATION#####
@@ -927,10 +927,10 @@
 
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
- 		seriesid=`echo $seriesid|sed s/"<seriesid>"/""/g | sed s/"<\/seriesid>"/""/g`
+ 		SeriesID=`echo $SeriesID|sed s/"<seriesid>"/""/g | sed s/"<\/seriesid>"/""/g`
  
  #Download information from server
- 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
+ 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">$mythicalLibrarian"/$NewShowName/$NewShowName.xml"
  
  #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
  		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
@@ -954,7 +954,7 @@
  
  
  		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
- 			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml">>"$mythicalLibrarian"/output.log
+ 			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
  		fi
  	 
  #check if files were created and generate message
@@ -1208,7 +1208,7 @@ AlternateMoveDir=$AlternateMoveDir
  	test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
  	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
- 	test "$seriesid" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$seriesid/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
+ 	test "$SeriesID" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	return 0 
  } 
@@ -2023,10 +2023,10 @@ AlternateMoveDir=$AlternateMoveDir
        		if [ "$ParsedZap2itSeriesID" = "$Zap2itSeriesID" ]; then
  
  #Mark matched Zap2it ID
-  			echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$seriesid"
- 			echo "MATCH!!!! Zap2itID:$NewShowName ID.$seriesid">>"$mythicalLibrarian"/output.log
+  			echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"
+ 			echo "MATCH!!!! Zap2itID:$NewShowName ID.$SeriesID">>"$mythicalLibrarian"/output.log
  			MatchedShowName=$NewShowName
- 			MatchedSeriesID=$seriesid
+ 			MatchedSeriesID=$SeriesID
  			MatchedSeriesLineNumber=$serieslinenumber
  			break
  		fi
@@ -2035,7 +2035,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #Use matched Zap2it ID
  		NewShowName=$MatchedShowName
- 		seriesid=$MatchedSeriesID
+ 		SeriesID=$MatchedSeriesID
  		serieslinenumber=$MatchedSeriesLineNumber
  	else
  
@@ -2045,18 +2045,18 @@ AlternateMoveDir=$AlternateMoveDir
 
  #Use fuzzy logic to make the best match of the show name as a last resort
  	 	FuzzySeriesMatch
- 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"|tee -a "$mythicalLibrarian"/output.log
+ 		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $SeriesID"|tee -a "$mythicalLibrarian"/output.log
  		DownloadAndParse
  	fi
  elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$InputSubtitle" != "" ]; then
  
  #If no zap2it ID is present, then use fuzzy logic to do show tranlation
   	FuzzySeriesMatch
- 	echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $seriesid"
+ 	echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $SeriesID"
  	DownloadAndParse
  fi
  
- if [ "$seriesid" != "" ] ; then 
+ if [ "$SeriesID" != "" ] ; then 
  
  
  #####PROCESS EPISODE INFORMATION##### 	
@@ -2131,7 +2131,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "EPISODE:$epn ABSOLUTE NUMBER:$absolouteEpisodeNumber" $sxx$exx
  
  #if series id is not obtained send failure message
- elif [ -z "$seriesid" ]; then 
+ elif [ -z "$SeriesID" ]; then 
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
   	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
@@ -2202,7 +2202,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
- 	echo "RESOLVED SERIES ID:$seriesid- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
+ 	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
