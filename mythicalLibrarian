@@ -886,7 +886,7 @@
  	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
  #Create folder for database if it does not exist
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
- 	mkdir $mythicalLibrarian/"$NewShowName"
+ 	mkdir "$mythicalLibrarian"/"$NewShowName"
  	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
  fi
  echo "SEARCH FOUND:""$NewShowName" "ID#:" $SeriesID >>"$mythicalLibrarian"/output.log
@@ -958,7 +958,7 @@
  		fi
  	 
  #check if files were created and generate message
- 		if [ -f $mythicalLibrarian/"$NewShowName"/"$NewShowName".Ename.txt ]; then
+ 		if [ -f "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt ]; then
  	 		echo $TvDbTime>"$mythicalLibrarian/$NewShowName/lastupdated.time"
  			echo "LOCAL DATABASE UPDATED:$mythicalLibrarian/$NewShowName">>"$mythicalLibrarian"/output.log
  		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" ]; then
@@ -1257,7 +1257,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
- 	if [ -f $mythicalLibrarian/showtranslations ]; then 
+ 	if [ -f "$mythicalLibrarian"/showtranslations ]; then 
  		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"| sed s/"$ShowName = "/""/g `		 
  		if [ "$showtranslation" != "" ];then 
  			ShowName=$showtranslation
@@ -1289,6 +1289,14 @@ AlternateMoveDir=$AlternateMoveDir
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
  DoMaintenance() {
+
+
+  #Check if doover or undo was interupted and restore the file
+ 	test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
+ 	test -f "$mythicalLibrarian/undo.lock" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
+ #Check and make doover.sh and undo.sh if it does not exist
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
+	 test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
  	if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
  		mythicalLibrarianCounter=0
  		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
@@ -1663,6 +1671,7 @@ AlternateMoveDir=$AlternateMoveDir
  	read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno
  	echo ""
  	if [ "$yesorno" = "y" ]; then
+ 		cp "$mythicalLibrarian/undo.sh" "$mythicalLibrarian/undo.lock"
  		test -f "$mythicalLibrarian/undo.sh" && cat "$mythicalLibrarian/undo.sh">>"$mythicalLibrarian/undo.sh.old"
  	 	test -f "$mythicalLibrarian/undo.sh" && chmod +x "$mythicalLibrarian/undo.sh"
  		test -f "$mythicalLibrarian/undo.sh" && sudo -u $SUDO_USER cat "$mythicalLibrarian/undo.sh" >> "$mythicalLibrarian/undo.sh.old"
@@ -1673,7 +1682,7 @@ AlternateMoveDir=$AlternateMoveDir
  		DoMaintenance
  		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
-
+ 		rm "$mythicalLibrarian/undo.lock"
  		echo "done."
 		exit 0
 	else
@@ -1817,7 +1826,7 @@ AlternateMoveDir=$AlternateMoveDir
  mythicalUpdater () {
  	test ! -d "$mythicalLibrarian" && mkdir "$mythicalLibrarian"
   	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
- 	test -f $mythicalLibrarian/output.log && cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
+ 	test -f "$mythicalLibrarian/output.log" && cat "$mythicalLibrarian/output.log" >> "$mythicalLibrarian/output.log.old"
 
  	if [ ! -f "../output.log" ]; then 
 	 	echo "Please type 'cd $mythicalLibrarian/mythicalSetup' before running this command"
@@ -1872,7 +1881,7 @@ AlternateMoveDir=$AlternateMoveDir
  test -f "/etc/mythicalLibrarian/globalSettings" && . /etc/mythicalLibrarian/globalSettings
  #make our working dir if it does not exist
  if [ ! -d "$mythicalLibrarian" ]; then 
- 	mkdir $mythicalLibrarian
+ 	mkdir "$mythicalLibrarian"
  	echo "creating home/mythicalLibrarian and log file">>"$mythicalLibrarian"/output.log
  fi
  
@@ -1967,10 +1976,6 @@ AlternateMoveDir=$AlternateMoveDir
  tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g|sed s/"&"/"%26"/g`
 
 
- #Check if doover was interupted and restore the file
- test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
- #Check and make doover.sh if it does not exist
- test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
   #####MAINTENANCE#####
  #Loop through the list of created comskip files from dir.tracking, created.tracking and remove orphans.
@@ -2003,8 +2008,8 @@ AlternateMoveDir=$AlternateMoveDir
  
  #download series info for show, parse into temporary text db- sid.txt shn.txt
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
- 	cat $mythicalLibrarian/working.xml | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
- 	cat $mythicalLibrarian/working.xml | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
+ 	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
+ 	cat "$mythicalLibrarian/working.xml" | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
  
  elif [ -z "$MovieAirDate" ]; then
  	NewShowName=$InputTitle
@@ -2121,11 +2126,11 @@ AlternateMoveDir=$AlternateMoveDir
   
  #if line match is obtained, then gather new episode name, Sxx and Exx
  	if [ "$AbsolouteEpisodeNumber" !=  ""  ]; then
- 		EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".actualEname.txt`
+ 		EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt`
  
  #gather series and episode names from files created earlier.
- 		Exx=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".E.txt`
- 		Sxx=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".S.txt`
+ 		Exx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".E.txt`
+ 		Sxx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt`
  		test $Sxx != "" && SeasonNumber=$Sxx
  
  #Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
