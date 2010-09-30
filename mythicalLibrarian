@@ -1608,7 +1608,7 @@ AlternateMoveDir=$AlternateMoveDir
 
   	exit 0
 
- }
+ } 
  
  #####DOOVER PROCESSING#####
  #This function provides an easy way to redo failed jobs.
