@@ -57,50 +57,40 @@ for item in dbInfo:
 sys.exit(0)
 
 
-'''
 
-#Read database settings from ~/.mythtv/mysql.txt
-mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt"
+###############################
+#Function: readMysqlTxt
+#Arguments: None
+#Returns: list of five values:
+#  0 or 1 for success or error
+#  DBHostName
+#  DBName
+#  DBUserName
+#  DBPassword
+#
+#Note: Need to add error catching in case file read problems
+###############################
+def readMysqlTxt():
+    #Read database settings from ~/.mythtv/mysql.txt
+    mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt"
 
-with open(mysqlTXT,'r') as f:
+    with open(mysqlTXT,'r') as f:
 	mysqlData = f.read()
+	#Add error handling here... return [1] if error
 
-lines = mysqlData.split('\n')
+    lines = mysqlData.split('\n')
 
-try:
-    DBHostName
-except NameError:
-    DBHostName = None
-try:
-    DBUserName
-except NameError:
-    DBUserName = None
-try:
-    DBPassword
-except NameError:
-    DBPassword = None
-try:
-    DBName
-except NameError:
-    DBName = None
-try:
-    filename = sys.argv[1]
-except:
-    filename = "2151_20100923200000.mpg"
-
-'''
-
-for line in lines:
-    line = line.replace(' ','') #strip spaces
-    if line.startswith('DBHostName') and DBHostName == None:
-        DBHostName = line.split('=')[1]
-    if line.startswith('DBUserName') and DBUserName == None:
-        DBUserName = line.split('=')[1]
-    if line.startswith('DBPassword') and DBPassword == None:
-        DBPassword = line.split('=')[1]
-    if line.startswith('DBName') and DBName == None:
-        DBName = line.split('=')[1]
-
+    for line in lines:
+        line = line.replace(' ','') #strip spaces
+        if line.startswith('DBHostName'):
+            DBHostName = line.split('=')[1]
+        if line.startswith('DBUserName'):
+            DBUserName = line.split('=')[1]
+        if line.startswith('DBPassword'):
+            DBPassword = line.split('=')[1]
+        if line.startswith('DBName'):
+            DBName = line.split('=')[1]
+    return [0,DBHostName,DBName,DBUserName,DBPassword]
 
 #Get data from mythtv database
 '''
