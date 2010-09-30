@@ -5,10 +5,9 @@
 
 #requires libmyth-python python-lxml
 import sys, os
-try:
-	filename = sys.argv[1]
-except:
-	filename = "2151_20100923200000.mpg"
+print sys.argv[1]
+
+
 
 #Read database settings from ~/.mythtv/mysql.txt
 mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt"
@@ -18,15 +17,69 @@ with open(mysqlTXT,'r') as f:
 
 lines = mysqlData.split('\n')
 
+try:
+    DBHostName
+except NameError:
+    DBHostName = None
+try:
+    DBUserName
+except NameError:
+    DBUserName = None
+try:
+    DBPassword
+except NameError:
+    DBPassword = None
+try:
+    DBName
+except NameError:
+    DBName = None
+try:
+    filename = sys.argv[1]
+except:
+    filename = "2151_20100923200000.mpg"
+
+'''#
+#set all the defaults first
+#
+DBName = "mythconverg"
+#
+DBUserName = "mythtv"
+#
+DBPassword = "mythtv"
+#
+ 
+#
+#list of arguments that can be passed:
+#
+acceptedArgs = ['--DBName','--DBUserName']
+#
+ 
+#
+#pretend these are our arguments for now
+#
+myargs = ['--DBName="newName"','--DBUserName="newUser"','--DBPassword="newPassword"']
+#
+ 
+#
+for arg in myargs:
+#
+    if arg.split['='][0] in acceptedArgs:
+#
+        #assign new value here
+#
+    else
+#
+        #this is an unacceptable argument, raise an exception'''
+
 for line in lines:
     line = line.replace(' ','') #strip spaces
-    if line.startswith('DBHostName'):
+    if line.startswith('DBHostName') and DBHostName == None:
         DBHostName = line.split('=')[1]
-    if line.startswith('DBUserName'):
+    if line.startswith('DBUserName') and DBUserName == None:
         DBUserName = line.split('=')[1]
-    if line.startswith('DBPassword'):
+    if line.startswith('DBPassword') and DBPassword == None:
         DBPassword = line.split('=')[1]
-    if line.startswith('DBName'):
+    if line.startswith('DBName') and DBName == None:
         DBName = line.split('=')[1]
 
 
