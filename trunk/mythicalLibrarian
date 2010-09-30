@@ -773,9 +773,11 @@
  		return 0
  
 	elif [ "$PythonBindings" = "True" ]; then
+ 		echo "" 
    		####This is the place for the python bindings code
-		return 0 
+ 		return 0 
  	fi
+
  }
  
 
