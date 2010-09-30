@@ -334,7 +334,7 @@
 
  ####EPISODES AND GENERIC SHOWS####
  #$OriginalAirDate = original air date  Generic programming will be the first episode ever, for episodes it will be the first aired date
- #$epn = Subtitle or EPisode Name
+ #$EpisodeSubtitle = Subtitle or EPisode Name
 
  #####EPISODES####
  #$Exx = Episode Number or "Movie" in case of a movie
@@ -353,9 +353,9 @@
 
  #########BEGIN FUNCTIONS HERE#########
  TraditionalNamingConventions () {
- #Format Episodes showname=show name Sxx=season number Exx=episode number epn=episode name
+ #Format Episodes showname=show name Sxx=season number Exx=episode number EpisodeSubtitle=episode name
  	if [ "$Exx" != "" ]; then
- 		 ShowFileName=`echo "$NewShowName $Sxx$Exx ($epn)"`
+ 		 ShowFileName=`echo "$NewShowName $Sxx$Exx ($EpisodeSubtitle)"`
  	
  #Format Movies
  	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
@@ -367,7 +367,7 @@
  	else
   		Exx="Generic"
  		MoveDir="$PrimaryShowDir"
-	  	ShowFileName=`echo "$ShowName S0E0 ($epn Recorded $datehour on $ChanID)"`
+	  	ShowFileName=`echo "$ShowName S0E0 ($EpisodeSubtitle Recorded $datehour on $ChanID)"`
  		RequiresNFO=1 
 	 
  	fi
@@ -424,7 +424,7 @@
  #CheckPermissions takes file size, free space on dir, and the dir, then it performs
  #tests.  the result will be $TMoveDirWritable as a 1 or a 0 for writable or not.
  #$1=filesize $2=freespace $3=folder to check
- checkpermissions () { 
+ checkPermissions () { 
  #set Test variable to 0.  It will be a 1 if everything passes.
  	TMoveDirWritable=0
  	if [ "$2" != "" ]; then
@@ -577,7 +577,7 @@
 	fi
 
     	which ifconfig >/dev/null && myip=`ifconfig  | grep 'inet addr' -m1 | cut -d: -f2 | awk '{ print $1}'`
- 	rssepn=`echo $epn| sed s/"&"/"&amp;"/g`
+ 	rssEpisodeSubtitle=`echo $EpisodeSubtitle| sed s/"&"/"&amp;"/g`
  	rssNewShowName=`echo $NewShowName| sed s/"&"/"&amp;"/g`
 	rssPlot=`echo $Plot| sed s/"&"/"&amp;"/g`	
  	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$OriginalExt"| sed s/"("/"%28"/g| sed s/")"/"%29"/g|sed s/"\ "/"%20"/g`
@@ -792,7 +792,7 @@
  	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
 
  #Check if database contains enough information to put into doover que
-  	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
+  	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
   	rating=`printf "%0.f" $Stars`
@@ -827,7 +827,7 @@
  	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
 
  #Check if database contains enough information to put into doover que
-  	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
+  	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
   	rating=`printf "%0.f" $Stars`
@@ -1222,12 +1222,12 @@ AlternateMoveDir=$AlternateMoveDir
 
  	if [ "$NamingConvention" = "" ] ; then
  		if [ "$GoForDoover" = "1" ]; then
- 		  	echo -e "\t<title>$epn Recorded $datehour -Episode in --doover Que</title>">>"$MoveDir/$ShowFileName.nfo"
+ 		  	echo -e "\t<title>$EpisodeSubtitle Recorded $datehour -Episode in --doover Que</title>">>"$MoveDir/$ShowFileName.nfo"
  		else
-	       		echo -e "\t<title>$epn Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo"
+	       		echo -e "\t<title>$EpisodeSubtitle Recorded $datehour -Showing</title>">>"$MoveDir/$ShowFileName.nfo"
  		fi
 	else
-		echo -e "\t<title>$epn Recorded $datehour -Categoric</title>">>"$MoveDir/$ShowFileName.nfo" 
+		echo -e "\t<title>$EpisodeSubtitle Recorded $datehour -Categoric</title>">>"$MoveDir/$ShowFileName.nfo" 
  	fi
 
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
@@ -1502,21 +1502,21 @@ AlternateMoveDir=$AlternateMoveDir
  	test "$Database" = "Enabled" && test -d $PrimaryShowDir &&  PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'` || PrimaryShowDirFreeSpace=0
  	test "$Database" = "Enabled" && test -d $AlternateShowDir && AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
  	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
- 	checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
+ 	checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
  	MoveDirWritable=$TMoveDirWritable
- 	checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
+ 	checkPermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
  	AlternateMoveDirWritable=$TMoveDirWritable
  
-	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
  	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
- 	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ 	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
-	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
+	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
  	test "$Database" = "Enabled" && PrimaryShowDirWritable=$TMoveDirWritable
-	test "$Database" = "Enabled" && checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
  	test "$Database" = "Enabled" && AlternateShowDirWritable=$TMoveDirWritable 
  
-	checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+	checkPermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
 	WorkingDirWritable=$TMoveDirWritable
 
  	echo "USER SETTING     |FLAG|Folder name"
@@ -1630,9 +1630,11 @@ AlternateMoveDir=$AlternateMoveDir
  	test "$DoOverBypass" = "1" && yesorno=y
 
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
+ 		cp "$mythicalLibrarian/doover.sh" "$mythicalLibrarian/doover.lock"
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
+		rm "$mythicalLibrarian/doover.lock"
  		echo "done."
  		exit 0
 	else
@@ -1647,7 +1649,7 @@ AlternateMoveDir=$AlternateMoveDir
  executeUndo () {
  	if [ "$(id -u)" != "0" ]; then
  		echo "You do not have sufficient privlidges to run this script."
- 		echo "--doover must be executed with the sudo command"
+ 		echo "--undo must be executed with the sudo command"
  		echo "eg. 'sudo mythicalLibrarian --undo'"
  		exit 1
  	fi
@@ -1949,7 +1951,7 @@ AlternateMoveDir=$AlternateMoveDir
  test "$ShowName" = "" && mythicalHelp
 
  #split on semicolon, there will only be one episode looked up.  Remove nonfilesystem compliant chars.
- epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
+ EpisodeSubtitle=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  ExtensionPrep="`basename $InputPath`"
  OriginalExt=`echo "${ExtensionPrep#*.}"`
  originaldirname=`dirname "$InputPath"`
@@ -1965,6 +1967,8 @@ AlternateMoveDir=$AlternateMoveDir
  tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g|sed s/"&"/"%26"/g`
 
 
+ #Check if doover was interupted and restore the file
+ test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
  #Check and make doover.sh if it does not exist
  test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 
@@ -1992,7 +1996,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #####SEARCH FOR SHOW NAME AND GET SID #####
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
- 	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $epn">>"$mythicalLibrarian"/output.log
+ 	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle">>"$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
  
  
@@ -2117,7 +2121,7 @@ AlternateMoveDir=$AlternateMoveDir
   
  #if line match is obtained, then gather new episode name, Sxx and Exx
  	if [ "$AbsolouteEpisodeNumber" !=  ""  ]; then
- 		epn=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".actualEname.txt`
+ 		EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".actualEname.txt`
  
  #gather series and episode names from files created earlier.
  		Exx=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".E.txt`
@@ -2128,7 +2132,7 @@ AlternateMoveDir=$AlternateMoveDir
  		test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
  		test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
  	fi
- 	echo "EPISODE:$epn ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
+ 	echo "EPISODE:$EpisodeSubtitle ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
  
  #if series id is not obtained send failure message
  elif [ -z "$SeriesID" ]; then 
@@ -2166,27 +2170,27 @@ AlternateMoveDir=$AlternateMoveDir
 
  
  #Call permissions check from function.  Write small file, delete, get results
- checkpermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
+ checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
  MoveDirWritable=$TMoveDirWritable
- checkpermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
+ checkPermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
  AlternateMoveDirWritable=$TMoveDirWritable
  
  if [ "$Database" = "Enabled" ]; then
- 	checkpermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ 	checkPermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
  	PrimaryMovieDirWritable=$TMoveDirWritable
- 	checkpermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ 	checkPermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
  	AlternateMovieDirWritable=$TMoveDirWritable
- 	checkpermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
+ 	checkPermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
  	PrimaryShowDirWritable=$TMoveDirWritable
- 	checkpermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 	checkPermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
  	AlternateShowDirWritable=$TMoveDirWritable
  fi
 
  OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
  WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
- checkpermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
+ checkPermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
  OriginalDirWritable=$TMoveDirWritable
- checkpermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+ checkPermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
  WorkingDirWritable=$TMoveDirWritable
  
  
@@ -2203,7 +2207,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
+ 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
 	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
@@ -2246,25 +2250,26 @@ AlternateMoveDir=$AlternateMoveDir
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
-
+ 
  		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
-  		mythicalLibrarianProgramIDCheck=SH
+ #change the show to a Generic type
+   		mythicalLibrarianProgramIDCheck=SH
 		NewShowName=$SafeShowName
  		DisplayEpiShowMessage 
  	fi
  fi
  
-
+#Figure out if the file can go in the movedir, or if the alternate should be used
   determinePrimaryOrAlternateFolderUsage
   
  #####OUTPUT FILE NAME FORMATTING#####
  #universally not accepted file system characters:  |\?*<":>+[]/ 
  #Format Shows
- epn=`echo $epn| tr -d '|\?*<":>+[]/'"'"`
+ EpisodeSubtitle=`echo $EpisodeSubtitle| tr -d '|\?*<":>+[]/'"'"`
  NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'"'"`
  ShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'"'"`
  
- #Format Episodes showname=show name Sxx=season number Exx=episode number epn=episode name
+ #Format Episodes showname=show name Sxx=season number Exx=episode number EpisodeSubtitle=episode name
  if [ "$NamingConvention" = "" ]; then
  	TraditionalNamingConventions
  else
@@ -2277,13 +2282,15 @@ AlternateMoveDir=$AlternateMoveDir
  MakeFolder
  
  #check to see if output folder exists
- test -d "$MoveDir" && echo "TARGET SET:$MoveDir/$ShowFileName"
+ test -d "$MoveDir" && echo "TARGET SET:$MoveDir/$ShowFileName"||echo "ERROR: COULD NOT CREATE FOLDER:$MoveDir/$ShowFileName" 
 
  #####FAILSAFE HANDLING#####
  #If failsafe state is set then create link in FailSafeMode
  if [ $FailSafeState = "1" ]; then
 
+ #doFailSafeMode activates movedir = failsafe dir and link mode is used
  	doFailSafeMode
+ #--doover will reprocess the show
  	writeJobToDooverQue
   	jobtype=FailSafeModeComplete
  	RunJob
@@ -2308,11 +2315,14 @@ AlternateMoveDir=$AlternateMoveDir
   
  fi
 
+ #If this is a test file, then exit now.
  test "$InputPath" = "testfile.ext" && DoTestFileExit
+
+ #If the user is not mythtv, then exit, display a clear status message.
  DoMythTVPermissionsCheck
 
 
-
+ #If the show is generic programming, this is the best mythicalLibrarian can do. 
  test  "$mythicalLibrarianProgramIDCheck" = "SH" && DisplayShowWarning
 
 
