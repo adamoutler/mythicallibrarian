@@ -703,7 +703,7 @@
   		if [ $PythonBindings != True ]; then
  			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
 			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
- 		elif [ $PythonBindings ! True ]; then
+ 		elif [ $PythonBindings != True ]; then
                 	#####PYTHON BINDINGS CODE HERE
 		fi
 
@@ -772,7 +772,7 @@
  		fi
  		return 0
  
-	elif [ #PythonBindings = True ]; then
+	elif [ PythonBindings = True ]; then
    		####This is the place for the python bindings code
 		return 0 
  	fi
