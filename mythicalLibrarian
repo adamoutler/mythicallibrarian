@@ -1626,6 +1626,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo " last run of mythicalLibrarian.  It is important that this"
         echo " process does not get interupted or data loss may occour."
  	test "$DoOverBypass" != "1" && read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno 
+ 	test "$DoOverBypass" = "1" && yesorno=y
 
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
  		chmod +x "$mythicalLibrarian/doover.sh"
