@@ -63,8 +63,10 @@ except StopIteration:
 chanid, starttime = rec.chanid, rec.starttime
 print chanid
 print starttime
-
-
+starttime=starttime.replace('-','')
+starttime=starttime.replace(':','')
+starttime=starttime.replace(' ','')
+starttime
 
 
 
@@ -84,7 +86,7 @@ for x in test.items():
 # markupstart
 # markupstop
 ####
-markup = test.markup
+markup = rec.markup
 markupstart = []
 markupstop = []
 
@@ -100,7 +102,7 @@ for data in markup:
 ####
 with open("showData.txt", 'w') as f:
     #iterate through each Recorded() data item and write it to the file
-    for x in test.items():
+    for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
     f.write("--------FRAME START--------\n")
     for data in markupstart: f.write(str(data) + "\n")
