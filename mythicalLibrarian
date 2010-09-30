@@ -337,12 +337,12 @@
  #$epn = Subtitle or EPisode Name
 
  #####EPISODES####
- #$exx = Episode Number or "Movie" in case of a movie
- #$sxx = Season number or blank in case of movie
+ #$Exx = Episode Number or "Movie" in case of a movie
+ #$Sxx = Season number or blank in case of movie
  #$SeriesID = TheTVDB series ID
  #$TvDbTime = current tvdb time
  #$LastUpdated = last updated time (for Episodes only others wil be blank) 
- #$absolouteEpisodeNumber = tvdb order numbering
+ # = tvdb order numbering
 
  ####MOVIES####
  #$MovieAirDate = the original year the movie aired
@@ -353,19 +353,19 @@
 
  #########BEGIN FUNCTIONS HERE#########
  TraditionalNamingConventions () {
- #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
- 	if [ "$exx" != "" ]; then
- 		 ShowFileName=`echo "$NewShowName $sxx$exx ($epn)"`
+ #Format Episodes showname=show name Sxx=season number Exx=episode number epn=episode name
+ 	if [ "$Exx" != "" ]; then
+ 		 ShowFileName=`echo "$NewShowName $Sxx$Exx ($epn)"`
  	
  #Format Movies
  	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
- 		exx="Movie"
+ 		Exx="Movie"
  		MoveDir="$PrimaryMovieDir"
   		ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
 	
  #Format generic Shows
  	else
-  		exx="Generic"
+  		Exx="Generic"
  		MoveDir="$PrimaryShowDir"
 	  	ShowFileName=`echo "$ShowName S0E0 ($epn Recorded $datehour on $ChanID)"`
  		RequiresNFO=1 
@@ -379,9 +379,9 @@
 
  if [ "${OriginalAirDate:0:4}" != "0000" ] && [ "${OriginalAirDate:0:4}" != "" ] && [ "$UseMethod2" != "1" ] ; then
  	 EventYear="${OriginalAirDate:0:4}"
- 	 sxx=$EventYear
+ 	 Sxx=$EventYear
  	 EventMonthDay=`echo "${OriginalAirDate:5:5}"|tr -d "-"|sed 's/0*//'`
- 	 exx=$EventMonthDay
+ 	 Exx=$EventMonthDay
  	 test "$NewShowName" = "" && NewShowName=$ShowName
  #Check validity of Method1
  else
@@ -392,8 +392,8 @@
  #Method2
  if [ "$testedmethod1" != "1" ]; then
  	test "${ShowStartTime:0:4}" != 0000 && test "${ShowStartTime:0:4}" != "" && EventYear="${ShowStartTime:0:4}" && EventMonthDay=`echo "${ShowStartTime:5:5}"|tr -d "-"|sed 's/0*//'`
-	  exx=$EventMonthDay
-	  sxx=$EventYear
+	  Exx=$EventMonthDay
+	  Sxx=$EventYear
  #Check validity of Method2 
  fi
   	
@@ -586,8 +586,8 @@
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tEpisode Title: $rssepn$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tProgram: $rssNewShowName$lineBreak">>$rssDir/$TEMPrssFile
- 	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
- 	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tSeason: $Sxx$lineBreak">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\tEpisode #: $Exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\t$Plot">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
@@ -1233,8 +1233,8 @@ AlternateMoveDir=$AlternateMoveDir
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<Plot>$Plot</Plot>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
-	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" >>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
- 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>">>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
+	test "$HasSxxExx" = "1" && echo -e "\t<season>$Sxx</season>" >>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
+ 	test "$HasSxxExx" = "1" && echo -e "\t<episode>$Exx</episode>">>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
  	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
  	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
  return 0
@@ -2069,26 +2069,26 @@ AlternateMoveDir=$AlternateMoveDir
  ##AIRDATE MATCH##
  	if [ "$ChanID" != "" ]; then
  		if [ "$OriginalAirDate" != "" ] ; then
- 			absolouteEpisodeNumber=0
- 			absolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
+ 			AbsolouteEpisodeNumber=0
+ 			AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Subtract 1 to compensate for original series airdate
- 			let absolouteEpisodeNumber=$absolouteEpisodeNumber-1
- 			echo "ABSOLOUTE Exx NR:$absolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
+ 			let AbsolouteEpisodeNumber=$AbsolouteEpisodeNumber-1
+ 			echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
  		fi
  #Remove no match found, "-1" = ""
- 		test "$absolouteEpisodeNumber" = "-1" && absolouteEpisodeNumber=""
+ 		test "$AbsolouteEpisodeNumber" = "-1" && AbsolouteEpisodeNumber=""
  	fi
 
  	 
  ##FUZZY LOGIC SUBTITLE MATCH##
-	if [ "$absolouteEpisodeNumber" = "" ]; then
- 		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
-  		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$absolouteEpisodeNumber"
- 		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$absolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
+	if [ "$AbsolouteEpisodeNumber" = "" ]; then
+ 		AbsolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+  		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"
+ 		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
  	else 
- 		absolouteEpisodeNumberBackup=$absolouteEpisodeNumber
- 		absolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 		if [ "$absolouteEpisodeNumber" != "$absolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
+ 		absolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
+ 		AbsolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			fuzzyLogicDoesNotJiveMessage
                         echo "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
  			echo "CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
@@ -2098,9 +2098,9 @@ AlternateMoveDir=$AlternateMoveDir
 			(( ++FuzzyLogicError ))
 			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
 			echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
- 			echo FUZZY LOGIC REPORTS: $absolouteEpisodeNumber
+ 			echo FUZZY LOGIC REPORTS: $AbsolouteEpisodeNumber
    		fi
-		absolouteEpisodeNumber=$absolouteEpisodeNumberBackup
+		AbsolouteEpisodeNumber=$AbsolouteEpisodeNumberBackup
 
 	fi
 		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
@@ -2116,26 +2116,26 @@ AlternateMoveDir=$AlternateMoveDir
 
   
  #if line match is obtained, then gather new episode name, Sxx and Exx
- 	if [ "$absolouteEpisodeNumber" !=  ""  ]; then
- 		epn=`sed -n $absolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".actualEname.txt`
+ 	if [ "$AbsolouteEpisodeNumber" !=  ""  ]; then
+ 		epn=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".actualEname.txt`
  
  #gather series and episode names from files created earlier.
- 		exx=`sed -n $absolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".E.txt`
- 		sxx=`sed -n $absolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".S.txt`
- 		test $sxx != "" && SeasonNumber=$sxx
+ 		Exx=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".E.txt`
+ 		Sxx=`sed -n $AbsolouteEpisodeNumber'p' $mythicalLibrarian/"$NewShowName"/"$NewShowName".S.txt`
+ 		test $Sxx != "" && SeasonNumber=$Sxx
  
  #Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
- 		test $exx -lt 10  && exx="E0$exx" || exx="E$exx"
- 		test $sxx -lt 10  && sxx="S0$sxx" || sxx="S$sxx"
+ 		test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
+ 		test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
  	fi
- 	echo "EPISODE:$epn ABSOLUTE NUMBER:$absolouteEpisodeNumber" $sxx$exx
+ 	echo "EPISODE:$epn ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
  
  #if series id is not obtained send failure message
  elif [ -z "$SeriesID" ]; then 
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
   	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
- 		exx=$null
+ 		Exx=$null
  	fi
  fi
  
@@ -2203,8 +2203,8 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$absolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
- 	echo "SEASON:$sxx- EPISODE:$exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
+ 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$epn-">>"$mythicalLibrarian"/output.log
+ 	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
 	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 	 if [ "$Database" = "Enabled"	 ]; then
@@ -2235,7 +2235,7 @@ AlternateMoveDir=$AlternateMoveDir
  
 
  ######PRE-NAMING CHECKS#####
- if [ "$exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
+ if [ "$Exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
  	if [ "$ShowStopper" = "Enabled" ]; then 
 
 
@@ -2264,7 +2264,7 @@ AlternateMoveDir=$AlternateMoveDir
  NewShowName=`echo $NewShowName|tr -d '|\?*<":>+[]/'"'"`
  ShowName=`echo $ShowName|tr -d '|\?*<":>+[]/'"'"`
  
- #Format Episodes showname=show name sxx=season number exx=episode number epn=episode name
+ #Format Episodes showname=show name Sxx=season number Exx=episode number epn=episode name
  if [ "$NamingConvention" = "" ]; then
  	TraditionalNamingConventions
  else
@@ -2430,7 +2430,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  #####GENERIC UNSPECIFIED ERROR#####
  #if no match is found then send error messages
- if [ "$exx" = "" ]; then 
+ if [ "$Exx" = "" ]; then 
 	genericUnspecifiedError
  fi
  
