@@ -323,8 +323,8 @@
  #$ShowStartTime = begin recording time
  #$ShowCategory = category like children or sports
  #$mythicalLibrarianProgramIDCheck = "SH" for SHow or sports - "MV" for MoVie - "EP" for EPisode
- #$plot = plot
- #$stars = stars
+ #$Plot = Plot
+ #$Stars = Stars
  #$FileBaseName = name of the file to be moved without ext 
  #$XMLTVGrabber = your guide data type
  #$ProgramIDType= Generic episode with no data, Movie, or Series With Episode Data
@@ -579,7 +579,7 @@
     	which ifconfig >/dev/null && myip=`ifconfig  | grep 'inet addr' -m1 | cut -d: -f2 | awk '{ print $1}'`
  	rssepn=`echo $epn| sed s/"&"/"&amp;"/g`
  	rssNewShowName=`echo $NewShowName| sed s/"&"/"&amp;"/g`
-	rssplot=`echo $plot| sed s/"&"/"&amp;"/g`	
+	rssPlot=`echo $Plot| sed s/"&"/"&amp;"/g`	
  	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"| sed s/"("/"%28"/g| sed s/")"/"%29"/g|sed s/"\ "/"%20"/g`
  	echo -e "\t\t\t<guid>sftp://$mythicalGUID</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
@@ -588,7 +588,7 @@
  	echo -e "\t\t\t\tProgram: $rssNewShowName$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tSeason: $sxx$lineBreak">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t\tEpisode #: $exx$lineBreak$lineBreak">>$rssDir/$TEMPrssFile
- 	echo -e "\t\t\t\t$plot">>$rssDir/$TEMPrssFile
+ 	echo -e "\t\t\t\t$Plot">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t</description>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t</item>">>$rssDir/$TEMPrssFile
  
@@ -732,11 +732,11 @@
  #Get zap2it series id from basename to identify program
  		Zap2itSeriesID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select seriesid from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"seriesid"/""/g`
  
- #Get plot from basename to identify program
-  		plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
+ #Get Plot from basename to identify program
+  		Plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
  
  #Get rating from basename to identify program
- 		stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"stars"/""/g`
+ 		Stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select Stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"Stars"/""/g`
 
  #get show start time to identify program ----future development
  		ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
@@ -795,7 +795,7 @@
   	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
-  	rating=`printf "%0.f" $stars`
+  	rating=`printf "%0.f" $Stars`
   	test $rating != "" && let rating=$rating*2
  	test $rating = "" && rating=1
  
@@ -830,7 +830,7 @@
   	test "$OriginalAirDate" != "" || test "$epn" != "" && GoForDoover=1 || GoForDoover=0
 
  #Get rating from Stars
-  	rating=`printf "%0.f" $stars`
+  	rating=`printf "%0.f" $Stars`
   	test $rating != "" && let rating=$rating*2
  	test $rating = "" && rating=1
  
@@ -1231,7 +1231,7 @@ AlternateMoveDir=$AlternateMoveDir
  	fi
 
  	echo -e "\t\t<rating>$rating</rating>">>"$MoveDir/$ShowFileName.nfo"
- 	echo -e "\t<plot>$plot</plot>">>"$MoveDir/$ShowFileName.nfo"
+ 	echo -e "\t<Plot>$Plot</Plot>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "\t<genre>$ShowCategory</genre>">>"$MoveDir/$ShowFileName.nfo" 
 	test "$HasSxxExx" = "1" && echo -e "\t<season>$sxx</season>" >>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
  	test "$HasSxxExx" = "1" && echo -e "\t<episode>$exx</episode>">>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
@@ -1987,7 +1987,7 @@ AlternateMoveDir=$AlternateMoveDir
   #Report found data
  echo "RECSTART:$ShowStartTime DATE:$MovieAirDate $OriginalAirDate"
  echo "PROGRAMID:$ProgramID ShowCategory:$ShowCategory"
- echo "PLOT: $plot"
+ echo "PLOT: $Plot"
   
  
  #####SEARCH FOR SHOW NAME AND GET SID #####
@@ -2213,9 +2213,9 @@ AlternateMoveDir=$AlternateMoveDir
  		echo "DATABASE TYPE:$XMLTVGrabber-">>"$mythicalLibrarian"/output.log
 		echo " RECSTART:$ShowStartTime- MOVIE YEAR:$MovieAirDate- ORIGINAL SERIES DATE:$OriginalAirDate-">>"$mythicalLibrarian"/output.log
  		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory- GOFORDOOVER:$GoForDoover-">>"$mythicalLibrarian"/output.log
- 		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$stars RATING:$rating">> "$mythicalLibrarian"/output.log
+ 		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$Stars RATING:$rating">> "$mythicalLibrarian"/output.log
  		echo " ZAP2IT SERIES ID:$Zap2itSeriesID- MATCHED TVDB SERIES ID:$MatchedSeriesID-" >>"$mythicalLibrarian"/output.log
-                echo PLOT: "$plot" >>"$mythicalLibrarian"/output.log
+                echo PLOT: "$Plot" >>"$mythicalLibrarian"/output.log
  	fi
  	echo "####################END OF DEBUG LOG#####################">>"$mythicalLibrarian"/output.log
   fi
