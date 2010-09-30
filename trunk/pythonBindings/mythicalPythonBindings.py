@@ -5,9 +5,52 @@
 
 #requires libmyth-python python-lxml
 import sys, os
-print sys.argv[1]
+
+#Setup default database information
+DBHostName = "localhost"
+DBName = "mythconverg"
+DBUserName = "mythtv"
+DBPassword = "mythtv"
+
+#A list of valid command line options and flags
+validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
+validFlags = ['-auto'] #auto flag looks up login from mysql.txt
+
+                
+####
+#Handle Command Line Arguments
+####
+
+#If there were no arguments
+if len(sys.argv) < 2:
+    sys.exit("Filename must be passed as an argument")
+
+#set the filename variable
+filename = sys.argv[1]
+
+#parse through the arguments
+if len(sys.argv) > 2:
+    #create an argument list without scriptname and filename
+    myArgs = sys.argv[2:]
+    for arg in myArgs:
+        if '=' in arg and arg.split('=')[0] in validOptions:
+            #assign new value here
+            print "assign new value here for: " + arg 
+        elif arg in validFlags:
+            #this is a valid flag, do something
+            print "this is a valid flag: " + arg
+        else:
+            #this is an unacceptable argument, raise an exception'''
+            sys.exit("Invalid command line argument: " + arg)
+    
+
+#!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!
+#EXIT FOR TESTING ONLY
+sys.exit(0)
 
 
+'''
 
 #Read database settings from ~/.mythtv/mysql.txt
 mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt"
@@ -38,38 +81,7 @@ try:
 except:
     filename = "2151_20100923200000.mpg"
 
-'''#
-#set all the defaults first
-#
-DBName = "mythconverg"
-#
-DBUserName = "mythtv"
-#
-DBPassword = "mythtv"
-#
- 
-#
-#list of arguments that can be passed:
-#
-acceptedArgs = ['--DBName','--DBUserName']
-#
- 
-#
-#pretend these are our arguments for now
-#
-myargs = ['--DBName="newName"','--DBUserName="newUser"','--DBPassword="newPassword"']
-#
- 
-#
-for arg in myargs:
-#
-    if arg.split['='][0] in acceptedArgs:
-#
-        #assign new value here
-#
-    else
-#
-        #this is an unacceptable argument, raise an exception'''
+'''
 
 for line in lines:
     line = line.replace(' ','') #strip spaces
@@ -120,8 +132,6 @@ starttime=starttime.replace('-','')
 starttime=starttime.replace(':','')
 starttime=starttime.replace(' ','')
 starttime
-
-
 
 
 #Import all information from database regarding file
