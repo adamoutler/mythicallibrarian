@@ -7,10 +7,12 @@
 import sys, os
 
 #Setup default database information
-DBHostName = "localhost"
-DBName = "mythconverg"
-DBUserName = "mythtv"
-DBPassword = "mythtv"
+dbInfo = {
+    "DBHostName" : "localhost",
+    "DBName"     : "mythconverg",
+    "DBUserName" : "mythtv",
+    "DBPassword" : "mythtv"
+    }
 
 #A list of valid command line options and flags
 validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
@@ -34,19 +36,24 @@ if len(sys.argv) > 2:
     myArgs = sys.argv[2:]
     for arg in myArgs:
         if '=' in arg and arg.split('=')[0] in validOptions:
-            #assign new value here
-            print "assign new value here for: " + arg 
+            #This is a valid option, do something with it
+            if arg.split('=')[0][2:] in dbInfo:
+                #It's a DB login item, save it in dbInfo
+                dbInfo[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
         elif arg in validFlags:
             #this is a valid flag, do something
             print "this is a valid flag: " + arg
         else:
-            #this is an unacceptable argument, raise an exception'''
+            #this is an unacceptable argument, raise an exception
             sys.exit("Invalid command line argument: " + arg)
     
 
 #!!!!!!!!!!!!!!!!!!!!!!
 #!!!!!!!!!!!!!!!!!!!!!!
 #EXIT FOR TESTING ONLY
+print "Database Information:"
+for item in dbInfo:
+	print item + " = " + dbInfo[item]
 sys.exit(0)
 
 
