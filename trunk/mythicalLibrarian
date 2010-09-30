@@ -279,13 +279,13 @@
  ###EXAMPLE JOB ###
  # /etc/mythicalLibrarian/JobSucessful:
   # #Transcode your file using the mythicalLibrarian variables
-  #ffmpeg -i S:"$MoveDir/$ShowFileName.$originalext" -target ntsc-svcds:"$MoveDir/$ShowFileName.mp4"
+  #ffmpeg -i S:"$MoveDir/$ShowFileName.$OriginalExt" -target ntsc-svcds:"$MoveDir/$ShowFileName.mp4"
   # #remove the mythicalLibrarian symlink
   #rm "$InputPath"
   # #make a new symlink
   #ln -s  "$MoveDir/$ShowFileName.mp4" "$InputPath"
   # #Set the new file extension
-  #originalext=mp4  
+  #OriginalExt=mp4  
   # #Create tracking entry for the file 
   #performLoggingForMoveMode 
   # ####Move the .txt(comskip) and .nfo(Information) files if needed.
@@ -311,12 +311,12 @@
  #The limits are endless.
  
  #####ALL RECORDINGS####
- #$MoveDir/$ShowFileName.$originalext = location of moved file.
+ #$MoveDir/$ShowFileName.$OriginalExt = location of moved file.
  #$ShowName = Processed Title
  #$InputTitle = actual database title
  #$MoveDir = the folder to which the file was moved ie. "/home/mythtv/videos/Episode"
  #$ShowFileName = the name of the show moved, not including extension eg. "simpsons S01E02 (foo)" or "MovieTitle(year)"
- #$originalext = original file extension  eg "mpg"
+ #$OriginalExt = original file extension  eg "mpg"
  #$NewShowName = Successfully resolved show name
  #$ChanID = ChannelID
  #$ProgramID= Zap2it listing
@@ -580,7 +580,7 @@
  	rssepn=`echo $epn| sed s/"&"/"&amp;"/g`
  	rssNewShowName=`echo $NewShowName| sed s/"&"/"&amp;"/g`
 	rssPlot=`echo $Plot| sed s/"&"/"&amp;"/g`	
- 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$originalext"| sed s/"("/"%28"/g| sed s/")"/"%29"/g|sed s/"\ "/"%20"/g`
+ 	mythicalGUID=`echo "$MyUserName@$myip""$MoveDir/$ShowFileName.$OriginalExt"| sed s/"("/"%28"/g| sed s/")"/"%29"/g|sed s/"\ "/"%20"/g`
  	echo -e "\t\t\t<guid>sftp://$mythicalGUID</guid>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<pubDate>"$(date -R -d "$ShowStartTime")"</pubDate>">>$rssDir/$TEMPrssFile
  	echo -e "\t\t\t<description>">>$rssDir/$TEMPrssFile
@@ -650,12 +650,12 @@
 
 
  	echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
-	echo  "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$originalext\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
+	echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && test -L \"$InputPath\" && rm \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
-		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$originalext\" && mv \"$MoveDir/$ShowFileName.$originalext\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && test -L \"$InputPath\" && rm \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
+		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
 }
@@ -670,10 +670,10 @@
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
- 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
- 	echo "test -L \"$MoveDir/$ShowFileName.$originalext\" && rm \"$MoveDir/$ShowFileName.$originalext\"">>"$mythicalLibrarian/undo.sh"
- 	echo "'$MoveDir/$ShowFileName.$originalext'" "'$InputPath'">>"$mythicalLibrarian"/created.tracking
+ 	echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/undo.sh"
+ 	echo "'$MoveDir/$ShowFileName.$OriginalExt'" "'$InputPath'">>"$mythicalLibrarian"/created.tracking
 
 
  }
@@ -689,9 +689,9 @@
  		echo "PERMISSION ERROR OR DRIVE FULL">>"$mythicalLibrarian"/output.log	
  		echo "ATTEMPTING SYMLINK TO FAILSAFE DIR: $FailSafeDir">>"$mythicalLibrarian"/output.log
  		echo "ATTEPMTING SYMLINK TO FAILSAFE DIR"
- 		ln -s "$InputPath" "$FailSafeDir/$ShowFileName.$originalext"
- 		test -f "$FailSafeDir/$ShowFileName.$originalext";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
- 		test ! -f "$FailSafeDir/$ShowFileName.$originalext"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
+ 		ln -s "$InputPath" "$FailSafeDir/$ShowFileName.$OriginalExt"
+ 		test -f "$FailSafeDir/$ShowFileName.$OriginalExt";echo "FAILSAFE MODE COMPLETE: SYMLINK CREATED">>"$mythicalLibrarian"/output.log
+ 		test ! -f "$FailSafeDir/$ShowFileName.$OriginalExt"; echo "FAILSAFE MODE FAILURE CHECK PERMISSIONS AND FREE SPACE IN $FailSafeDir">>"$mythicalLibrarian"/output.log
  	fi
  
  	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
@@ -1030,7 +1030,7 @@
  DisplayCompletedMoveMessage(){
  	echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log
  	echo "MOVED: $InputPath"
- 	echo "TO: $MoveDir/$ShowFileName.$originalext "
+ 	echo "TO: $MoveDir/$ShowFileName.$OriginalExt "
  }
 
  DisplayEpiShowMessage(){
@@ -1236,7 +1236,7 @@ AlternateMoveDir=$AlternateMoveDir
 	test "$HasSxxExx" = "1" && echo -e "\t<season>$Sxx</season>" >>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<season>0</season>">>"$MoveDir/$ShowFileName.nfo" 
  	test "$HasSxxExx" = "1" && echo -e "\t<episode>$Exx</episode>">>"$MoveDir/$ShowFileName.nfo" || echo -e "\t<episode>0</episode>">>"$MoveDir/$ShowFileName.nfo" 
  	echo -e "</tvshow>">>"$MoveDir/$ShowFileName.nfo"
- 	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
+ 	echo "'$MoveDir/$ShowFileName.nfo'" "'$MoveDir/$ShowFileName.$OriginalExt'">>"$mythicalLibrarian"/created.tracking
  return 0
  }
 
@@ -1439,7 +1439,7 @@ AlternateMoveDir=$AlternateMoveDir
  }
  
  setGroupPermissions (){
- 	chmod g=rw "$MoveDir/$ShowFileName.$originalext"
+ 	chmod g=rw "$MoveDir/$ShowFileName.$OriginalExt"
  }
  
  #####MYTHICAL DIAGNOSTICS#####
@@ -1951,7 +1951,7 @@ AlternateMoveDir=$AlternateMoveDir
  #split on semicolon, there will only be one episode looked up.  Remove nonfilesystem compliant chars.
  epn=`echo $InputSubtitle|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  ExtensionPrep="`basename $InputPath`"
- originalext=`echo "${ExtensionPrep#*.}"`
+ OriginalExt=`echo "${ExtensionPrep#*.}"`
  originaldirname=`dirname "$InputPath"`
  FileBaseName=${InputPath##*/}  
  FileName="$InputPath"
@@ -2291,7 +2291,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #####ANTI-CLOBBER#####	
  #If file exists then make a new name for it
- if [ -f "$MoveDir/$ShowFileName.$originalext" ]; then
+ if [ -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
  
  	mythicalLibrarianCounter=0
  	NameCheck=0
@@ -2299,7 +2299,7 @@ AlternateMoveDir=$AlternateMoveDir
  		let mythicalLibrarianCounter=$mythicalLibrarianCounter+1
  	 
  #If file does not exist, then it is a valid target
- 		if [ ! -f "$MoveDir/$ShowFileName-$mythicalLibrarianCounter.$originalext" ]; then 
+ 		if [ ! -f "$MoveDir/$ShowFileName-$mythicalLibrarianCounter.$OriginalExt" ]; then 
  			NameCheck="1"
  			ShowFileName=`echo "$ShowFileName"-"$mythicalLibrarianCounter"`
  			echo "FILE NAME EXISTS.  FILE WILL BE KNOWN AS: $ShowFileName"
@@ -2324,31 +2324,31 @@ AlternateMoveDir=$AlternateMoveDir
  if [ "$SYMLINK" != "LINK" ]; then
  
  #Send notifications, Move the file and rename
- 	echo "MOVING FILE: '$InputPath' to '$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/output.log
+ 	echo "MOVING FILE: '$InputPath' to '$MoveDir/$ShowFileName.$OriginalExt'">>"$mythicalLibrarian"/output.log
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Moving" "Moving and renaming $ShowFileName" drive-harddisk
- 	mv "$InputPath" "$MoveDir/$ShowFileName.$originalext"
+ 	mv "$InputPath" "$MoveDir/$ShowFileName.$OriginalExt"
  
  #Check and report if file was moved
- 	if [ -f "$MoveDir/$ShowFileName.$originalext" ]; then
- 		if [ -s "$MoveDir/$ShowFileName.$originalext" ];then
+ 	if [ -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
+ 		if [ -s "$MoveDir/$ShowFileName.$OriginalExt" ];then
  
  #Create Commercial skip data with file
  			if [ "$CommercialMarkup" = "Created" ]; then
  				mv "$mythicalLibrarian/markupframes.txt" "$MoveDir/$ShowFileName.txt"
- 				echo "'$MoveDir/$ShowFileName.txt'" "'$MoveDir/$ShowFileName.$originalext'">>"$mythicalLibrarian"/created.tracking
+ 				echo "'$MoveDir/$ShowFileName.txt'" "'$MoveDir/$ShowFileName.$OriginalExt'">>"$mythicalLibrarian"/created.tracking
  			fi
  
  #Make symlink back to original file
  			if [ "$SYMLINK" = "MOVE" ]; then
  				echo CREATING SYMLINK IN MOVE MODE
- 				ln -s  "$MoveDir/$ShowFileName.$originalext" "$InputPath"
+ 				ln -s  "$MoveDir/$ShowFileName.$OriginalExt" "$InputPath"
  				test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"|tee -a "$mythicalLibrarian"/output.log
   			fi
   			DisplayCompletedMoveMessage
 
  
  #If symlink=disabled, remove database entries
-  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures && chmod 775 "$MoveDir/$ShowFileName.$originalext"
+  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt"
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
@@ -2366,15 +2366,15 @@ AlternateMoveDir=$AlternateMoveDir
  			RunJob
  
  #if file was not moved, then fail  
- 		elif [ ! -s "$MoveDir/$ShowFileName.$originalext" ]; then
- 			rm -f "$MoveDir/$ShowFileName.$originalext"
+ 		elif [ ! -s "$MoveDir/$ShowFileName.$OriginalExt" ]; then
+ 			rm -f "$MoveDir/$ShowFileName.$OriginalExt"
 			writeJobToDooverQue
  			Wrote0LengthFile
  			jobtype=PermissionError0Length
  			RunJob
 
  		fi
- 	elif [ ! -f "$MoveDir/$ShowFileName.$originalext" ]; then
+ 	elif [ ! -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
  		writeJobToDooverQue
  		PermissionErrorWhileMoving
  	  	jobtype=PermissionErrorWhileMoving
@@ -2387,12 +2387,12 @@ AlternateMoveDir=$AlternateMoveDir
  elif [ "$SYMLINK" = "LINK" ]; then
  	echo "CREATING LINK IN LINK MODE"
  
- 	ln -s "$InputPath" "$MoveDir/$ShowFileName.$originalext"     
+ 	ln -s "$InputPath" "$MoveDir/$ShowFileName.$OriginalExt"     
 
 
  #if file was created
- 	if [ -L "$MoveDir/$ShowFileName.$originalext" ]; then	
- 		echo "Symlink created $MoveDir/$ShowFileName.$originalext">>"$mythicalLibrarian"/output.log
+ 	if [ -L "$MoveDir/$ShowFileName.$OriginalExt" ]; then	
+ 		echo "Symlink created $MoveDir/$ShowFileName.$OriginalExt">>"$mythicalLibrarian"/output.log
  		echo "@@@@@@@@@@@@@OPERATION COMPLETE" `date` "@@@@@@@@@@@@@@@@">>"$mythicalLibrarian"/output.log	
  		if [ "$Notify" = "Enabled" ]; then
  			sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName linked to $MoveDir" info
@@ -2416,7 +2416,7 @@ AlternateMoveDir=$AlternateMoveDir
  		RunJob
  
  #If link failure, send notification and fail
- 	elif [ ! -L "$MoveDir/$ShowFileName.$originalext" ]; then
+ 	elif [ ! -L "$MoveDir/$ShowFileName.$OriginalExt" ]; then
  		 echo "mythicalLibrarian '$1' '$2' '$3'">>$mythicalLibrarian/doover.sh
 		 SymlinkNotCreated
  		 writeJobToDooverQue
