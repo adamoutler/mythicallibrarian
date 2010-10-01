@@ -13,10 +13,15 @@ dbInfo = {
     "DBUserName" : "mythtv",
     "DBPassword" : "mythtv"
     }
-
+#Setup default flag information
+flags = {
+    "auto"       : "" ,
+    "output"     : "./showData.txt",
+    "filename"   : "" }
+print flags
 #A list of valid command line options and flags
 validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
-validFlags = ['-auto'] #auto flag looks up login from mysql.txt
+validFlags = [ '--auto', '--output', '--basename' ] #auto flag looks up login from mysql.txt
 
                 
 ####
@@ -33,20 +38,25 @@ filename = sys.argv[1]
 #parse through the arguments
 if len(sys.argv) > 2:
     #create an argument list without scriptname and filename
-    myArgs = sys.argv[2:]
+    myArgs = sys.argv[1:]
     for arg in myArgs:
         if '=' in arg and arg.split('=')[0] in validOptions:
             #This is a valid option, do something with it
             if arg.split('=')[0][2:] in dbInfo:
                 #It's a DB login item, save it in dbInfo
                 dbInfo[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
-        elif arg in validFlags:
+        elif '=' in arg and arg.split('=')[0] in validFlags:
             #this is a valid flag, do something
             print "this is a valid flag: " + arg
+ 	    flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
+            if arg.split('=')[0][2:] in flags:
+                #It's a DB login item, save it in flags
+                flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','') 	 	
         else:
             #this is an unacceptable argument, raise an exception
             sys.exit("Invalid command line argument: " + arg)
-    
+
+print flags
 
 #!!!!!!!!!!!!!!!!!!!!!!
 #!!!!!!!!!!!!!!!!!!!!!!
@@ -54,6 +64,9 @@ if len(sys.argv) > 2:
 print "Database Information:"
 for item in dbInfo:
 	print item + " = " + dbInfo[item]
+for item in flags:
+	print item + " = " + flags[item]
+ 	
 sys.exit(0)
 
 
@@ -160,7 +173,7 @@ for data in markup:
 ####
 #write data to a text file
 ####
-with open("showData.txt", 'w') as f:
+with open(output, 'w') as f:
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
