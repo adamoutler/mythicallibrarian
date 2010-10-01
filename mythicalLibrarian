@@ -700,7 +700,7 @@
  #####INITIAL DATASE GRAB#####
  ##This function grabs title and subtitle from the database for use in the rest of the script
  GrabTitleAndSubtitle () {
- 	if [ "$InputTitle" = "" ]; then
+ 	if [ "$InputTitle" = "" ]; then 
   		if [ "$PythonBindings" != "True" ]; then
  			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
 			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
@@ -2089,12 +2089,12 @@ AlternateMoveDir=$AlternateMoveDir
  	 
  ##FUZZY LOGIC SUBTITLE MATCH##
 	if [ "$AbsolouteEpisodeNumber" = "" ]; then
- 		AbsolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
-  		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"
- 		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber">>"$mythicalLibrarian"/output.log
+ 		AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+  		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+
  	else 
  		absolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
- 		AbsolouteEpisodeNumber=`agrep -Byn "${epn:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 		AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
  		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			fuzzyLogicDoesNotJiveMessage
                         echo "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
@@ -2153,7 +2153,7 @@ AlternateMoveDir=$AlternateMoveDir
  #######SANITY CHECKS#####
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
- 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"|tee -a"$mythicalLibrarian"/output.log 
+ 	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"|tee -a "$mythicalLibrarian"/output.log 
  	 SYMLINK=LINK
  fi 
  
