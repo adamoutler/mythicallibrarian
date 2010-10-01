@@ -472,7 +472,7 @@
  FuzzySeriesMatch () {
 
  	showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
- 	serieslinenumber=`agrep -Byn "${showname:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
+ 	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Get the seriesid based on the showname
   	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
