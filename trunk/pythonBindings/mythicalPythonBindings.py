@@ -57,7 +57,7 @@ if len(sys.argv) > 2:
             sys.exit("Invalid command line argument: " + arg)
 
 print flags
-
+filename = '1006_20100823173000.mpg'
 #!!!!!!!!!!!!!!!!!!!!!!
 #!!!!!!!!!!!!!!!!!!!!!!
 #EXIT FOR TESTING ONLY
@@ -67,6 +67,7 @@ for item in dbInfo:
 for item in flags:
 	print item + " = " + flags[item]
  	
+
 sys.exit(0)
 
 
@@ -124,7 +125,7 @@ print starttime
 
 from MythTV import MythDB
 
-filename = '1006_20100823173000.mpg'
+
 
 try: 
  	db = MythDB() 
