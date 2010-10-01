@@ -2072,8 +2072,6 @@ AlternateMoveDir=$AlternateMoveDir
  #If info was pulled from database, then plug name into newshowname	
  	test -z "$NewShowName" && NewShowName=$ShowName
  
- #use fuzzy logic to find the closest show name from the locally created database and return absolute episode number
-
  
  ##AIRDATE MATCH##
  	if [ "$ChanID" != "" ]; then
@@ -2321,6 +2319,7 @@ AlternateMoveDir=$AlternateMoveDir
  fi
 
  #If this is a test file, then exit now.
+ test "$InputPath" = "testfile.ext" && test "$Exx" = "0" && echo 'FUZZY FAILURE' && exit 1
  test "$InputPath" = "testfile.ext" && DoTestFileExit
 
  #If the user is not mythtv, then exit, display a clear status message.
