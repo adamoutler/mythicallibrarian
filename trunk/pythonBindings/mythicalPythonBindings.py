@@ -104,7 +104,8 @@ def readMysqlTxt():
             DBPassword = line.split('=')[1]
         if line.startswith('DBName'):
             DBName = line.split('=')[1]
-    return [0,DBHostName,DBName,DBUserName,DBPassword]
+    return ['DBHostName='+DBHostName,'DBName='+DBName,'DBUserName='+DBUserName,'DBPassword='+DBPassword]
+
 
 #Get data from mythtv database
 '''
@@ -125,12 +126,17 @@ print starttime
 
 from MythTV import MythDB
 
-
-
-try: 
+print dbInfo
+try:
+ 	db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword']) 
+except: 
  	db = MythDB() 
-except:
- 	db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword) 
+finally: 
+ 	db = MythDB(readMysqlTxt()) 
+
+#Insert statement if db could not be accessed.
+
+
 
 try:
     rec = db.searchRecorded(basename=flags[filename]).next()
