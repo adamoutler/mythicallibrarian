@@ -21,7 +21,7 @@ flags = {
 print flags
 #A list of valid command line options and flags
 validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
-validFlags = [ '--auto', '--output', '--basename' ] #auto flag looks up login from mysql.txt
+validFlags = [ '--auto', '--output', '--filename' ] #auto flag looks up login from mysql.txt
 
                 
 ####
@@ -104,7 +104,7 @@ def readMysqlTxt():
             DBPassword = line.split('=')[1]
         if line.startswith('DBName'):
             DBName = line.split('=')[1]
-    return ['DBHostName='+DBHostName,'DBName='+DBName,'DBUserName='+DBUserName,'DBPassword='+DBPassword]
+    return [0,'DBHostName=\''+DBHostName+'\'','DBName=\''+DBName+'\'','\'DBUserName=\''+DBUserName+'\'','\'DBPassword=\''+DBPassword+'\'']
 
 
 #Get data from mythtv database
@@ -130,25 +130,19 @@ print dbInfo
 try:
  	db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword']) 
 except: 
- 	db = MythDB() 
-finally: 
- 	db = MythDB(readMysqlTxt()) 
+	try:
+ 	    db = MythDB() 
+        except:
+ 	    db = MythDB(readMysqlTxt()) 
 
 #Insert statement if db could not be accessed.
 
 
 
 try:
-    rec = db.searchRecorded(basename=flags[filename]).next()
+    rec = db.searchRecorded(basename=flags['filename']).next()
 except StopIteration:
     raise Exception('Recording Not Found')
-chanid, starttime = rec.chanid, rec.starttime
-print chanid
-print starttime
-starttime=starttime.replace('-','')
-starttime=starttime.replace(':','')
-starttime=starttime.replace(' ','')
-starttime
 
 
 #Import all information from database regarding file
@@ -180,7 +174,7 @@ for data in markup:
 ####
 #write data to a text file
 ####
-with open(flags[output], 'w') as f:
+with open(flags['output'], 'w') as f:
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
@@ -189,5 +183,8 @@ with open(flags[output], 'w') as f:
     f.write("--------FRAME STOP---------\n")
     for data in markupstop: f.write(str(data) + "\n")
     f.write("--------END FRAMES---------\n")
+
+if rec.chanid != '':
+    print "Operation complete"
 
 
