@@ -15,7 +15,7 @@ dbInfo = {
     }
 #Setup default flag information
 flags = {
-    "auto"       : "" ,
+    "auto"       : "False" ,
     "output"     : "./showData.txt",
     "filename"   : "" }
 print flags
@@ -68,7 +68,7 @@ for item in flags:
 	print item + " = " + flags[item]
  	
 
-sys.exit(0)
+#sys.exit(0)
 
 
 
@@ -133,7 +133,7 @@ except:
  	db = MythDB(DBHostName=DBHostName, DBName=DBName, DBUserName=DBUserName, DBPassword=DBPassword) 
 
 try:
-    rec = db.searchRecorded(basename=filename).next()
+    rec = db.searchRecorded(basename=flags[filename]).next()
 except StopIteration:
     raise Exception('Recording Not Found')
 chanid, starttime = rec.chanid, rec.starttime
@@ -174,7 +174,7 @@ for data in markup:
 ####
 #write data to a text file
 ####
-with open(output, 'w') as f:
+with open(flags[output], 'w') as f:
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
