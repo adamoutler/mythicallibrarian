@@ -1,6 +1,41 @@
 #!/usr/bin/python
 
+def version():
+    #Displays author and version information
+    print ' Written by Barney_1, AKA. Szczys'
+    print ' Maintained by Adam Outler (outleradam at hotmail.com'
+    print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
+    print ' This file was written for the mythicalLibrarian project,'
+    print ' and is licensed under INSERT LICENSE HERE which allows adaptation.'
+    print ' ------------------------------------------------------------------'
+    print 'Beta'
+    print '  $this utilizes mythtv python bindings to obtain information'
+    print '  about a recording and will print the information to a file.'
+    print ''
+    return
 
+
+def help():
+    #Displays usage information
+    print 'Usage:'
+    print ' $this --filename=file.ext : returns information to showData.txt'
+    print '       --DBHostName        : sets the DB Host, default: localhost'
+    print '       --DBName            : sets the DB Name, default: mythconverg'
+    print '       --DBUserName        : sets the User Name, default: mythtv'
+    print '       --DBPassword        : sets the Password, default, mythtv'
+    print '       --output=file.txt   : sets the output, default: ./showdata.txt'
+    print '       --version|-v|-ver   : displays version information'
+    print ' example:'
+    print ' $ $this --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
+    print ''
+    return
+
+def invalidFile():
+    print 'target is not valid.  Please choose a valid target.'
+    print 'usage: $this --filename='
+    help()
+
+    return
 
 
 #requires libmyth-python python-lxml
@@ -21,7 +56,7 @@ flags = {
 print flags
 #A list of valid command line options and flags
 validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
-validFlags = [ '--auto', '--output', '--filename' ] #auto flag looks up login from mysql.txt
+validFlags = [ '--auto', '--output', '--filename', '--version', '-v', '-ver', '--help', '-?' ] #auto flag looks up login from mysql.txt
 
                 
 ####
@@ -45,18 +80,30 @@ if len(sys.argv) > 2:
             if arg.split('=')[0][2:] in dbInfo:
                 #It's a DB login item, save it in dbInfo
                 dbInfo[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
-        elif '=' in arg and arg.split('=')[0] in validFlags:
-            #this is a valid flag, do something
-            print "this is a valid flag: " + arg
- 	    flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
-            if arg.split('=')[0][2:] in flags:
-                #It's a DB login item, save it in flags
-                flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','') 	 	
+        if '=' in arg and arg.split('=')[0] in validFlags or arg in validFlags:
+            #handling for version
+            versionFlags = ['-v', '--version', '-ver']
+            if arg in versionFlags:
+                version()
+ 	        sys.exit( arg + 'Version information complete.'
+
+            #handling for help switches
+            helpFlags = ['-?', '--help']:
+            if arg in helpFlags:
+                help()
+                sys.exit( arg + 'Help information complete.'
+
+        #this is a valid flag, do something
+            else: 
+                flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
+                if arg.split('=')[0][2:] in flags:
+            #It's a DB login item, save it in flags
+                    flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','') 	 	
         else:
             #this is an unacceptable argument, raise an exception
             sys.exit("Invalid command line argument: " + arg)
 
-print flags
+
 filename = '1006_20100823173000.mpg'
 #!!!!!!!!!!!!!!!!!!!!!!
 #!!!!!!!!!!!!!!!!!!!!!!
@@ -126,14 +173,19 @@ print starttime
 
 from MythTV import MythDB
 
-print dbInfo
+print 'Establishing database connection'
 try:
  	db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword']) 
 except: 
 	try:
+            print 'Failed: attempting to use system default configuration'
  	    db = MythDB() 
         except:
- 	    db = MythDB(readMysqlTxt()) 
+            try:
+ 	        print 'Failed: attempting to read from default mythtv file'
+ 	        db = MythDB(readMysqlTxt()) 
+            except: 
+                print 'Failed: Please specify defaults manually'
 
 #Insert statement if db could not be accessed.
 
