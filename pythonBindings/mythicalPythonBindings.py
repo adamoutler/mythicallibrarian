@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 def version():
-    #Displays author and version information
+    #Displays author and version information.
+    #This file may be used for any purpose, however the credits should never be changed. 
     print ' Written by Barney_1, AKA. Szczys'
     print ' Maintained by Adam Outler (outleradam at hotmail.com'
     print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
@@ -70,9 +71,8 @@ validFlags = ['--auto','--output','--filename','--version','-v','-ver','--help',
 if len(sys.argv) < 2:
     sys.exit("Filename must be passed as an argument")
 
-#set the filename variable
-filename = sys.argv[1]
 
+print 'woot'
 #parse through the arguments
 if len(sys.argv) >= 2:
     #create an argument list without scriptname and filename
@@ -80,21 +80,22 @@ if len(sys.argv) >= 2:
     for arg in myArgs:
         if '=' in arg and arg.split('=')[0] in validOptions:
             #This is a valid option, do something with it
+            print 'processing' + arg
             if arg.split('=')[0][2:] in dbInfo:
                 #It's a DB login item, save it in dbInfo
                 dbInfo[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
-        if '=' in arg and arg.split('=')[0] in validFlags or arg in validFlags:
 
-            
-            #Catch Help handling for version
+
+        if '=' in arg and arg.split('=')[0] in validFlags or arg in validFlags: 
+            #handling for version
             if arg in ['-v','--version','-ver']:
                 version()
- 	        sys.exit( arg + 'Version information complete.')
+ 	        sys.exit( arg + ' information complete.')
 
             #handling for help switches
             if arg in ['-?','--help','woot']:
                 help()
-                sys.exit( arg + 'Help information complete.')
+                sys.exit( arg + ' information complete.')
 
 
             flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
@@ -106,16 +107,15 @@ if len(sys.argv) >= 2:
             sys.exit("Invalid command line argument: " + arg)
 
 
-'''print "Database Information:"
-for item in dbInfo:
-	print item + " = " + dbInfo[item]
-for item in flags:
-	print item + " = " + flags[item]'''
+print 'fudge'
  	
 
-#sys.exit(0)
 
+#TODO Set the filename here 
 
+#TODO if flags[filename] = "" then  flags[filename] = sys.argv[1]
+
+#TODO test validitiy of filename and spit out invalidFile() help
 
 ###############################
 #Function: readMysqlTxt
@@ -153,22 +153,6 @@ def readMysqlTxt():
 
 
 #Get data from mythtv database
-'''
-from MythTV import MythDB
-filename = '1004_20100823003000.mpg'
-db = MythDB()
-# do some error handling here so we can return a better failure on error
-try:
-    rec = db.searchRecorded(basename=filename).next()
-except StopIteration:
-    # thrown when pulling data from an empty iterator
-    raise Exception('Recording Not Found')
-chanid, starttime = rec.chanid, rec.starttime
-print chanid
-print starttime
-'''
-
-
 from MythTV import MythDB
 
 print 'Establishing database connection'
@@ -186,7 +170,8 @@ except:
  	        print 'Failed: attempting to read from default mythtv file'
  	        db = MythDB(readMysqlTxt()) 
             except: 
-                print 'Failed: Please specify defaults manually'
+                print 'Failed: Please specify database information manually'
+ 		sys.exit(' See --help for more information.')
 
 #Insert statement if db could not be accessed.
 
@@ -197,14 +182,6 @@ try:
 except StopIteration:
     raise Exception('Recording Not Found')
 
-
-#Import all information from database regarding file
-
-'''
-#print out data (just for testing)
-for x in test.items():
-    print x[0] + " = " + str(x[1])
-'''
 
 ####
 #Commercial skip information
@@ -231,6 +208,7 @@ with open(flags['output'], 'w') as f:
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
+    f.write("------COMMERCIAL SKIP------\n")
     f.write("--------FRAME START--------\n")
     for data in markupstart: f.write(str(data) + "\n")
     f.write("--------FRAME STOP---------\n")
