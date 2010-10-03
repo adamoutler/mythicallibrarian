@@ -194,7 +194,7 @@ except:
 
 
 try:
-    rec = db.searchRecorded(basename=flags['filename']).next()
+    rec = db.searchRecorded(basename=options['filename']).next()
 except StopIteration:
     raise Exception('Recording Not Found')
 
@@ -220,7 +220,7 @@ for data in markup:
 ####
 #write data to a text file
 ####
-with open(flags['output'], 'w') as f:
+with open(options['output'], 'w') as f:
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items():
         f.write(x[0] + " = " + str(x[1]) + "\n")
