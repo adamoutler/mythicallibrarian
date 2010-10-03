@@ -57,7 +57,7 @@ dbInfo = {
 options = {
     "auto"       : "False" ,
     "output"     : "./showData.txt",
-    "filename"   : "" }
+    }
 
 #A list of valid command line options (anything with an = sign) and flags
 validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword', '--filename', '--output']
@@ -79,12 +79,18 @@ if len(sys.argv) < 2:
     print __file__
     sys.exit(1)
 
-
-print 'woot'
-#parse through the arguments
-if len(sys.argv) >= 2:
-    #create an argument list without scriptname and filename
+#If the first argument is not a flag, treat it as the filename
+if not sys.argv[1].startswith('-'):
+    options['filename'] = os.path.basename(sys.argv[1])
+    #Make arg list without script name and filename
+    myArgs = sys.argv[2:]
+else:
+    #Make arg list without script name
     myArgs = sys.argv[1:]
+
+
+#parse through the arguments
+if len(myArgs) > 0:
     for arg in myArgs:
         #Test to see if this is an option flag
         if '=' in arg and arg.split('=')[0] in validOptions:
@@ -127,11 +133,12 @@ if len(sys.argv) >= 2:
             sys.exit(1)
 
 
-#TODO Set the filename here 
-
-#TODO if flags[filename] = "" then  flags[filename] = sys.argv[1]
-
-#TODO test validitiy of filename and spit out invalidFile() help
+#Stop execution if no filename has been set yet
+if 'filename' not in options:
+    #No filename has been passed
+    print "ERROR: No filename specified"
+    help()
+    sys.exit(1)
 
 ###############################
 #Function: readMysqlTxt
