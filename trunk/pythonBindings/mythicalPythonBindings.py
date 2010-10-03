@@ -3,14 +3,14 @@
 def version():
     #Displays author and version information.
     #This file may be used for any purpose, however the credits should never be changed. 
-    print ' Written by Barney_1, AKA. Szczys'
+    print ' Written by Mike Szczys'
     print ' Maintained by Adam Outler (outleradam at hotmail.com'
     print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
     print ' This file was written for the mythicalLibrarian project,'
     print ' and is licensed under INSERT LICENSE HERE which allows adaptation.'
     print ' ------------------------------------------------------------------'
     print 'Beta'
-    print '  $this utilizes mythtv python bindings to obtain information'
+    print '  ' + __file__ + ' utilizes mythtv python bindings to obtain information'
     print '  about a recording and will print the information to a file.'
     print ''
     return 0
@@ -18,25 +18,26 @@ def version():
 
 def help():
     #Displays usage information
-    print ' $this is designed to pull data from MythTV python bindings.'
+    print ' ' + __file__ + ' is designed to pull data from MythTV python bindings.'
     print ''
     print ''
     print 'Usage:'
-    print ' $this --filename=file.ext : returns information to showData.txt'
+    print ' ' + __file__ + ' --filename=file.ext : returns information to showData.txt'
     print '       --DBHostName        : sets the DB Host, default: localhost'
     print '       --DBName            : sets the DB Name, default: mythconverg'
     print '       --DBUserName        : sets the User Name, default: mythtv'
     print '       --DBPassword        : sets the Password, default, mythtv'
-    print '       --output=file.txt   : sets the output, default: ./showdata.txt'
+    print '       --output=file.txt   : sets the output, default: ./showData.txt'
     print '       --version|-v|-ver   : displays version information'
+    print '       -auto               : attempts to pull databse login info from mysql.txt'
     print ' example:'
-    print ' $ $this --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
+    print ' $ ' + __file__ + ' --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
     print ''
     return 0
 
 def invalidFile():
     print 'target is not valid.  Please choose a valid target.'
-    print 'usage: $this --filename='
+    print 'usage: ' + __file__ + ' --filename='
     help()
 
     return 0
@@ -52,15 +53,17 @@ dbInfo = {
     "DBUserName" : "mythtv",
     "DBPassword" : "mythtv"
     }
-#Setup default flag information
-flags = {
+#Setup other default option information
+options = {
     "auto"       : "False" ,
     "output"     : "./showData.txt",
     "filename"   : "" }
 
-#A list of valid command line options and flags
-validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword']
-validFlags = ['--auto','--output','--filename','--version','-v','-ver','--help','-?'] #auto flag looks up login from mysql.txt
+#A list of valid command line options (anything with an = sign) and flags
+validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword', '--filename', '--output']
+validFlags = ['-auto'] #auto flag looks up login from mysql.txt
+validVersionFlags = ['-v','--version','-ver']
+validHelpFlags = ['-?','--help','-h']
 
                 
 ####
@@ -69,7 +72,12 @@ validFlags = ['--auto','--output','--filename','--version','-v','-ver','--help',
 
 #If there were no arguments
 if len(sys.argv) < 2:
-    sys.exit("Filename must be passed as an argument")
+    print "ERROR: Filename must be passed as an argument"
+    print
+    help()
+    print sys.argv[0]
+    print __file__
+    sys.exit(1)
 
 
 print 'woot'
@@ -78,37 +86,45 @@ if len(sys.argv) >= 2:
     #create an argument list without scriptname and filename
     myArgs = sys.argv[1:]
     for arg in myArgs:
+        #Test to see if this is an option flag
         if '=' in arg and arg.split('=')[0] in validOptions:
             #This is a valid option, do something with it
-            print 'processing' + arg
+
+            #Testing to see if it's database login info
             if arg.split('=')[0][2:] in dbInfo:
                 #It's a DB login item, save it in dbInfo
                 dbInfo[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
 
+            #If it's not, it must be a misc option
+            elif arg.split('=')[0][2:] in options:
+                #It is in the options dictionary, save it
+                options[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
 
-        if '=' in arg and arg.split('=')[0] in validFlags or arg in validFlags: 
-            #handling for version
-            if arg in ['-v','--version','-ver']:
-                version()
- 	        sys.exit( arg + ' information complete.')
+            #If it wasn't either, then we've got problems
+            else:
+                print "ERROR: Option flag was valid but something went wrong trying to use that data"
+                sys.exit(1)
 
-            #handling for help switches
-            if arg in ['-?','--help','woot']:
-                help()
-                sys.exit( arg + ' information complete.')
+        #Test to see if this is a version flag
+        elif arg in validVersionFlags:
+            version()
+ 	    sys.exit(0)
 
+        #Test to see if this is a help flag
+        elif arg in validHelpFlags:
+            help()
+            sys.exit(0)
 
-            flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','')
-            #Handling for other flags
-            if arg.split('=')[0][2:] in flags:
-                flags[arg.split('=')[0][2:]] = arg.split('=')[1].replace('"','') 	 	
+        #Test for the rest of the valid flags
+        elif arg in validFlags:
+            #TODO: do something here
+            print "A valid flag was detected but there's no code to do anything with it yet"                       
+
+         	 	
         else:
             #this is an unacceptable argument, raise an exception
-            sys.exit("Invalid command line argument: " + arg)
-
-
-print 'fudge'
- 	
+            print "ERROR: Invalid command line argument: " + arg
+            sys.exit(1)
 
 
 #TODO Set the filename here 
