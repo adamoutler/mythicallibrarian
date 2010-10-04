@@ -48,16 +48,17 @@ import sys, os
 
 #Setup default database information
 dbInfo = {
-    "DBHostName" : "localhost",
-    "DBName"     : "mythconverg",
-    "DBUserName" : "mythtv",
-    "DBPassword" : "mythtv"
+    "DBHostName"  : "localhost",
+    "DBName"      : "mythconverg",
+    "DBUserName"  : "mythtv",
+    "DBPassword"  : "mythtv"
     }
 #Setup other default option information
 options = {
-    "auto"       : "False" ,
-    "output"     : "./showData.txt",
-    "filename"   : ""
+    "DisplayData" : "False",
+    "auto"        : "False" ,
+    "output"      : "./showData.txt",
+    "filename"    : ""
     }
 
 #A list of valid command line options (anything with an = sign) and flags
@@ -65,7 +66,7 @@ validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword', '--file
 validFlags = ['-auto'] #auto flag looks up login from mysql.txt
 validVersionFlags = ['-v','--version','-ver']
 validHelpFlags = ['-?','--help','-h']
-
+validDisplayFlags = [ '-d', '--display' ] 
                 
 ####
 #Handle Command Line Arguments
@@ -127,6 +128,8 @@ if len(myArgs) > 0:
             #TODO: do something here
             print "A valid flag was detected but there's no code to do anything with it yet"                       
 
+        elif arg in validDisplayFlags:
+            options['DisplayData'] = 'true'
          	 	
         else:
             #this is an unacceptable argument, raise an exception
@@ -225,21 +228,39 @@ for data in markup:
     if data.type == 5:
         markupstop.append(data.mark)
 
-####
-#write data to a text file
-####
-with open(options['output'], 'w') as f:
-    #iterate through each Recorded() data item and write it to the file
-    for x in rec.items():
-        f.write(x[0] + " = " + str(x[1]) + "\n")
-    f.write("------COMMERCIAL SKIP------\n")
-    f.write("--------FRAME START--------\n")
-    for data in markupstart: f.write(str(data) + "\n")
-    f.write("--------FRAME STOP---------\n")
-    for data in markupstop: f.write(str(data) + "\n")
-    f.write("--------END FRAMES---------\n")
 
-if rec.chanid != '':
-    print "Operation complete"
+if options['DisplayData'] == 'false':
+    ####
+    #write data to a text file 
+    ####
+    with open(options['output'], 'w') as f:
+        #iterate through each Recorded() data item and write it to the file
+        for x in rec.items(): f.write(x[0] + " = " + str(x[1]))
+        f.write("------COMMERCIAL SKIP------")
+        f.write("--------FRAME START--------")
+        for data in markupstart: f.write(str(data))
+        f.write("--------FRAME STOP---------\n")
+        for data in markupstop: f.write(str(data))
+        f.write("--------END FRAMES---------\n")
+
+    if rec.chanid != '':
+        print "Operation complete"
+else:
+
+    ####
+    #Display data on-screen 
+    ####
+    with open(options['output'], 'w') as f:
+        #iterate through each Recorded() data item and write it to the file
+        for x in rec.items(): print(x[0] + " = " + str(x[1]))
+        print("------COMMERCIAL SKIP------")
+        print("--------FRAME START--------")
+        for data in markupstart: print(str(data))
+        print("--------FRAME STOP---------")
+        for data in markupstop: print(str(data))
+        print("--------END FRAMES---------")
+
+    if rec.chanid != '':
+        print "Operation complete"
 
 
