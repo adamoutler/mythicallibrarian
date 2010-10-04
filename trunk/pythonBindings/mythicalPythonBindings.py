@@ -57,6 +57,7 @@ dbInfo = {
 options = {
     "auto"       : "False" ,
     "output"     : "./showData.txt",
+    "filename"   : ""
     }
 
 #A list of valid command line options (anything with an = sign) and flags
@@ -108,7 +109,7 @@ if len(myArgs) > 0:
 
             #If it wasn't either, then we've got problems
             else:
-                print "ERROR: Option flag was valid but something went wrong trying to use that data"
+                print "ERROR: Option flag was valid but something went wrong trying to use" + arg
                 sys.exit(1)
 
         #Test to see if this is a version flag
