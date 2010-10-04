@@ -250,6 +250,9 @@ else:
     ####
     #Display data on-screen 
     ####
+# this can be used like this:  /usr/local/bin/mythicalPythonBindings.py --filename='1952_20100929081200.mpg' --DBHostName='192.168.1.110' --DBName='mythconverg' --DBUserName='mythtv' --DBPassword='mythtv' --output=./ReturnFile.txt --display|while read line; do if [[ $line = *basename\ =\ * ]]; then echo $line|sed s/'basename = '//g;fi; done
+#maybe more appropriate with a case statement
+
     with open(options['output'], 'w') as f:
         #iterate through each Recorded() data item and write it to the file
         for x in rec.items(): print(x[0] + " = " + str(x[1]))
