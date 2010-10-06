@@ -1394,7 +1394,7 @@ AlternateMoveDir=$AlternateMoveDir
  		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
  		exit 1
-	elif [ ! -d $InputPath ]; then
+	elif [ ! -d $InputSubtitle ]; then
  		echo "This folder does not exist.  "
  		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
