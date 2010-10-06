@@ -2079,11 +2079,10 @@ AlternateMoveDir=$AlternateMoveDir
  			AbsolouteEpisodeNumber=0
  			AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Subtract 1 to compensate for original series airdate
- 			let AbsolouteEpisodeNumber=$AbsolouteEpisodeNumber-1
  			echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
  		fi
  #Remove no match found, "-1" = ""
- 		test "$AbsolouteEpisodeNumber" = "-1" && AbsolouteEpisodeNumber=""
+ 		#test "$AbsolouteEpisodeNumber" = "-1" && AbsolouteEpisodeNumber=""
  	fi
 
  	 
