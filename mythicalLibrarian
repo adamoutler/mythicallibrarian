@@ -1292,8 +1292,8 @@ AlternateMoveDir=$AlternateMoveDir
 
 
   #Check if doover or undo was interupted and restore the file
- 	test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
- 	test -f "$mythicalLibrarian/undo.lock" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
+ 	#test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
+ 	#test -f "$mythicalLibrarian/undo.lock" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
  #Check and make doover.sh and undo.sh if it does not exist
  	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 	 test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
@@ -1638,7 +1638,7 @@ AlternateMoveDir=$AlternateMoveDir
  	test "$DoOverBypass" = "1" && yesorno=y
 
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
- 		cp "$mythicalLibrarian/doover.sh" "$mythicalLibrarian/doover.lock"
+ 		sudo -u $SUDO_USER cp "$mythicalLibrarian/doover.sh" "$mythicalLibrarian/doover.lock" 
  		chmod +x "$mythicalLibrarian/doover.sh"
  		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
