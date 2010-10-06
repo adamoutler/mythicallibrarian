@@ -2093,7 +2093,7 @@ AlternateMoveDir=$AlternateMoveDir
   		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
 
  	else 
- 		absolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
+ 		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
  		AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
  		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
  			fuzzyLogicDoesNotJiveMessage
