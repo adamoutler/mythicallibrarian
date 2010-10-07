@@ -6,7 +6,9 @@ def version():
     print ' Written by Mike Szczys and Adam Outler'
     print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
     print ' This file was written for the mythicalLibrarian project,'
-    print ' and is licensed under INSERT LICENSE HERE which allows adaptation.'
+    print ' and is licensed under the Apache License which requires a notification'
+    print ' to outleradam (at) hotmail.com as a formality before any derrivative 
+    print ' work.  We just want to hear about your project.'
     print ' ------------------------------------------------------------------'
     print 'Beta'
     print '  ' + __file__ + ' utilizes mythtv python bindings to obtain information'
