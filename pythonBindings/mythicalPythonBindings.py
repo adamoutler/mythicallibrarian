@@ -3,8 +3,7 @@
 def version():
     #Displays author and version information.
     #This file may be used for any purpose, however the credits should never be changed. 
-    print ' Written by Mike Szczys'
-    print ' Maintained by Adam Outler (outleradam at hotmail.com'
+    print ' Written by Mike Szczys and Adam Outler'
     print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
     print ' This file was written for the mythicalLibrarian project,'
     print ' and is licensed under INSERT LICENSE HERE which allows adaptation.'
@@ -22,7 +21,8 @@ def help():
     print ''
     print ''
     print 'Usage:'
-    print ' ' + __file__ + ' --filename=file.ext : returns information to showData.txt'
+    print ' ' + __file__ + ' --filename=file.ext : returns information to a file'
+    print '       --Display           : Display output, default: write to file'
     print '       --DBHostName        : sets the DB Host, default: localhost'
     print '       --DBName            : sets the DB Name, default: mythconverg'
     print '       --DBUserName        : sets the User Name, default: mythtv'
