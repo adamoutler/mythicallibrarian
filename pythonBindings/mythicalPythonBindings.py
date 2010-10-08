@@ -258,7 +258,7 @@ else:
 #maybe more appropriate with a case statement
 
     #iterate through each Recorded() data item and write it to the file
-    for x in rec.items(): print "%s=%s" % x
+    for x in rec.items(): print "%s = %s" % x
     print("------COMMERCIAL SKIP------")
     print("--------FRAME START--------")
     for data in markupstart: print(str(data))
