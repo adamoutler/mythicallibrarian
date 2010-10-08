@@ -137,6 +137,7 @@ if len(myArgs) > 0:
         else:
             #this is an unacceptable argument, raise an exception
             print "ERROR: Invalid command line argument: " + arg
+ 	    help()
             sys.exit(1)
 
 
