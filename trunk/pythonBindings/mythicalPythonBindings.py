@@ -11,7 +11,7 @@ def version():
     print ' work.  We just want to hear about your project.'
     print ' ------------------------------------------------------------------'
     print 'Beta'
-    print '  ' + __file__ + ' utilizes mythtv python bindings to obtain information'
+    print '  ' +os.path.basename(__file__)+ ' utilizes mythtv python bindings to obtain information'
     print '  about a recording and will print the information to a file.'
     print ''
     return 0
@@ -19,11 +19,11 @@ def version():
 
 def help():
     #Displays usage information
-    print ' ' + __file__ + ' is designed to pull data from MythTV python bindings.'
+    print ' ' +os.path.basename(__file__)+ ' is designed to pull data from MythTV python bindings.'
     print ''
     print ''
     print 'Usage:'
-    print ' ' + __file__ + ' --filename=file.ext : returns information to a file'
+    print ' ' +os.path.basename(__file__)+ ' --filename=file.ext : returns information to a file'
     print '       --Display           : Display output, default: write to file'
     print '       --DBHostName        : sets the DB Host, default: localhost'
     print '       --DBName            : sets the DB Name, default: mythconverg'
@@ -33,13 +33,13 @@ def help():
     print '       --version|-v|-ver   : displays version information'
     print '       -auto               : attempts to pull databse login info from mysql.txt'
     print ' example:'
-    print ' $ ' + __file__ + ' --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
+    print ' $ ' +os.path.basename(__file__)+ ' --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
     print ''
     return 0
 
 def invalidFile():
     print 'target is not valid.  Please choose a valid target.'
-    print 'usage: ' + __file__ + ' --filename='
+    print 'usage: ' +os.path.basename(__file__)+ ' --filename='
     help()
 
     return 0
