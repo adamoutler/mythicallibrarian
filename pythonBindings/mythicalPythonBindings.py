@@ -240,7 +240,7 @@ if options['DisplayData'] == 'false':
     with open(options['output'], 'w') as f:
         #iterate through each Recorded() data item and write it to the file
         for x in rec.items():
-	  f.write(x[0] + " = " + str(x[1]))
+	  f.write("%s = %s" % x)
 	
 	markupCount = 0
         for data in markupstart:
@@ -264,12 +264,17 @@ else:
 
     #iterate through each Recorded() data item and write it to the file
     for x in rec.items(): print "%s = %s" % x
-    print("------COMMERCIAL SKIP------")
-    print("--------FRAME START--------")
-    for data in markupstart: print(str(data))
-    print("--------FRAME STOP---------")
-    for data in markupstop: print(str(data))
-    print("--------END FRAMES---------")
+    
+    print 
+    markupCount = 0
+    for data in markupstart:
+        print('startdata[' + str(markupCount) + '] = ' + str(data))
+        markupCount += 1
+
+    markupCount = 0
+    for data in markupstop:
+        print('stopdata[' + str(markupCount) + '] = ' + str(data))
+        markupCount += 1
 
     if rec.chanid != '':
         print "Operation complete"
