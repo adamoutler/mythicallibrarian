@@ -240,7 +240,7 @@ if options['DisplayData'] == 'false':
     with open(options['output'], 'w') as f:
         #iterate through each Recorded() data item and write it to the file
         for x in rec.items():
-	  f.write("%s = %s" % x)
+	  f.write(f.write(x[0] + ' = "' + str(x[1]) + '"\n'))
 	
 	markupCount = 0
         for data in markupstart:
