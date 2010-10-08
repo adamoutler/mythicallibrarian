@@ -7,7 +7,7 @@ def version():
     print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
     print ' This file was written for the mythicalLibrarian project,'
     print ' and is licensed under the Apache License which requires a notification'
-    print ' to outleradam (at) hotmail.com as a formality before any derrivative 
+    print ' to outleradam (at) hotmail.com as a formality before any derrivative'
     print ' work.  We just want to hear about your project.'
     print ' ------------------------------------------------------------------'
     print 'Beta'
