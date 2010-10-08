@@ -239,13 +239,18 @@ if options['DisplayData'] == 'false':
     ####
     with open(options['output'], 'w') as f:
         #iterate through each Recorded() data item and write it to the file
-        for x in rec.items(): f.write(x[0] + " = " + str(x[1]))
-        f.write("------COMMERCIAL SKIP------")
-        f.write("--------FRAME START--------")
-        for data in markupstart: f.write(str(data))
-        f.write("--------FRAME STOP---------\n")
-        for data in markupstop: f.write(str(data))
-        f.write("--------END FRAMES---------\n")
+        for x in rec.items():
+	  f.write(x[0] + " = " + str(x[1]))
+	
+	markupCount = 0
+        for data in markupstart:
+	  f.write('startdata[' + str(markupCount) + '] = ' + str(data))
+	  markupCount += 1
+	  
+	markupCount = 0
+        for data in markupstop:
+	  f.write('stopdata[' + str(markupCount) + '] = ' + str(data))
+	  markupCount += 1
 
     if rec.chanid != '':
         print "Operation complete"
