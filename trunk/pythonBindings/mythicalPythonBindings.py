@@ -127,8 +127,9 @@ if len(myArgs) > 0:
 
         #Test for the rest of the valid flags
         elif arg in validFlags:
-            #TODO: do something here
-            print "A valid flag was detected but there's no code to do anything with it yet"                       
+            print "  Error: --invalid flag"
+            help()
+            sys.exit(0)
 
         elif arg in validDisplayFlags:
             options['DisplayData'] = 'true'
