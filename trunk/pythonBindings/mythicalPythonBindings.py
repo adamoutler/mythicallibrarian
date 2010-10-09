@@ -525,12 +525,12 @@ if options['DisplayData'] == 'false':
 	
 	markupCount = 0
         for data in markupstart:
-	  f.write('startdata[' + str(markupCount) + '] = \"' + str(data))+ "\""
+	  f.write('startdata[%s' % markupCount + '] = \"%s\"' % data)
 	  markupCount += 1
 	  
 	markupCount = 0
         for data in markupstop:
-	  f.write('stopdata[' + str(markupCount) + '] = \"' + str(data))+ "\""
+	  f.write('stopdata[%s' % markupCount + '] = \"%s\"' % data)
 	  markupCount += 1
 
     if rec.chanid != '':
@@ -549,12 +549,12 @@ else:
     print 
     markupCount = 0
     for data in markupstart:
-        print('startdata[' + str(markupCount) + '] = \"' + str(data)) + "\""
+        print('startdata[%s' % markupCount + '] = \"%s\"' % data) 
         markupCount += 1
 
     markupCount = 0
     for data in markupstop:
-        print('stopdata[' + str(markupCount) + '] = \"' + str(data)) + "\""
+        print('stopdata[%s' % markupCount + '] = \"%s\"' % data)
         markupCount += 1
 
     if rec.chanid != '':
