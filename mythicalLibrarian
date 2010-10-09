@@ -699,19 +699,19 @@
 
  #####INITIAL DATASE GRAB#####
  ##This function grabs title and subtitle from the database for use in the rest of the script
- GrabTitleAndSubtitle () {
- 	if [ "$InputTitle" = "" ]; then 
-  		if [ "$PythonBindings" != "True" ]; then
- 			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
-			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
- 		elif [ "$PythonBindings" = "True" ]; then
- 		 	echo ""
-                	#####PYTHON BINDINGS CODE HERE
-		fi
-
- 	fi
- 	return 0 
- }
+# GrabTitleAndSubtitle () {
+# 	if [ "$InputTitle" = "" ]; then 
+#  		if [ "$PythonBindings" != "True" ]; then
+# 			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
+#			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
+# 		elif [ "$PythonBindings" = "True" ]; then
+# 		 	echo ""
+##                	#####PYTHON BINDINGS CODE HERE
+#		fi
+#
+# 	fi
+# 	return 0 
+# }
  
  
  #####MYTHTV DATABASE#####
@@ -719,10 +719,13 @@
  GetMythTVDatabase () {
  
  	if [ "$PythonBindings" != "True" ]; then
-
+                
  #Obtain MythTV Database Information
  	 	echo "Accessing MythTV DataBase:"
-
+ #get Title 
+                InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
+ #get Subtitle
+		InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
  #get chanid for recordings to identify program table
  		ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$FileBaseName';"|sed s/"\/"/""/g|sed -n 2p|sed s/"chanid"/""/g|sed s/" "/""/g`
   
@@ -1955,7 +1958,19 @@ AlternateMoveDir=$AlternateMoveDir
 
  ####INSERT PYTHON BINDINGS GENERATION HERE
  #If not specified, grab Title and subtitle from database using basename for reference
- GrabTitleAndSubtitle
+
+ #####GATHER INFORMATION FROM  DATABASE#####
+  #Get information if database is enabled
+ if [ "$Database" = "Enabled" ]; then 
+  	test "$DatabaseType" = "MythTV" && GetMythTVDatabase
+	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect || ProcessNoLookup
+ 	
+ fi
+
+ #Report found data
+ echo "RECSTART:$ShowStartTime DATE:$MovieAirDate $OriginalAirDate"
+ echo "PROGRAMID:$ProgramID ShowCategory:$ShowCategory"
+ echo "PLOT: $Plot"
  ShowName=$InputTitle
  test "$ShowName" = "" && mythicalHelp
 
@@ -1986,17 +2001,7 @@ AlternateMoveDir=$AlternateMoveDir
  test "$UseOriginalDir" = "Enabled" && UseOriginalDir
  
 
- #####GATHER INFORMATION FROM  DATABASE#####
-  #Get information if database is enabled
- if [ "$Database" = "Enabled" ]; then 
-  	test "$DatabaseType" = "MythTV" && GetMythTVDatabase
-	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect || ProcessNoLookup
- 	
-  fi
-  #Report found data
- echo "RECSTART:$ShowStartTime DATE:$MovieAirDate $OriginalAirDate"
- echo "PROGRAMID:$ProgramID ShowCategory:$ShowCategory"
- echo "PLOT: $Plot"
+
   
  
  #####SEARCH FOR SHOW NAME AND GET SID #####
