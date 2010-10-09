@@ -797,6 +797,9 @@
  #Check if database contains enough information to put into doover que
   	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
 
+ #disqualify invalid movie airdates
+ 	test ! -z "$MovieAirDate" && test $MovieAirDate -lt 1900 && MovieAirDate=$null 
+
  #Get rating from Stars
   	rating=`printf "%0.f" $Stars`
   	test $rating != "" && let rating=$rating*2
@@ -831,6 +834,9 @@
 
  #Check if database contains enough information to put into doover que
   	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
+
+ #disqualify invalid movie airdates
+ 	test ! -z "$MovieAirDate" && test $MovieAirDate -lt 1900 && MovieAirDate=$null 
 
  #Get rating from Stars
   	rating=`printf "%0.f" $Stars`
@@ -1962,6 +1968,13 @@ AlternateMoveDir=$AlternateMoveDir
  #####GATHER INFORMATION FROM  DATABASE#####
   #Get information if database is enabled
  if [ "$Database" = "Enabled" ]; then 
+ 	case "$DatabaseType" in 
+
+		MythTV)
+ 			GetMythTVDatabase		
+ 		;; 
+  	esac
+
   	test "$DatabaseType" = "MythTV" && GetMythTVDatabase
 	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect || ProcessNoLookup
  	
