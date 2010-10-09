@@ -814,7 +814,10 @@
  fi
  
  #Import mythtv values into mythicalLibrarian values
-InputTitle=$title; InputSubtitle=$subtitle; MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category; Stars=$stars; Plot=$description; Zap2itSeriesID=$seriesid; ProgramID=$programid; ChanID=$chanid; ShowStartTime=$starttime
+test "$InputTitle" = "" && InputTitle=$title
+test "$InputSubtitle" = "" && InputSubtitle=$subtitle; 
+
+MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category; Stars=$stars; Plot=$description; Zap2itSeriesID=$seriesid; ProgramID=$programid; ChanID=$chanid; ShowStartTime=$starttime
  
  #cleanup 
  rm "$mythicalLibrarian/mythicalDbOut" "$mythicalLibrarian/markupstart.txt" "$mythicalLibrarian/markupstart.txt"
