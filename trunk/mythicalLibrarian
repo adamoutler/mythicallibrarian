@@ -786,6 +786,17 @@
  }
  
 
+ #####UTILIZE PYTHON BINDINGS TO GET MYTHTV DB##### Requires dependency
+ GetMythTvPythonBindings() {
+
+
+
+
+
+
+
+ }
+
  
  #####PROCESS DATABASE INFORMATION#####
  #Function ProcessSchedulesDirect processes Zap2it/SchedulesDirect/Tribune data for use in the program
@@ -1968,16 +1979,30 @@ AlternateMoveDir=$AlternateMoveDir
  #####GATHER INFORMATION FROM  DATABASE#####
   #Get information if database is enabled
  if [ "$Database" = "Enabled" ]; then 
+ #determine proper database grabber
  	case "$DatabaseType" in 
 
 		MythTV)
  			GetMythTVDatabase		
  		;; 
+ 		MythTVPythonBindings)
+ 			GetMythTvPythonBindings
+  		;;
   	esac
 
-  	test "$DatabaseType" = "MythTV" && GetMythTVDatabase
-	test "$GuideDataType" = "SchedulesDirect" && ProcessSchedulesDirect || ProcessNoLookup
- 	
+ #determine apropriate processing for guide data
+ 	case "$GuideDataType" in 
+
+		SchedulesDirect)
+ 			 ProcessSchedulesDirect		
+ 		;; 
+ 		NoLookup)
+ 			ProcessNoLookup
+  		;;
+ 		*)
+   		 	ProcessSchedulesDirect
+ 		;;
+  	esac
  fi
 
  #Report found data
