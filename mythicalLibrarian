@@ -793,7 +793,7 @@
  test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
-/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBHostName='localhost' --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --display > "$mythicalLibrarian/mythicalDbOut" &
+/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBHostName='localhost' --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
 
  #read values from named pipe, remove quotes and declare $Variable=$Value
  while read var equals value
