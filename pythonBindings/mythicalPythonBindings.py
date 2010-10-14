@@ -55,7 +55,7 @@ dbInfo = {
     "DBName"      : "mythconverg",
     "DBUserName"  : "mythtv",
     "DBPassword"  : "mythtv",
-    "pin"         : "0"
+    "DBPin"         : "0"
     }
 #Setup other default option information
 options = {
@@ -66,11 +66,11 @@ options = {
     }
 
 #A list of valid command line options (anything with an = sign) and flags
-validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword', '--filename', '--output']
+validOptions = ['--DBHostName','--DBName','--DBUserName','--DBPassword', '--filename', '--output', '--DBPin']
 validFlags = ['-auto'] #auto flag looks up login from mysql.txt
 validVersionFlags = ['-v','--version','-ver']
 validHelpFlags = ['-?','--help','-h']
-validDisplayFlags = [ '-d', '--display' ] 
+validDisplayFlags = [ '-d', '--Display' ] 
                 
 ####
 #Handle Command Line Arguments
@@ -191,17 +191,17 @@ from MythTV import MythDB
 print 'Establishing database connection'
 try:
         #Defaults or args
- 	db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword']) 
+ 	db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword'], DBPin=dbInfo['DBPin']) 
 except: 
 	try:
             #mythtv preconfigured options
             print 'Failed: attempting to use system default configuration'
- 	    db = MythDB() 
+ 	    db = MythDB(DBPin=dbInfo['DBPin']) 
         except:
             try:
                 #read from the mysql.txt
  	        print 'Failed: attempting to read from default mythtv file'
- 	        db = MythDB(readMysqlTxt()) 
+ 	        db = MythDB(readMysqlTxt() , DBPin=dbInfo['DBPin']) 
             except: 
                 print 'Failed: Please specify database information manually'
  		sys.exit(' See --help for more information.')
@@ -239,24 +239,30 @@ if options['DisplayData'] == 'false':
     ####
     #write data to a text file 
     ####
-    with open(options['output'], 'w') as f:
-        #iterate through each Recorded() data item and write it to the file
-        for x in rec.items():
-	  f.write("%s = \"%s\"" % x)
-	
-	markupCount = 0
-        for data in markupstart:
-	  f.write('startdata[%s' % markupCount + '] = \"%s\"' % data)
-	  markupCount += 1
-	  
-	markupCount = 0
-        for data in markupstop:
-	  f.write('stopdata[%s' % markupCount + '] = \"%s\"' % data)
-	  markupCount += 1
+    try: 
+        with open(options['output'], 'w') as f:
+            #iterate through each Recorded() data item and write it to the file
+            for x in rec.items():
+                f.write("%s = \"%s\"" % x)
+ 
+            markupCount = 0
+            for data in markupstart:
+                f.write('startdata[%s' % markupCount + '] = \"%s\"' % data)
+                markupCount += 1
+    
+            markupCount = 0
+            for data in markupstop:
+                f.write('stopdata[%s' % markupCount + '] = \"%s\"' % data)
+                markupCount += 1
+        if rec.chanid != '':
+            print "Operation complete"
+    except:
+  	options['DisplayData']='false'
+        print "failed to write file"
 
-    if rec.chanid != '':
-        print "Operation complete"
-else:
+
+
+if options['DisplayData'] == 'true':
 
     ####
     #Display data on-screen 
