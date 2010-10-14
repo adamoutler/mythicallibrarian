@@ -134,7 +134,7 @@ if len(myArgs) > 0:
             sys.exit(0)
 
         elif arg in validDisplayFlags:
-            options['DisplayData'] = 'true'
+            options['DisplayData'] = 'True'
          	 	
         else:
             #this is an unacceptable argument, raise an exception
@@ -235,7 +235,7 @@ for data in markup:
         markupstop.append(data.mark)
 
 
-if options['DisplayData'] == 'false':
+if options['DisplayData'] == 'False':
     ####
     #write data to a text file 
     ####
@@ -257,12 +257,12 @@ if options['DisplayData'] == 'false':
         if rec.chanid != '':
             print "Operation complete"
     except:
-  	options['DisplayData']='false'
-        print "failed to write file"
+  	options['DisplayData'] = 'True'
+        print "Failed To Write File.  Displaying data."
 
 
 
-if options['DisplayData'] == 'true':
+if options['DisplayData'] == 'True':
 
     ####
     #Display data on-screen 
