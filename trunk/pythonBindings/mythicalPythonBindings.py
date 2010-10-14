@@ -334,7 +334,8 @@ dbInfo = {
     "DBHostName"  : "localhost",
     "DBName"      : "mythconverg",
     "DBUserName"  : "mythtv",
-    "DBPassword"  : "mythtv"
+    "DBPassword"  : "mythtv",
+    "pin"         : "0"
     }
 #Setup other default option information
 options = {
