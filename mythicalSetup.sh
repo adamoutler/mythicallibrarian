@@ -214,12 +214,24 @@ echo " ###Stand-alone mode values###">>./mythicalPrep
 dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
   	  test $? = 0 && mythtv=1 || mythtv=0
 
-
 if [ "$mythtv" = "1" ]; then
- dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will let mythtv choose and create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your MythTV recordings folder or would you like to choose a custom folder to place recordings?"  16 60
-else 
- dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  16 60
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled" 8 25
+ test $? = 0 && automode=1 || automode=0
 fi
+
+if [ "$automode" != "1" ]; then
+ if [ "$mythtv" = "1" ]; then
+  dialog --title "End File Locations" --yes-label "Smart Folder Detection" --no-label "Manually choose Folders" --yesno "Using the original folder will let mythtv choose and create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like mythicalLibrarian to choose MythTV the folder based on the recording or would you like to choose a custom folder to place recordings?"  16 60
+  test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
+ else 
+  dialog --title "End File Locations" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  16 60
+  test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
+ fi
+else
+ UserChoosesFolder=0
+fi
+ 
+
 
 test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
 
@@ -355,7 +367,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
- 		dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows when it cannot obtain TVDB information?" 8 40
+ 		dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows and use the --doover que when it cannot obtain TVDB information?" 8 40
   		test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalPrep || echo " ShowStopper=Enabled">> ./mythicalPrep
  		
 
