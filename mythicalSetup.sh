@@ -215,7 +215,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
   	  test $? = 0 && mythtv=1 || mythtv=0
 
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\n  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n GuideDataType=SchedulesDirect\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled\n ShowStopper=Disabled\n DesktopNotificationName=$SUDO_USER\nUserRunningmythicalLibrarian=mythtv" 25 50
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  UseOriginalDir=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
  test $? = 0 && automode=1 || automode=0
 fi
 
@@ -252,7 +252,6 @@ fi
 
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
 test "$AlternateMoveDir1" = "" && AlternateMoveDir1="./Episodes"
-dialog --infobox "If your primary folder fails, your files will be moved to $AternateMoveDir1 default" 10 30 
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
