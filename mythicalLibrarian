@@ -790,37 +790,38 @@
  GetMythTvPythonBindings() {
  
  #make a named pipe for database output
- test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
+ 	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
-/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBHostName='localhost' --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
+ 	/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBHostName='localhost' --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
 
  #read values from named pipe, remove quotes and declare $Variable=$Value
- while read var equals value
- do 
-        value=`echo $value|tr -d \"`
- 	test "$equals" = "=" && declare $var="$value"
- echo $var$equals$value
- done < "$mythicalLibrarian/mythicalDbOut" > /dev/null 2>&1
+ 	while read var equals value
+ 	do 
+ 	       value=`echo $value|tr -d \"`
+ 		test "$equals" = "=" && declare $var="$value"
+ 		echo $var$equals$value
+ 	done < "$mythicalLibrarian/mythicalDbOut" > /dev/null 2>&1
  
  #GenComSkip
- if [ "$CommercialMarkup" = "Enabled" ]; then
+ 	if [ "$CommercialMarkup" = "Enabled" ]; then
   
  #Output to initial files
- 	printf "%s\n" "${startdata[@]}" >$mythicalLibrarian/markupstart.txt
- 	printf "%s\n" "${stopdata[@]}"  >$mythicalLibrarian/markupstop.txt
+ 		printf "%s\n" "${startdata[@]}" >$mythicalLibrarian/markupstart.txt
+ 		printf "%s\n" "${stopdata[@]}"  >$mythicalLibrarian/markupstop.txt
  #Combine data into a single comskip file and remove the initial files
- 	GenComSkip
- fi
+ 		GenComSkip
+ 	fi
  
  #Import mythtv values into mythicalLibrarian values
-test "$InputTitle" = "" && InputTitle=$title
-test "$InputSubtitle" = "" && InputSubtitle=$subtitle; 
+	test "$InputTitle" = "" && InputTitle=$title
+	test "$InputSubtitle" = "" && InputSubtitle=$subtitle; 
 
 MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category; Stars=$stars; Plot=$description; Zap2itSeriesID=$seriesid; ProgramID=$programid; ChanID=$chanid; ShowStartTime=$starttime
  
  #cleanup 
- rm "$mythicalLibrarian/mythicalDbOut" "$mythicalLibrarian/markupstart.txt" "$mythicalLibrarian/markupstart.txt"
+ 	test -f "$mythicalLibrarian/mythicalDbOut" && rm "$mythicalLibrarian/mythicalDbOut" 
+ 	
  }
 
  
