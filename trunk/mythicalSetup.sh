@@ -215,7 +215,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
   	  test $? = 0 && mythtv=1 || mythtv=0
 
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled" 8 25
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled" 8 25
  test $? = 0 && automode=1 || automode=0
 fi
 
@@ -293,16 +293,23 @@ echo " #Language setting">>./mythicalPrep
 echo "Language=en">>./mythicalPrep
 
 if [ "$mythtv" = "1" ]; then
-
 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalPrep
 	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'">> ./mythicalPrep
-	dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
-		test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
+        if [ "$automode" != "1" ]; then
+	 dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
+	 test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
+        else
+ 	 echo "SYMLINK=MOVE" >> ./mythicalPrep 
+ 	fi
 echo "">>./mythicalPrep
 echo " ###Database Settings###">>./mythicalPrep
 	echo " #Guide data type">> ./mythicalPrep
- 	dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it?  note: No will bypass TVDB lookups" 12 25
-	test $? = 0 && database=1 || database=0
+        if [ "$automode" != "1" ]; then
+ 	 dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it?  note: No will bypass TVDB lookups" 12 25
+	 test $? = 0 && database=1 || database=0
+ 	else
+ 	 database=1	
+ 	fi
 
 	if [ "$database" = "1" ] || [ "$database" = "0" ]; then
  
