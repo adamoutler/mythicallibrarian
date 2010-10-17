@@ -218,7 +218,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
 if [ "$mythtv" = "1" ]; then
  dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will let mythtv choose and create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your MythTV recordings folder or would you like to choose a custom folder to place recordings?"  16 60
 else 
- dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  16 
+ dialog --title "File Handling" --yes-label "Use Original" --no-label "Choose Folder" --yesno "Using the original folder will create a /Episodes /Movies and /Showings in the default recordings folder(s). This allows for better balance across multiple filesystems. \n\nWould you like to use your original recordings folder or would you like to choose a custom folder to place recordings?"  16 60
 fi
 
 test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
