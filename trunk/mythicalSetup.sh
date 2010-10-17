@@ -215,7 +215,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
   	  test $? = 0 && mythtv=1 || mythtv=0
 
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled\n ShowStopper=Disabled\n DesktopNotificationName=$SUDO_USER\n" 25 50
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\n  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n GuideDataType=SchedulesDirect\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled\n ShowStopper=Disabled\n DesktopNotificationName=$SUDO_USER\nUserRunningmythicalLibrarian=mythtv" 25 50
  test $? = 0 && automode=1 || automode=0
 fi
 
@@ -467,16 +467,24 @@ echo " ###Reporting/Communications###">>./mythicalPrep
 	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
 	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
  	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
-	dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
- 	DesktopUserName=`cat ./DesktopUserName`
- 	test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
- 	echo "$DesktopUserName">./DesktopUserName
-  	echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
+ 	if [ "$automode" != "1" ]; then
+	 dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
+ 	 DesktopUserName=`cat ./DesktopUserName`
+ 	 test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
+ 	 echo "$DesktopUserName">./DesktopUserName
+  	 echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
+  	else
+ 	 echo "NotifyUserName=$SUDO_USER" >>./mythicalPrep
+ 	fi
 
  	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
-	dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications?
+ 	if [ "$automode" != "1" ]; then
+	 dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications?
 if Yes, the user must have no password sudo access." 10 45
-	test $? = 0 && notifications=1 || notifications=0
+	 test $? = 0 && notifications=1 || notifications=0
+ 	else
+ 	 notifications=0
+ 	fi
  	if [ "$notifications" = "1" ]; then
  	echo "Notify=Enabled" >> ./mythicalPrep
 
@@ -490,9 +498,12 @@ else
  	echo "NotifyUserName='$DesktopUserName'" >> ./mythicalPrep
 fi
 
-
-dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to interface XBMC?" 9 30
-	test $? = 0 && notifications=1 || notifications=0
+if [ "$automode" != "1" ]; then
+ dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to interface XBMC?" 9 30
+ test $? = 0 && notifications=1 || notifications=0
+else
+ notifications=1 
+fi
 
 
 if [ "$notifications" = "1" ]; then
@@ -505,9 +516,14 @@ if [ "$notifications" = "1" ]; then
                 xbmcips=`cat ./xbmcips`
   		  echo "$xbmcips">./xbmcips
  		  echo "XBMCIPs=( $xbmcips )">>./mythicalPrep
-		  
-	dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to update your library?" 9 30
-		  if [ $? = 0 ]; then
+	if [ "$automode" != "1" ]; then	  
+	 dialog --title "XBMC Notifications" --yesno "Would you like mythicalLibrarian to update your library?" 9 30
+ 	 test $? = 0 && sendNotifications=1 || sendNotifications=0
+ 	else
+ 	 sendNotifications=1
+ 	fi
+       
+		  if [ "$sendNotifications" = "1" ]; then
  			echo " #Send a notification to XBMC to Update library upon successful move job Enabled|Disabled">> ./mythicalPrep
  			 echo "XBMCUpdate=Enabled">>./mythicalPrep
  			 echo " #Send Notifications to XBMC UI when library is updated Enabled|Disabled">> ./mythicalPrep
@@ -635,8 +651,11 @@ AlternateMovieDir=`echo $AlternateMovieDir`
 AlternateShowDir=`echo $AlternateShowDir`
 
 
-
-test "$mythtv" = "1" && dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian.  Note, this will generally be mythtv." 10 40 "mythtv" 2>./UserName || dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian." 10 40 "$SUDO_USER" 2>./UserName || echo $SUDO_USER>./UserName
+if [ "$automode" != "1" ]; then
+ test "$mythtv" = "1" && dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian.  Note, this will generally be mythtv." 10 40 "mythtv" 2>./UserName || dialog --inputbox "Enter The Username of the person who will run mythicalLibrarian." 10 40 "$SUDO_USER" 2>./UserName || echo $SUDO_USER>./UserName
+else
+ echo "mythtv">./UserName
+fi
  	UserName=`cat ./UserName`
 if sudo grep "mythtv " /etc/sudoers>/dev/null && [ "$mythtv" = "1" ] ; then 
  echo "mythtv group was maintained" 
