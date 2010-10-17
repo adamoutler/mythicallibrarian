@@ -215,7 +215,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
   	  test $? = 0 && mythtv=1 || mythtv=0
 
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled" 8 25
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for 96.382% of users.  Would you like to use these settings? \n\n UseOriginalDir=Enabled\n Database=1\n SYMLINK=MOVE\n XBMCUpdate=Enabled\n XBMCNotify=Enabled\n ShowStopper=Disabled\n DesktopNotificationName=$SUDO_USER\n" 25 25
  test $? = 0 && automode=1 || automode=0
 fi
 
@@ -374,9 +374,12 @@ echo " ###Database Settings###">>./mythicalPrep
 
 
  		echo " #ShowStopper = Enabled prevents generic shows and unrecognized episodes from being processed">> ./mythicalPrep
- 		dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows and use the --doover que when it cannot obtain TVDB information?" 8 40
-  		test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalPrep || echo " ShowStopper=Enabled">> ./mythicalPrep
- 		
+ 		if [ "$automode" != "1" ]; then
+ 		 dialog --title "Unrecognizable programming" --yesno "Do you want mythicalLibrarian to process shows and use the --doover que when it cannot obtain TVDB information?" 8 40
+  		 test "$?" = "0" && echo " ShowStopper=Disabled">> ./mythicalPrep || echo " ShowStopper=Enabled">> ./mythicalPrep
+ 		else
+ 		 echo " ShowStopper=Disabled">> ./mythicalPrep 
+ 		fi
 
 
 		test -f ./PrimaryShowDir && PrimaryShowDir1=`cat ./PrimaryShowDir`
