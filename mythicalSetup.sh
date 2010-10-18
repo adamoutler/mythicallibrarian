@@ -474,7 +474,7 @@ if [ "$automode" != "1" ]; then
  echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
  echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
 else
- notification=0
+ notification=1
  DesktopUserName=$SUDO_USER
 fi
 
