@@ -146,8 +146,12 @@
  #Database Type Default=MythTV
  DatabaseType=MythTV
  #Guide data type: SchedulesDirect currently covers DataDirect, MC2XML and others.  NoLookup will bypass tvdb scanning
- #Options: SchedulesDirect|NoLookup
+  #Options: SchedulesDirect|NoLookup
  GuideDataType=SchedulesDirect
+ #The IP address or name of the server for MythTV Database (used in python bindings only)
+ DBHostName=localhost
+ #The Database Pin for the MythTV Database (used in python bindings only)
+ DBPin="0"
  #MySQL User name: Default="mythtv"
  MySQLuser="mythtv" 
  #MySQL Password: Default="mythtv"
@@ -793,7 +797,7 @@
  	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
- 	/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBHostName='localhost' --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
+ 	/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
 
  #read values from named pipe, remove quotes and declare $Variable=$Value
  	while read var equals value
@@ -2013,7 +2017,7 @@ AlternateMoveDir=$AlternateMoveDir
  			GetMythTVDatabase		
  		;; 
  		MythTVPythonBindings)
- 			GetMythTvPythonBindings
+ 			test "$InputPath" != 'testfile.ext' && GetMythTvPythonBindings
   		;;
   	esac
 
