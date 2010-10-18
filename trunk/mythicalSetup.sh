@@ -293,7 +293,7 @@ echo "Language=en">>./mythicalPrep
 
 if [ "$mythtv" = "1" ]; then
 	echo " #SYMLINK has 3 modes.  MOVE|LINK|Disabled: Default=MOVE">> ./mythicalPrep
-	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled'">> ./mythicalPrep
+	echo " #Create symlink in original dir from file after 'MOVE' | Do not move, just create a sym'LINK' | move the file, symlinking is 'Disabled', delete mythtv files and DB entries">> ./mythicalPrep
         if [ "$automode" != "1" ]; then
 	 dialog --title "SYMLINK" --yesno "Keep files under control of MythTv? Note: 'No' will delete all database entries after moving files" 8 40
 	 test $? = 0 && echo "SYMLINK=MOVE" >> ./mythicalPrep || echo "SYMLINK=Disabled" >> ./mythicalPrep
@@ -302,7 +302,7 @@ if [ "$mythtv" = "1" ]; then
  	fi
 echo "">>./mythicalPrep
 echo " ###Database Settings###">>./mythicalPrep
-	echo " #Guide data type">> ./mythicalPrep
+
         if [ "$automode" != "1" ]; then
  	 dialog --title "Database Type" --yesno "Do you have one of the following guide data types?  SchedulesDirect, TiVo, Tribune, Zap2it?  note: No will bypass TVDB lookups" 12 25
 	 test $? = 0 && database=1 || database=0
@@ -462,39 +462,38 @@ fi
 
 
 echo " ###Reporting/Communications###">>./mythicalPrep
- 
-	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
-	test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
- 	test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
- 	if [ "$automode" != "1" ]; then
-	 dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
- 	 DesktopUserName=`cat ./DesktopUserName`
- 	 test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
- 	 echo "$DesktopUserName">./DesktopUserName
-  	 echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
-  	else
- 	 echo "NotifyUserName=$SUDO_USER" >>./mythicalPrep
- 	fi
+echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
+test ! -f ./DesktopUserName && echo "$SUDO_USER">>./DesktopUserName
+test -f ./DesktopUserName && DesktopUserName1=`cat ./DesktopUserName`
 
- 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
- 	if [ "$automode" != "1" ]; then
-	 dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications?
-if Yes, the user must have no password sudo access." 10 45
-	 test $? = 0 && notifications=1 || notifications=0
- 	else
- 	 notifications=0
- 	fi
- 	if [ "$notifications" = "1" ]; then
- 	echo "Notify=Enabled" >> ./mythicalPrep
-
-
+if [ "$automode" != "1" ]; then
+ dialog --inputbox "Enter your Desktop Username Default=$DesktopUserName1" 10 40 "$DesktopUserName1" 2>./DesktopUserName
+ DesktopUserName=`cat ./DesktopUserName`
+ test "$DesktopUserName" = "" && DesktopUserName=$DesktopUserName1
+ echo "$DesktopUserName">./DesktopUserName
+ echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
+ echo "NotifyUserName=$DesktopUserName" >>./mythicalPrep
 else
+ notification=0
+ DesktopUserName=$SUDO_USER
+fi
 
- 	echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
- 	echo "Notify=Disabled" >> ./mythicalPrep
 
-	echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
- 	echo "NotifyUserName='$DesktopUserName'" >> ./mythicalPrep
+if [ "$automode" != "1" ]; then
+ dialog --title "Desktop Notifications" --yesno "Would you like mythicalLibrarian to send desktop notifications? if Yes, the user must have no password sudo access." 10 45
+ test $? = 0 && notifications=1 || notifications=0
+else
+ notifications=0
+fi
+
+if [ "$notifications" = "1" ]; then
+ echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
+ echo "Notify=Enabled" >> ./mythicalPrep
+else
+ echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
+ echo "Notify=Disabled" >> ./mythicalPrep
+ echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
+ echo "NotifyUserName='$DesktopUserName'" >> ./mythicalPrep
 fi
 
 if [ "$automode" != "1" ]; then
