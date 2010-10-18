@@ -793,11 +793,14 @@
  #####UTILIZE PYTHON BINDINGS TO GET MYTHTV DB##### Requires dependency
  GetMythTvPythonBindings() {
  
+ 	echo "Attemting to pull database information on $InputPath"
  #make a named pipe for database output
  	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
  	/usr/local/bin/mythicalPythonBindings.py --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
+ 	pythonExitStatus=$?
+ 	test "$pythonExitStatus" != "0" && echo "DATABASE ACCESS ERROR: COULD NOT OBTAIN INFORMATION \n Check DBInfo in mythicalSetup, verify file is mythtv file"
 
  #read values from named pipe, remove quotes and declare $Variable=$Value
  	while read var equals value
