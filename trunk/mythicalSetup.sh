@@ -47,7 +47,7 @@ if which agrep>/dev/null && which curl>/dev/null && which dialog>/dev/null; then
 else
 	echo "the proper dependencies must be installed..." 
  	echo "The missing dependencies are $a$b$c$d$e"
- 	test "$LinuxDep" = "1" && echo "Debian based users run 'apt-get install $a$b$c$d$e" || echo "Please obtain MacPorts and install $a$b$c"
+ 	test "$LinuxDep" = "1" && echo "Debian based users run: apt-get install $a$b$c$d$e" || echo "Please obtain MacPorts and run: port install $a$b$c"
 	if [ "$LinuxDep" = "0" ]; then
  		read -n1 -p " Would you like some help on installing MacPorts? Select: (y)/n" MacPortsHelp
  		if [ "$MacPortsHelp" != "n" ]; then
