@@ -215,7 +215,7 @@ dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV
   	  test $? = 0 && mythtv=1 || mythtv=0
 
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  UseOriginalDir=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  UseOriginalDir=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n  XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
  test $? = 0 && automode=1 || automode=0
 fi
 
