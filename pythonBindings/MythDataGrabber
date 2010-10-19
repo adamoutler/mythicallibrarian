@@ -182,7 +182,7 @@
              DBPassword = line.split('=')[1]
          if line.startswith('DBName'):
              DBName = line.split('=')[1]
-     return [0,'DBHostName=\''+DBHostName+'\'','DBName=\''+DBName+'\'','\'DBUserName=\''+DBUserName+'\'','\'DBPassword=\''+DBPassword+'\''] 
+     return ['DBHostName=\''+DBHostName+'\'','DBName=\''+DBName+'\'','\'DBUserName=\''+DBUserName+'\'','\'DBPassword=\''+DBPassword+'\''] 
  
  
  #Get data from mythtv database
@@ -190,26 +190,24 @@
  
  print 'Establishing database connection'
  try:
-         #Defaults or args
-         db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword'], DBPin=dbInfo['DBPin']) 
+     #Defaults or args
+     db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword'], DBPin=dbInfo['DBPin']) 
  except: 
+     try:
+         #mythtv preconfigured options
+         print 'Failed: attempting to use system default configuration'
+         db = MythDB(DBPin=dbInfo['DBPin']) 
+     except:
          try:
-             #mythtv preconfigured options
-             print 'Failed: attempting to use system default configuration'
-             db = MythDB(DBPin=dbInfo['DBPin']) 
-        except:
-             try:
-                 #read from the mysql.txt
-                 print 'Failed: attempting to read from default mythtv file'
-                 db = MythDB(readMysqlTxt() , DBPin=dbInfo['DBPin']) 
-             except: 
-                 print 'Failed: Please specify database information manually'
-                 sys.exit(' See --help for more information.')
- 
- #Insert statement if db could not be accessed.
- 
- 
- 
+             #read from the mysql.txt
+             print 'Failed: attempting to read from default mythtv file'
+             db = MythDB(readMysqlTxt() , DBPin=dbInfo['DBPin']) 
+         except: 
+             print 'Failed: Please specify database information manually'
+             print 'DB = Null"
+             sys.exit(' See --help for more information.')
+   
+
  try:
      rec = db.searchRecorded(basename=options['filename']).next()
  except StopIteration:
@@ -267,9 +265,6 @@
      ####
      #Display data on-screen 
      ####
- # this can be used like this:  /usr/local/bin/mythicalPythonBindings.py --filename='1952_20100929081200.mpg' --DBHostName='192.168.1.110' --DBName='mythconverg' --DBUserName='mythtv' --DBPassword='mythtv' --output=./ReturnFile.txt --display|while read line; do if [[ $line = *basename\ =\ * ]]; then echo $line|sed s/'basename = '//g;fi; done
- #maybe more appropriate with a case statement
- 
      #iterate through each Recorded() data item and write it to the file
      for x in rec.items(): print "%s = \"%s\"" % x
      
