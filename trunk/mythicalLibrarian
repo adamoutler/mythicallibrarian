@@ -1676,12 +1676,10 @@ AlternateMoveDir=$AlternateMoveDir
  #####DOOVER PROCESSING#####
  #This function provides an easy way to redo failed jobs.
  executeDoOver () {
- 	if [ "$(id -u)" != "0" ]; then
- 		echo "You do not have sufficient privlidges to run this script."
- 		echo "--doover must be executed with the sudo command"
- 		echo "eg. 'sudo mythicalLibrarian --doover'"
- 		exit 1
- 	fi
+ 	if [ "$(id -u)" = "0" ]; then
+               test "$SUDO_USER" = "root" && SUDO_USER=`whoami`
+ 	       RunSudo=1
+  	fi
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
  	echo "--You have entered doover mode."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
@@ -1692,11 +1690,12 @@ AlternateMoveDir=$AlternateMoveDir
  	test "$DoOverBypass" = "1" && yesorno=y
 
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
- 		sudo -u $SUDO_USER cp "$mythicalLibrarian/doover.sh" "$mythicalLibrarian/doover.lock" 
+
+        #preserve permissions
  		chmod +x "$mythicalLibrarian/doover.sh"
- 		sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
- 		sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh"
-		rm "$mythicalLibrarian/doover.lock"
+ 		test "$RunSudo" = "1" &&sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old" || cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
+ 		test "$RunSudo" = "1" &&sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh" || "$mythicalLibrarian/doover.sh"
+
  		echo "done."
  		exit 0
 	else
