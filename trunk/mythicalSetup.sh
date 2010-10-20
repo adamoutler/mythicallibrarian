@@ -176,6 +176,8 @@ if [ "$DownloadML" = "Latest" ]; then
   	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
+        curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
+ 	chmod 755 /usr/local/bin/MythDataGrabber
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g   >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
  	rm ./mythicalLibrarian.sh
@@ -211,9 +213,33 @@ test -f ./mythicalPrep && rm -f ./mythicalPrep
 echo "#! /bin/bash">./mythicalPrep
 echo " #######################USER SETTINGS##########################">>./mythicalPrep
 echo " ###Stand-alone mode values###">>./mythicalPrep
-dialog --title "MythTv" --yesno "Will you be using mythicalLibrarian with MythTV?" 8 25
-  	  test $? = 0 && mythtv=1 || mythtv=0
+DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian supports several interfaces.  Please select your version from the list." 16 40 10 "MythTV0.24" "Development/head" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "None"  "No guide data" 2>&1 >/dev/tty)8 25
 
+ case "$DatabaseAccess" in 
+	MythTV0.24)
+ 		mythtv=1 
+ 		MythPythonBindings=1
+#DEBUG DOWNLOAD PYTHON BINDINGS
+
+	;; 
+	MythTV0.23)
+		mythtv=1 
+	;; 
+ 	MythTV0.22)
+ 		mythtv=1 
+ 	;; 
+	MythTV0.21)
+		mythtv=1 
+ 	;; 
+	MythTV0.20)
+ 		mythtv=1 
+ 	;; 
+ 	None)
+ 	        mythtv=0
+  	;;
+  esac
+
+ 
 if [ "$mythtv" = "1" ]; then
  dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  UseOriginalDir=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n  XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
  test $? = 0 && automode=1 || automode=0
@@ -316,7 +342,7 @@ echo " ###Database Settings###">>./mythicalPrep
 		echo "Database=Enabled">>./mythicalPrep	
 
  		echo " #Database Type Default=MythTV">> ./mythicalPrep
-		echo "DatabaseType=MythTV">>./mythicalPrep
+		test "$MythPythonBindings" = "1" && echo "DatabaseType=MythTVPythonBindings">>./mythicalPrep || echo "DatabaseType=MythTV">>./mythicalPrep
 
  		echo " #Guide data type">> ./mythicalPrep
 		test "$database" = 1 && echo "GuideDataType=SchedulesDirect">>./mythicalPrep || echo "GuideDataType=NoLookup">>./mythicalPrep
