@@ -143,8 +143,8 @@
  #MythTV MYSQL access allows addition of movies, comskip data, and improves accuracy of episode recognition.
  #Database access Enabled|Disabled
  Database=Enabled
- #Database Type Default=MythTV
- DatabaseType=MythTV
+ #Database Type MythTV|MythTVPythonBindings  Default=MythTVPythonBinding
+ DatabaseType=MythTVPythonBindings
  #Guide data type: SchedulesDirect currently covers DataDirect, MC2XML and others.  NoLookup will bypass tvdb scanning
   #Options: SchedulesDirect|NoLookup
  GuideDataType=SchedulesDirect
@@ -1043,7 +1043,7 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
 # and system is set to use mythtv database, and symlink is move 
 
  if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ $InputTitle != "--BypassPermissionsCheck" ]; then
- 	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
+ 	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" -o "$DatabaseType" = "MythTVPythonBindings" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
  		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
  		echo -e " ##############################  ERROR  #################################"|tee -a "$mythicalLibrarian"/output.log
@@ -1645,7 +1645,7 @@ AlternateMoveDir=$AlternateMoveDir
  		echo -e " The user named $SUDO_USER does not have permission to use the folder"
  		echo -e "  corrective action: sudo chown $SUDO_USER /Name/of/My_failed_folder"
  		echo -e " The folder belongs to a different group then the user named $SUDO_USER"
- 		if [ "$Database" = "Enabled" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SUDO_USER" != "mythtv" ]; then
+ 		if [ "$Database" = "Enabled" ] && [ "$DatabaseType" = "MythTV" -o "$DatabaseType" = "MythTVPythonBindings" ] && [ "$SUDO_USER" != "mythtv" ]; then
  			echo -e "  corrective action: sudo adduser mythtv $SUDO_USER"
  			echo -e "                     sudo adduser $SUDO_USER mythtv"
  		else
@@ -1940,7 +1940,6 @@ AlternateMoveDir=$AlternateMoveDir
  
  #load variables from a file if required
  test -f ~/mythicalLibrarian/mythicalLibrarian.conf && . ~/mythicalLibrarian/mythicalLibrarian.conf
- 
 
  InputTitle="$2"
  InputSubtitle="$3"
