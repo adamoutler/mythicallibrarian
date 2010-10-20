@@ -213,7 +213,7 @@ test -f ./mythicalPrep && rm -f ./mythicalPrep
 echo "#! /bin/bash">./mythicalPrep
 echo " #######################USER SETTINGS##########################">>./mythicalPrep
 echo " ###Stand-alone mode values###">>./mythicalPrep
-DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian supports several interfaces.  Please select your version from the list." 16 40 10 "MythTV0.24" "Development/head" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "None"  "No guide data" 2>&1 >/dev/tty)8 25
+DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian supports several interfaces.  Please select your version from the list." 16 40 10 "MythTV0.24" "Development/head" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "None"  "No guide data" 2>&1 >/dev/tty)
 
  case "$DatabaseAccess" in 
 	MythTV0.24)
@@ -442,7 +442,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
 	fi
 
-elif [ $mythtv = 0 ]; then
+elif [ "$mythtv" = "0" ]; then
 
  	
     	dialog --title "SYMLINK" --yesno "Do you want mythicalLibrarian to symlink to the original file after move?" 8 35
