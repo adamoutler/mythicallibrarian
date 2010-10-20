@@ -1,53 +1,50 @@
 #! /usr/bin/python
+#requires libmyth-python python-lxml
+import sys, os
 
 def version():
     #Displays author and version information.
     #This file may be used for any purpose, however the credits should never be changed. 
-    print ' Written by Mike Szczys and Adam Outler'
-    print ' for support, please visit: http://forum.xbmc.org/showthread.php?t=65644'
-    print ' This file was written for the mythicalLibrarian project,'
-    print ' and is licensed under the Apache License which requires a notification'
-    print ' to outleradam (at) hotmail.com as a formality before any derrivative'
-    print ' work.  We just want to hear about your project.'
-    print ' ------------------------------------------------------------------'
-    print 'Beta'
-    print '  ' +os.path.basename(__file__)+ ' utilizes mythtv python bindings to obtain information'
-    print '  about a recording and will print the information to a file.'
-    print ''
+    print """Written by Mike Szczys and Adam Outler
+ For support, please visit: http://forum.xbmc.org/showthread.php?t=65644
+ This file was written for the mythicalLibrarian project,
+ and is licensed under the Apache License which requires a notification
+ to outleradam (at) hotmail.com as a formality before any derrivative
+ work.  We just want to hear about your project.
+------------------------------------------------------------------
+Beta
+ %s  utilizes mythtv python bindings to obtain information
+about a recording and will print the information to a file.
+""" % os.path.basename(sys.argv[0])
     return 0 
 
 
 def help():
     #Displays usage information
-    print ' ' +os.path.basename(__file__)+ ' is designed to pull data from MythTV python bindings.'
-    print ''
-    print ''
-    print 'Usage:'
-    print ' ' +os.path.basename(__file__)+ ' --filename=file.ext : returns information to a file'
-    print '       --Display           : Display output, default: write to file'
-    print '       --DBHostName        : sets the DB Host, default: localhost'
-    print '       --DBName            : sets the DB Name, default: mythconverg'
-    print '       --DBUserName        : sets the User Name, default: mythtv'
-    print '       --DBPassword        : sets the Password, default: mythtv'
-    print '       --DBPin             : sets the Pin, default: 0'
-    print '       --output=file.txt   : sets the output, default: ./showData.txt'
-    print '       --version|-v|-ver   : displays version information'
-    print '       -auto               : attempts to pull databse login info from mysql.txt'
-    print ' example:'
-    print ' $ ' +os.path.basename(__file__)+ ' --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt'
-    print ''
+    name = os.path.basename(sys.argv[0])
+    print """ %s is designed to pull data from MythTV python bindings.
+
+Usage:
+%s --filename=file.ext : returns information to a file
+   --Display           : Display output, default: write to file
+   --DBHostName        : sets the DB Host, default: localhost
+   --DBName            : sets the DB Name, default: mythconverg
+   --DBUserName        : sets the User Name, default: mythtv
+   --DBPassword        : sets the Password, default: mythtv
+   --DBPin             : sets the Pin, default: 0
+   --output=file.txt   : sets the output, default: ./showData.txt
+   --version|-v|-ver   : displays version information
+example:
+$ %s --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt
+""" % (name, name, name)
     return 0
 
 def invalidFile():
-    print 'target is not valid.  Please choose a valid target.'
-    print 'usage: ' +os.path.basename(__file__)+ ' --filename='
+    print """target is not valid.  Please choose a valid target.
+usage: %s --filename=""" % os.path.basename(sys.argv[0])
     help()
-
     return 0
 
-filename = '1006_20100823173000.mpg'
-#requires libmyth-python python-lxml
-import sys, os
 
 #Setup default database information
 dbInfo = {
@@ -159,30 +156,27 @@ if 'filename' not in options:
 #  DBName
 #  DBUserName
 #  DBPassword
-#
+#  DBPin
 #Note: Need to add error catching in case file read problems
 ###############################
 def readMysqlTxt():
     #Read database settings from ~/.mythtv/mysql.txt
     mysqlTXT = os.path.expanduser('~') + "/.mythtv/mysql.txt" 
 
-    with open(mysqlTXT,'r') as f:
-        mysqlData = f.read()
-        #Add error handling here... return [1] if error
+    dbdata = {}
+    for line in open(mysqlTXT,'r'):
+        if line.startswith('#'):
+            continue
+        if '=' in line:
+            o,v = line.strip().split('=')
+            dbdata[o.strip()] = v.strip()
+    return dbdata
 
-    lines = mysqlData.split('\n')
 
-    for line in lines:
-        line = line.replace(' ','') #strip spaces
-        if line.startswith('DBHostName'):
-            DBHostName = line.split('=')[1]
-        if line.startswith('DBUserName'):
-            DBUserName = line.split('=')[1]
-        if line.startswith('DBPassword'):
-            DBPassword = line.split('=')[1]
-        if line.startswith('DBName'):
-            DBName = line.split('=')[1]
-    return ['DBHostName=\''+DBHostName+'\'','DBName=\''+DBName+'\'','\'DBUserName=\''+DBUserName+'\'','\'DBPassword=\''+DBPassword+'\''] 
+
+
+
+
 
 
 #Get data from mythtv database
@@ -191,7 +185,7 @@ from MythTV import MythDB
 print 'Establishing database connection'
 try:
     #Defaults or args
-    db = MythDB(DBHostName=dbInfo['DBHostName'], DBName=dbInfo['DBName'], DBUserName=dbInfo['DBUserName'], DBPassword=dbInfo['DBPassword'], DBPin=dbInfo['DBPin']) 
+    db = MythDB(**dbInfo) 
 except: 
     try:
         #mythtv preconfigured options
@@ -213,71 +207,52 @@ except StopIteration:
     raise Exception('Recording Not Found')
 
 
-####
 #Commercial skip information
-####
-# gathers all markup into two lists:
-# markupstart
-# markupstop
-####
-markup = rec.markup
-markupstart = []
-markupstop = [] 
-
-
-for data in markup:
-    if data.type == 4:
-        markupstart.append(data.mark)
-    if data.type == 5:
-        markupstop.append(data.mark)
-
+markupstart,markupstop = zip(*rec.markup.getskiplist())
 
 if options['DisplayData'] == 'False':
-    ####
-    #write data to a text file 
-    ####
-    try: 
-        with open(options['output'], 'w') as f:
-            #iterate through each Recorded() data item and write it to the file
-            for x in rec.items():
-                f.write("%s = \"%s\"" % x)
- 
-            markupCount = 0
-            for data in markupstart:
-                f.write('startdata[%s' % markupCount + '] = \"%s\"' % data)
-                markupCount += 1
-    
-            markupCount = 0
-            for data in markupstop:
-                f.write('stopdata[%s' % markupCount + '] = \"%s\"' % data)
-                markupCount += 1
+    f = None
+    try:
+        # set the file object
+        f = open(options['output'], 'w')
+
+        # loop through Recorded items
+        for x in rec.items():
+            f.write('%s = "%s"\n' % x)
+        # loop through comm-start points
+        for i,data in enumerate(markupstart):
+            f.write('startdata[%s] = "%s"\n' % (i, data))
+
+        # loop through comm-end points
+        for i,data in enumerate(markupstop):
+            f.write('stopdata[%s] = "%s"\n' % (i, data))
         if rec.chanid != '':
             print "Operation complete"
     except:
         options['DisplayData'] = 'True'
         print "Failed To Write File.  Displaying data."
+    finally:
+        if f is not None:
+            if f.fileno() != 1:
+                f.close()
 
-
-
+####
+#Display data on-screen 
+####
+#iterate through each Recorded() data item and write it to the file
 if options['DisplayData'] == 'True':
+         # set the file object
 
-    ####
-    #Display data on-screen 
-    ####
-    #iterate through each Recorded() data item and write it to the file
-    for x in rec.items(): print "%s = \"%s\"" % x
-    
-    print 
-    markupCount = 0
-    for data in markupstart:
-        print('startdata[%s' % markupCount + '] = \"%s\"' % data) 
-        markupCount += 1
+        # loop through Recorded items
+        for x in rec.items():
+            print('%s = "%s"' % x)
+        # loop through comm-start points
+        for i,data in enumerate(markupstart):
+            print('startdata[%s] = "%s"' % (i, data))
 
-    markupCount = 0
-    for data in markupstop:
-        print('stopdata[%s' % markupCount + '] = \"%s\"' % data)
-        markupCount += 1
-
-    if rec.chanid != '':
-        print "Operation complete"
+        # loop through comm-end points
+        for i,data in enumerate(markupstop):
+            print('stopdata[%s] = "%s"' % (i, data))
+        if rec.chanid != '':
+            print "Operation complete"
 
