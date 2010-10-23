@@ -8,9 +8,9 @@ import sys, os
 def version():
     print """Written by Mike Szczys and Adam Outler
  For support, please visit: http://forum.xbmc.org/showthread.php?t=65644
- This file was written for the mythicalLibrarian project,
- and is licensed under the Apache License which requires a notification
- to outleradam (at) hotmail.com as a formality before any derrivative
+ This file was written for the mythicalLibrarian project, and is
+ licensed under the Apache License which requires a notification to
+ outleradam (at) hotmail.com as a formality before any derrivative
  work.  We just want to hear about your project.
 ------------------------------------------------------------------
 Version 0.1
