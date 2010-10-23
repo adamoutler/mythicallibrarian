@@ -701,22 +701,6 @@
  	test $Notify = Enabled && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian FAILSAFE" "FAILSAFE mode active See "$mythicalLibrarian"/output.log for more information" error
  }
 
- #####INITIAL DATASE GRAB#####
- ##This function grabs title and subtitle from the database for use in the rest of the script
-# GrabTitleAndSubtitle () {
-# 	if [ "$InputTitle" = "" ]; then 
-#  		if [ "$PythonBindings" != "True" ]; then
-# 			InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
-#			InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
-# 		elif [ "$PythonBindings" = "True" ]; then
-# 		 	echo ""
-##                	#####PYTHON BINDINGS CODE HERE
-#		fi
-#
-# 	fi
-# 	return 0 
-# }
- 
  
  #####MYTHTV DATABASE#####
  #This function gathers information from the mythtv database for use in the program
@@ -726,10 +710,13 @@
                 
  #Obtain MythTV Database Information
  	 	echo "Accessing MythTV DataBase:"
+ 
  #get Title 
                 test "$InputTitle" = "" && InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
+ 
  #get Subtitle
 		test "$InputSubtitle" = "" && InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
+
  #get chanid for recordings to identify program table
  		ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$FileBaseName';"|sed s/"\/"/""/g|sed -n 2p|sed s/"chanid"/""/g|sed s/" "/""/g`
   
@@ -798,7 +785,7 @@
  	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
- 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass" --Display > "$mythicalLibrarian/mythicalDbOut" &
+ 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" &
  	pythonExitStatus=$?
  	test "$pythonExitStatus" != "0" && echo "DATABASE ACCESS ERROR: COULD NOT OBTAIN INFORMATION \n Check DBInfo in mythicalSetup, verify file is mythtv file"
 
