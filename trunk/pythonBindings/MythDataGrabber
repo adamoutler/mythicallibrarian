@@ -13,7 +13,7 @@ def version():
  to outleradam (at) hotmail.com as a formality before any derrivative
  work.  We just want to hear about your project.
 ------------------------------------------------------------------
-Beta
+Version 0.1
  %s  utilizes mythtv python bindings to obtain information
 about a recording and will print the information to a file.
 """ % os.path.basename(sys.argv[0])
@@ -37,7 +37,7 @@ Usage:
    --output=file.txt   : sets the output, default: ./showData.txt
    --version|-v|-ver   : displays version information
 example:
-$ %s --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --output=/home/myfile.txt
+$ %s --filename=1000_20101010101010.mpg --DBHostName=localhost --DBName=mythconverg --DBUserName=mythtv --DBPassword=mythtv --writeFile --output=/home/myfile.txt
 """ % (name, name, name)
     return 0
 
@@ -96,6 +96,7 @@ else:
 # Parse through the Arguments
 if len(myArgs) > 0:
     for arg in myArgs:
+
         # Test to see if this is an option flag
         if '=' in arg and arg.split('=')[0] in validOptions:
             #This is a valid option, do something with it
@@ -129,8 +130,8 @@ if len(myArgs) > 0:
         elif arg in validNoDisplayFlags:
             options['ToFile'] = 'True'
 
+        # this is an unacceptable argument, raise an exception
         else:
-            # this is an unacceptable argument, raise an exception
             print "ERROR: Invalid command line argument: " + arg
             help()
             sys.exit(1)
@@ -240,10 +241,8 @@ def writeData():
         print "Operation complete"
 
 
-#########################
-# Display data on-screen
-#iterate through each Recorded() data item and write it to the file
-
+######################
+#Control Data output
 f = None
 try:
     if options['ToFile'] == 'True':
