@@ -358,7 +358,6 @@ echo " ###Database Settings###">>./mythicalPrep
 
 
  		echo " #MySQL Password: Default="mythtv"">> ./mythicalPrep	
- 		
  		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPassword=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPassword="/""/g`||mythtvusername="mythtv"
  		test ! -f "./MySQLpass" && echo "$MySQLpass1">./MySQLpass
 	    	dialog --inputbox "Enter your MYSQL password. Default=$MySQLpass1" 9 40 "$MySQLpass1" 2>./MySQLpass
@@ -367,10 +366,32 @@ echo " ###Database Settings###">>./mythicalPrep
  		echo "$MySQLpass">./MySQLpass
 		echo "MySQLpass=$MySQLpass">>./mythicalPrep
 
+
+
+ 		echo " #MythTV Backend server: Default=localhost">> ./mythicalPrep	
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && DBHostName1=`grep "DBHostName=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBHostName="/""/g`||DBHostName=="localhost"
+ 		test ! -f "./DBHostName" && echo "$DBHostName1">./DBHostName
+	    	dialog --inputbox "Enter your DB Host IP. Default=$DBHostName1" 9 40 "$DBHostName1" 2>./DBHostName
+ 		DBHostName=`cat ./DBHostName`
+ 		test "$DBHostName" = "" && DBHostName="$DBHostName1"
+ 		echo "$DBHostName">./DBHostName
+		echo "DBHostName=$DBHostName=">>./mythicalPrep
+ 
+
+ 		echo " #The Database Pin for the MythTV Database (used in python bindings only)">> ./mythicalPrep	
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPin=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPin="/""/g`||DBPin="0"
+ 		test ! -f "./DBPin" && echo "$DBPin1">./DBPin
+	    	dialog --inputbox "Enter your MYSQL password. Default=$DBPin1" 9 40 "$DBPin1" 2>./DBPin
+ 		DBPin=`cat ./DBPin`
+ 		test "$DBPin" = "" && MySQLpass="$DBPin1"
+ 		echo "$DBPin">./DBPin
+		echo "DBPin=$DBPin">>./mythicalPrep
+
+
+
+
  		echo "#MySQL Myth Database: Default="mythconverg"">> ./mythicalPrep
  		echo "MySQLMythDb=mythconverg">>./mythicalPrep
-
-
 
  		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./mythicalPrep 		
  		test -f ./PrimaryMovieDir && PrimaryMovieDir1=`cat ./PrimaryMovieDir`
