@@ -150,14 +150,14 @@
  GuideDataType=SchedulesDirect
  #The IP address or name of the server for MythTV Database (used in python bindings only)
  DBHostName=localhost
- #The Database Pin for the MythTV Database (used in python bindings only)
- DBPin="0"
  #MySQL User name: Default="mythtv"
  MySQLuser="mythtv" 
  #MySQL Password: Default="mythtv"
  MySQLpass="mythtv" #<------THIS VALUE MUST BE SET-------
  #MythTV Backend server: Default=localhost
  MythTVBackendServer=localhost
+ #The Database Pin for the MythTV Database (used in python bindings only)
+ DBPin="0"
  #MySQL Myth Database: Default="mythconverg"  
  #If utilizing mythconverg with Python Bindings, then it would be MySQLMythDb=PythonBindingsmythconverg
  MySQLMythDb=mythconverg
