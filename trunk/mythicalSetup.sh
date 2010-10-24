@@ -379,9 +379,10 @@ echo " ###Database Settings###">>./mythicalPrep
  
 
  		echo " #The Database Pin for the MythTV Database (used in python bindings only)">> ./mythicalPrep	
- 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPin=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPin="/""/g`||DBPin="0"
- 		test ! -f "./DBPin" && echo "$DBPin1">./DBPin
-	    	dialog --inputbox "Enter your MYSQL password. Default=$DBPin1" 9 40 "$DBPin1" 2>./DBPin
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && MySQLpass1=`grep "DBPin=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPin="/""/g`
+  		test "$DBPin" = "" && DBPin=0
+ 		test ! -f "./DBPin" && echo "$DBPin1">./DBPin 
+	    	dialog --inputbox "Enter your MYSQL password. Default=$DBPin" 9 40 "$DBPin" 2>./DBPin
  		DBPin=`cat ./DBPin`
  		test "$DBPin" = "" && MySQLpass="$DBPin1"
  		echo "$DBPin">./DBPin
