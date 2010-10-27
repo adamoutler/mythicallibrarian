@@ -217,6 +217,8 @@ DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian su
 test "$?" != "0" && echo "please select a version" && exit 1 
  case "$DatabaseAccess" in 
 	MythTV0.24)
+  		clear
+		echo "Running diagnostic database connection"
                 test -f /usr/local/bin/MythDataGrabber &&  test "$((`MythDataGrabber --Diagnostic=True>/dev/tty`))" = "0" && echo "MythTV Python Bindings are installed properly"  && read -n1 -p "press any key to continue..." arbitraryvalue || echo "MythTV Python Bindings are not installed properly"  && exit 1
  		mythtv=1 
  		MythPythonBindings=1
