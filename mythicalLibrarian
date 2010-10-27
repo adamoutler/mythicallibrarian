@@ -1502,15 +1502,15 @@ AlternateMoveDir=$AlternateMoveDir
 	test `which curl`>/dev/null && echo "package 'curl' is installed" || checkc="curl "
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
 	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed"  || checke="libnotify-bin "	
-        test "DatabaseType"="MythTVPythonBindings" && `MythDataGrabber --Diagnostic=True` && echo "MythTV Python Bindings are installed properly" || checkf="libmyth-python python-lxml " && echo "MythTV Python Bindings are not installed properly"
-	if [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]; then
+        test "$DatabaseType"="MythTVPythonBindings" && `MythDataGrabber --Diagnostic=True` && echo "MythTV Python Bindings are installed properly" || checkf="libmyth-python python-lxml" && echo "MythTV Python Bindings are not installed properly"
+	if [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ] && [ "$DatabaseType" != "MythTVPythonBindings" ] || [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ] && [ "$DatabaseType" = "MythTVPythonBindings" ]  && [ $checkf != "" ] ;then
  		packagecheck="***PASSED***"
  		echo "Installed packages check ***PASSED***"
  	else
  		packagecheck="***FAILED***"
  		echo "Installed packages check ***FAILED***" 
- 		echo "Missing packages are $checkb$checkc$checkd$checke"
- 		test "$mythicalPlatform" != "Darwin" && echo "Please run 'apt-get install $checkb$checkc$checkd$checke$checkf' or equivalant" || echo "Please obtain MacPorts and install $checkb$checkc$checkd$checke"
+ 		echo "Missing packages are $checkb$checkc$checkd$checke$checkf"
+ 		test "$mythicalPlatform" != "Darwin" && echo "Please run 'apt-get install $checkb$checkc$checkd$checke$checkf' or equivalant" || echo "Please obtain MacPorts and install $checkb$checkc$checkd$checke" && test $checkf != "" echo "Python Bindings are missing, please install Python"
  	fi
  	if [ "$mythicalPlatform" != "Darwin" ]; then
  		read -n1 -p "Press any key to perform Desktop Message test..."
