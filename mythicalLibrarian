@@ -1537,7 +1537,7 @@ AlternateMoveDir=$AlternateMoveDir
                 	test "$((`MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
         	fi
         	test "`echo $XBMCcomm`" = "OK" && DBTest="***PASSED***" || DBTest="***FAILED***"
- 		echo "MythTV Database Test $DBtest"
+ 		echo "MythTV Database Test $DBTest"
  	fi
 
 
