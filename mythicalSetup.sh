@@ -259,7 +259,7 @@ fi
  
 
 test -f ./movedir && movedir1=`cat ./movedir`
-test "$movedir1" = "" && movedir1="./Episodes"
+test "$movedir1" = "" && movedir1="~/Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 "$movedir1" 2>./movedir
@@ -273,7 +273,7 @@ fi
 
 
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
-test "$AlternateMoveDir1" = "" && AlternateMoveDir1="./Episodes"
+test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
