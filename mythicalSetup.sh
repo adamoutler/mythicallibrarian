@@ -258,10 +258,6 @@ else
 fi
  
 
-
-test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
-
-
 test -f ./movedir && movedir1=`cat ./movedir`
 test "$movedir1" = "" && movedir1="./Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
