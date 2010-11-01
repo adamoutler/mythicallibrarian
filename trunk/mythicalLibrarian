@@ -653,8 +653,8 @@
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
 
- 	echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
-	echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
+ 	test "$SYMLINK" != "Disabled" echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
+	test "$SYMLINK" != "Disabled" echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
@@ -2457,7 +2457,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  
  #If symlink=disabled, remove database entries
-  			test "$SYMLINK" = "Disabled" && DeleteRelevantDatabaseFilesAndPictures && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt"
+  			test test "$mythicalEpiShow" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
