@@ -1536,7 +1536,7 @@ AlternateMoveDir=$AlternateMoveDir
                         test "$((`python -c 'import MythDB.MythTV'`))" != "0" && echo "MythTV PythonBindings are installed properly" || "MythTV PythonBindings are not installed properly " && Python1=1
                 	test "$((`MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
         	fi
-        	test "`echo $PythonBindingsCheck`" = "OK" && DBTest="***PASSED***" || DBTest="***FAILED***"
+        	test "`echo $PythonBindingsCheck`" = "OK" && DBTest="***PASSED***" || DBTest="***FAILED***" && packagecheck="***FAILED***"
  		echo "MythTV Database Test $DBTest"
  	fi
 
