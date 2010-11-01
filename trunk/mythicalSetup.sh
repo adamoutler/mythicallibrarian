@@ -432,7 +432,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		 PrimaryShowDir=`cat ./PrimaryShowDir`
 		fi
  		test "$PrimaryShowDir" = "" && PrimaryShowDir=$PrimaryShowDir1
- 		echo "$PrimaryShowDir">./AlternateShowDir
+ 		echo "$PrimaryShowDir">./PrimaryShowDir
  		echo "PrimaryShowDir=$PrimaryShowDir">>./mythicalPrep
  	 	test "$UserChoosesFolder" = "0" && test ! -d "$PrimaryShowDir" && sudo -u $SUDO_USER mkdir "$PrimaryShowDir"
 
