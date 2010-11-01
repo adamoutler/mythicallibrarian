@@ -259,7 +259,7 @@ fi
  
 
 test -f ./movedir && movedir1=`cat ./movedir`
-test "$movedir1" = "" && movedir1="~/Episodes"
+test "$movedir1" = "" && movedir1="./Episodes"
 echo " #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the folder you would like to move episodes. Default:$movedir1" 10 50 "$movedir1" 2>./movedir
@@ -273,7 +273,7 @@ fi
 
 
 test -f ./AlternateMoveDir && AlternateMoveDir1=`cat ./AlternateMoveDir`
-test "$AlternateMoveDir1" = "" && AlternateMoveDir1="~/Episodes"
+test "$AlternateMoveDir1" = "" && AlternateMoveDir1="./Episodes"
 echo " #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"">> ./mythicalPrep
 if [ "$UserChoosesFolder" = "0" ]; then 
  dialog --inputbox "Enter the name of the alternate folder you would like to move episodes. Default:$AlternateMoveDir1" 10 50 "$AlternateMoveDir1" 2>./AlternateMoveDir
@@ -392,7 +392,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
  		echo " #Primary Movie Dir. mythicalLibrarian will attempt to move to this dir first. No trailing / is accepted eg. '~/videos'">> ./mythicalPrep 		
  		test -f ./PrimaryMovieDir && PrimaryMovieDir1=`cat ./PrimaryMovieDir`
- 		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="~/Movies"
+ 		test "$PrimaryMovieDir1" = "" && PrimaryMovieDir1="./Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Movies Default=$PrimaryMovieDir1" 12 50 "$PrimaryMovieDir1" 2>./PrimaryMovieDir
  		 PrimaryMovieDir=`cat ./PrimaryMovieDir`
@@ -405,7 +405,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
  		echo " #AlternateMoveDir will act as a Seccondary move dir if the primary moive dir fails">> ./mythicalPrep
  		test -f ./AlternateMovieDir && AlternateMovieDir1=`cat ./AlternateMovieDir`
- 		test "$AlternateMovieDir1" = "" && AlternateMovieDir1="~/Movies"
+ 		test "$AlternateMovieDir1" = "" && AlternateMovieDir1="./Movies"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the Alternate folder you would like to move Movies Default=$AlternateMovieDir1" 12 50 "$AlternateMovieDir1" 2>./AlternateMovieDir
  		 AlternateMovieDir=`cat ./AlternateMovieDir`
@@ -426,7 +426,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
 
 		test -f ./PrimaryShowDir && PrimaryShowDir1=`cat ./PrimaryShowDir`
- 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="~/Showings"
+ 		test "$PrimaryShowDir1" = "" && PrimaryShowDir1="./Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the folder you would like to move Shows Default=$PrimaryShowDir1" 12 50 "$PrimaryShowDir1" 2>./PrimaryShowDir
  		 PrimaryShowDir=`cat ./PrimaryShowDir`
@@ -441,7 +441,7 @@ echo " ###Database Settings###">>./mythicalPrep
 
  		echo " #AlternateShowDir will act as a Seccondary move dir if the primary Show dir fails">> ./mythicalPrep
 		test -f ./AlternateShowDir && AlternateShowDir1=`cat ./AlternateShowDir`
- 		test "$AlternateShowDir1" = "" && AlternateShowDir1="~/Showings"
+ 		test "$AlternateShowDir1" = "" && AlternateShowDir1="./Showings"
  		if [ "$UserChoosesFolder" = "0" ]; then 
 		 dialog --inputbox "Enter the name of the Alternate folder you would like to move Shows Default=$AlternateShowDir1" 12 50 "$AlternateShowDir1" 2>./AlternateShowDir
  		 AlternateShowDir=`cat ./AlternateShowDir`
