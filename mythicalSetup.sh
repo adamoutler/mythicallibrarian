@@ -533,8 +533,8 @@ fi
 if [ "$notifications" = "1" ]; then
  echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
  echo "Notify=Enabled" >> ./mythicalPrep
+
 else
- echo " #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled">> ./mythicalPrep
  echo "Notify=Disabled" >> ./mythicalPrep
  echo " #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)">> ./mythicalPrep
  echo "NotifyUserName='$DesktopUserName'" >> ./mythicalPrep
