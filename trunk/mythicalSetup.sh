@@ -254,7 +254,7 @@ if [ "$automode" != "1" ]; then
   test $? = 0 && UserChoosesFolder=1 || UserChoosesFolder=0
  fi
 else
- UserChoosesFolder=0
+ UserChoosesFolder=1
 fi
  
 
