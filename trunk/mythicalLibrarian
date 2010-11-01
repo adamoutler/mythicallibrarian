@@ -1529,12 +1529,12 @@ AlternateMoveDir=$AlternateMoveDir
         	read -n1 -p "Press any key to perform MythTV Database test..."
  		echo ""
 		echo "Performing MythTV Python Bindings database test"
-  		test "$((`MythDataGrabber --Diagnostic=True>/dev/tty`))" = "0" && PythonBindingsCheck="OK"
+  		test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" = "0" && PythonBindingsCheck="OK"
         	if [ "$PythonBindingsCheck" = "OK" ]; then
        	     		echo "MythTV Python Bindings are installed properly" 
 		else
                         test "$((`python -c 'import MythDB.MythTV'`))" != "0" && echo "MythTV PythonBindings are installed properly" || "MythTV PythonBindings are not installed properly " && Python1=1
-                	test "$((`MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
+                	test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
         	fi
         	test "`echo $PythonBindingsCheck`" = "OK" && DBTest="***PASSED***" || DBTest="***FAILED***" && packagecheck="***FAILED***"
  		echo "MythTV Database Test $DBTest"
