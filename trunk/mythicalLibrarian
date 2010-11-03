@@ -1298,7 +1298,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
- 	if [ -f "$mythicalLibrarian"/showtranslations ]; then 
+ 	if [ -f "$mythicalLibrarian"/showtranslations ] && [ "$ShowName" != "" ]; then 
  		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"| sed s/"$ShowName = "/""/g `		 
  		if [ "$showtranslation" != "" ];then 
  			ShowName=$showtranslation
