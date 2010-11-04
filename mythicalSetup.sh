@@ -365,13 +365,13 @@ echo " ###Database Settings###">>./mythicalPrep
 
 
  		echo " #MythTV Backend server: Default=localhost">> ./mythicalPrep	
- 		test -f "/home/mythtv/.mythtv/mysql.txt" && DBHostName1=`grep "DBHostName=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBHostName="/""/g`||DBHostName=="localhost"
+ 		test -f "/home/mythtv/.mythtv/mysql.txt" && DBHostName1=`grep "DBHostName=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBHostName="/""/g`||DBHostName="localhost"
  		test ! -f "./DBHostName" && echo "$DBHostName1">./DBHostName
 	    	dialog --inputbox "Enter your DB Host IP. Default=$DBHostName1" 9 40 "$DBHostName1" 2>./DBHostName
  		DBHostName=`cat ./DBHostName`
  		test "$DBHostName" = "" && DBHostName="$DBHostName1"
  		echo "$DBHostName">./DBHostName
-		echo "DBHostName=$DBHostName=">>./mythicalPrep
+		echo "DBHostName=$DBHostName">>./mythicalPrep
  
 
  		echo " #The Database Pin for the MythTV Database (used in python bindings only)">> ./mythicalPrep	
