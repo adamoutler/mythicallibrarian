@@ -785,7 +785,7 @@
  	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut"
  
  #run the python bindings and output to named pipe
- 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" &
+ 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" 
  	pythonExitStatus=$?
  	test "$pythonExitStatus" != "0" && echo "DATABASE ACCESS ERROR: COULD NOT OBTAIN INFORMATION \n Check DBInfo in mythicalSetup, verify file is mythtv file"
 
@@ -797,9 +797,8 @@
  		echo $var$equals$value
  	done < "$mythicalLibrarian/mythicalDbOut" > /dev/null 2>&1
  
- #GenComSkip
+
  	if [ "$CommercialMarkup" = "Enabled" ]; then
-  
  #Output to initial files
  		printf "%s\n" "${startdata[@]}" >$mythicalLibrarian/markupstart.txt
  		printf "%s\n" "${stopdata[@]}"  >$mythicalLibrarian/markupstop.txt
@@ -826,9 +825,6 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
  #Check for database permissions
  	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
 
- #Check if database contains enough information to put into doover que
-  	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
-
  #disqualify invalid movie airdates
  	test ! -z "$MovieAirDate" && test $MovieAirDate -lt 1900 && MovieAirDate=$null 
 
@@ -846,13 +842,25 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
  	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
  
+ #Check if database contains enough information to put into doover que
+        GoForDoover=0
+        test "${x:0:2}" = "EP" && echo woot
+        test "$EpisodeSubtitle" != "" && GoForDoover=1 
+
+ #Get barebones zap2it series id.  
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
  	
+ #strip needless chars from date
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
+ 
+ #get 4 digit year
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
+ #Determine program type
 	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
- 	test NamingConvention="News" && UseMethod2=1
+ 
+ #If news, bypass Categoric naming convention 1
+	test NamingConvention="News" && UseMethod2=1
   
  	return 0 
  }
@@ -864,8 +872,7 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
  #Check for database permissions
  	test "$ChanID" = "" && echo "%%%NO DATABASE INFORMATION. CHECK LOGIN/PASS OR FILE %%%%%">>$mythicalLibrarian/output.log
 
- #Check if database contains enough information to put into doover que
-  	test "$OriginalAirDate" != "" || test "$EpisodeSubtitle" != "" && GoForDoover=1 || GoForDoover=0
+
 
  #disqualify invalid movie airdates
  	test ! -z "$MovieAirDate" && test $MovieAirDate -lt 1900 && MovieAirDate=$null 
@@ -1029,8 +1036,8 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
 
- if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ $InputTitle != "--BypassPermissionsCheck" ]; then
- 	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SYMLINK" = "MOVE" ]; then
+ if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" -a "$InputSubtitle" = "" -a $InputTitle != "--BypassPermissionsCheck" ]; then
+ 	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
  		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
  		echo -e " ##############################  ERROR  #################################"|tee -a "$mythicalLibrarian"/output.log
@@ -1533,10 +1540,12 @@ AlternateMoveDir=$AlternateMoveDir
         	if [ "$PythonBindingsCheck" = "OK" ]; then
        	     		echo "MythTV Python Bindings are installed properly" 
 		else
-                        test "$((`python -c 'import MythDB.MythTV'`))" != "0" && echo "MythTV PythonBindings are installed properly" || "MythTV PythonBindings are not installed properly " && Python1=1
+                        test "$((`python -c 'import MythDB.MythTV'`))" = "0" && echo "MythTV PythonBindings are installed properly"
+ 			test "$((`python -c 'import MythDB.MythTV'`))" != "0" && "MythTV PythonBindings are not installed properly " && Python1=1
                 	test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
         	fi
-        	test "`echo $PythonBindingsCheck`" = "OK" && DBTest="***PASSED***" || DBTest="***FAILED***" && packagecheck="***FAILED***"
+        	test "$PythonBindingsCheck" = "OK" && DBTest="***PASSED***"
+ 		test "$PythonBindingsCheck" != "OK" && DBTest="***FAILED***" && packagecheck="***FAILED***"
  		echo "MythTV Database Test $DBTest"
  	fi
 
