@@ -470,7 +470,7 @@
  		fi
 	else
 		echo "COULD NOT READ FREE SPACE on \"$3\"" |tee -a "$mythicalLibrarian/output.log"
-		echo "QUICK FIX: chmod -R 775 \"$3\"" |tee -a "$mythicalLibrarian/output.log"
+		echo "QUICK FIX: mkdir \"$3\" ; chmod -R 775 \"$3\"" |tee -a "$mythicalLibrarian/output.log"
 	fi
 
  	return 0
