@@ -717,34 +717,34 @@
  	 	echo "Accessing MythTV DataBase:"
  
  #get Title 
-                test "$InputTitle" = "" && InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"airdate"/""/g|sed -n "2p"`
+                test "$InputTitle" = "" && InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"title"/""/g|sed -n "2p"`
  
  #get Subtitle
-		test "$InputSubtitle" = "" && InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"Subtitle"/""/g|sed -n "2p"`
+		test "$InputSubtitle" = "" && InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"subtitle"/""/g|sed -n "2p"`
 
  #get chanid for recordings to identify program table
- 		ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$FileBaseName';"|sed s/"\/"/""/g|sed -n 2p|sed s/"chanid"/""/g|sed s/" "/""/g`
+ 		ChanID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select chanid from recorded where basename like '$InputFileBasename';"|sed s/"\/"/""/g|sed -n 2p|sed s/"chanid"/""/g|sed s/" "/""/g`
   
  #get ProgramID from recorded to identify program
- 		ProgramID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select programid from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
+ 		ProgramID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select programid from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"programid"/""/g`
  
  #Get zap2it series id from basename to identify program
- 		Zap2itSeriesID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select seriesid from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"seriesid"/""/g`
+ 		Zap2itSeriesID=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select seriesid from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"seriesid"/""/g`
  
  #Get Plot from basename to identify program
-  		Plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
+  		Plot=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select description from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"description"/""/g`
  
  #Get rating from basename to identify program
- 		Stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"Stars"/""/g`
+ 		Stars=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select stars from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"Stars"/""/g`
 
  #get show start time to identify program ----future development
- 		ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
+ 		ShowStartTime=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select starttime from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"starttime"/""/g`
  
  #get category from recorded to identify program table -----future development
- 		ShowCategory=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select category from recorded where basename like '$FileBaseName' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"category"/""/g`
+ 		ShowCategory=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select category from recorded where basename like '$InputFileBasename' ; " |sed s/"\/"/""/g|sed -n "2p"|sed s/"category"/""/g`
  
  #get original air date for tv shows
- 		OriginalAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select originalairdate from recorded where basename like '$FileBaseName' ; "|sed s/"\/"/""/g|sed -n "2p"|sed s/"originalairdate"/""/g`
+ 		OriginalAirDate=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select originalairdate from recorded where basename like '$InputFileBasename' ; "|sed s/"\/"/""/g|sed -n "2p"|sed s/"originalairdate"/""/g`
  		test "$OriginalAirDate" = "0000-00-00" && OriginalAirDate="$null"
  
  #get DataType
