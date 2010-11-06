@@ -391,7 +391,12 @@
  else
  	testedmethod1=0
  fi
- test "$EventMonthDay" != "" && test "$EventYear" -gt "1900" && test "$EventMonthDay" -gt "0" && testedmethod1=1 || testedmethod1=0
+ 
+ if [ "$EventMonthDay" != "" -a "$EventYear" -gt "1900" -a "$EventMonthDay" -gt "0" ]; then
+ 	testedmethod1=1 
+ else 
+ 	testedmethod1=0
+ fi
  
  #Method2
  if [ "$testedmethod1" != "1" ]; then
@@ -450,7 +455,7 @@
  						test ! -w "$3" && echo "QUICK FIX: sudo chmod a+w \"$3\"" |tee -a "$mythicalLibrarian/output.log"
  	       				echo "QUICK FIX: sudo chown $MyUserName \"$3\"" |tee -a "$mythicalLibrarian/output.log"
 		 			fi
-		 		elif [ -z "$2" ] || [ $1 -ge $2 ]; then
+		 		elif [ -z "$2" -o $1 -ge $2 ]; then
 		 		 	TMoveDirWritable=0
 			 		echo "INSUFFICIENT FREE SPACE ON $3" |tee -a "$mythicalLibrarian/output.log"
  					echo "QUICK FIX: Remove unnecessary files" |tee -a "$mythicalLibrarian/output.log"
@@ -464,8 +469,8 @@
 			echo "QUICK FIX: chmod -R 775 \"$InputPath\"" |tee -a "$mythicalLibrarian/output.log"
  		fi
 	else
-		echo "COULD NOT READ FREE SPACE on \"$originaldirname\"" |tee -a "$mythicalLibrarian/output.log"
-		echo "QUICK FIX: chmod -R 775 \"$originaldirname\"" |tee -a "$mythicalLibrarian/output.log"
+		echo "COULD NOT READ FREE SPACE on \"$3\"" |tee -a "$mythicalLibrarian/output.log"
+		echo "QUICK FIX: chmod -R 775 \"$3\"" |tee -a "$mythicalLibrarian/output.log"
 	fi
 
  	return 0
@@ -516,7 +521,7 @@
  XBMCAutomate () {
  #Send notification to XBMC, Update Library, Clean Library
  
- if [ "$XBMCNotify" = "Enabled" ] || [ "$XBMCUpdate" = "Enabled" ] || [ "$XBMCClean" = "Enabled" ]; then
+ if [ "$XBMCNotify" = "Enabled" -o "$XBMCUpdate" = "Enabled" -o "$XBMCClean" = "Enabled" ]; then
   	for XBMCIP in ${XBMCIPs[@]}
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
@@ -856,8 +861,10 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
  #get 4 digit year
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
- #Determine program type
-	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
+ #predefined naming conventions
+	 if [ "$ShowCategory" = "Sports event" -o "$ShowCategory" = "News" -o "$ShowCategory" = "Newsmagazine" ]; then
+         	NamingConvention=$ShowCategory
+ 	 fi
  
  #If news, bypass Categoric naming convention 1
 	test NamingConvention="News" && UseMethod2=1
@@ -897,7 +904,9 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
-	test "$ShowCategory" = "Sports event" || test "$ShowCategory" = "News" || test "$ShowCategory" = "Newsmagazine" && NamingConvention=$ShowCategory
+	if [ "$ShowCategory" = "Sports event" -o "$ShowCategory" = "News" -o "$ShowCategory" = "Newsmagazine" ]; then
+        	NamingConvention=$ShowCategory
+        fi 
  	test NamingConvention="News" && UseMethod2=1
   
  	return 0 
