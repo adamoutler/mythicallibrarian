@@ -658,8 +658,8 @@
  	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
 
- 	test "$SYMLINK" != "Disabled" echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
-	test "$SYMLINK" != "Disabled" echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
+ 	test "$SYMLINK" != "Disabled" && echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
+	test "$SYMLINK" != "Disabled" && echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
