@@ -787,10 +787,10 @@
  
  	echo "Attemting to pull database information on $InputPath"
  #make a named pipe for database output
- 	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut" &
+ 	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut" 
  
  #run the python bindings and output to named pipe
- 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" 
+ 	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" &
  	pythonExitStatus=$?
  	test "$pythonExitStatus" != "0" && echo "DATABASE ACCESS ERROR: COULD NOT OBTAIN INFORMATION \n Check DBInfo in mythicalSetup, verify file is mythtv file"
 
