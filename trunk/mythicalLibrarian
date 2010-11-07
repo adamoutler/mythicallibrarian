@@ -787,7 +787,7 @@
  
  	echo "Attemting to pull database information on $InputPath"
  #make a named pipe for database output
- 	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut" && echo " \n" > "$mythicalLibrarian/mythicalDbOut"
+ 	test ! -p "$mythicalLibrarian/mythicalDbOut" && mkfifo "$mythicalLibrarian/mythicalDbOut" &
  
  #run the python bindings and output to named pipe
  	/usr/local/bin/MythDataGrabber --filename="$InputFileBasename" --DBPin="$DBPin" --DBHostName="$DBHostName" --DBName="$MySQLMythDb" --DBUserName="$MySQLuser" --DBPassword="$MySQLpass"> "$mythicalLibrarian/mythicalDbOut" 
