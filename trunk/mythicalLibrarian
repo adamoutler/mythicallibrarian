@@ -772,11 +772,6 @@
  			GenComSkip
  		fi
  		return 0
- 
-	elif [ "$PythonBindings" = "True" ]; then
- 		echo "" 
-   		####This is the place for the python bindings code
- 		return 0 
  	fi
 
  }
@@ -918,8 +913,8 @@ MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category;
  DeleteRelevantDatabaseFilesAndPictures () {
  
  #Make sure we got input arguments and file is valid
- 	if [ ! -f "$InputPath" ]; then
- 	
+ 	if [ -s "$InputPath" ]; then
+ 	        echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
   		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
@@ -2475,6 +2470,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  
  #If symlink=disabled, remove database entries
+                        echo "--DEBUG TESTING mythicalEpiShow = $mythicalEpiShow">>"$mythicalLibrarian"/output.log
   			test "$mythicalEpiShow" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
  
  #Send notification of completion and exit
