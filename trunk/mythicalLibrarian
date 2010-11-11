@@ -924,8 +924,8 @@
  	if [ -s "$InputPath" ]; then
  	        echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
  #Remove recording entry from mysql database
- 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES">>"$mythicalLibrarian"/output.log
-  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"
+ 		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"|tee -a "$mythicalLibrarian"/output.log
+ 
 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
  
  #Remove thumbnails
@@ -943,7 +943,7 @@ matchTvDbZap2itIDToOurZap2itID(){
 	while read line
 	do
                 (( ++ serieslinenumber ))
-		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$Zap2ITCheck $line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
+		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$Zap2ITCheck $line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`" |tee -a "$mythicalLibrarian"/output.log
                 Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
 
 		if [ "$Zap2ItTest" = "$Zap2ItCheck" ]; then
@@ -2180,7 +2180,7 @@ AlternateMoveDir=$AlternateMoveDir
 	if [ -n "$MatchedShowName" ]; then
 echo woot
  		DownloadSeriesDataFromTvDbAndSetSeriesID
- 		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee "$mythicalLibrarian"/output.log
+ 		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
 		MatchedShowName=$NewShowName
 		MatchedSeriesID=$SeriesID
 		MatchedSeriesLineNumber=$serieslinenumber
