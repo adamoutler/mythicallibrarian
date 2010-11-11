@@ -806,13 +806,21 @@
  		GenComSkip
  	fi
  
- #Import mythtv values into mythicalLibrarian values
+ #Import mythtv values into mythicalLibrarian values, don't clobber title, subtitle.
 	test "$InputTitle" = "" && InputTitle=$title
 	test "$InputSubtitle" = "" && InputSubtitle=$subtitle; 
-
-MovieAirDate=$airdate; OriginalAirDate=$originalairdate; ShowCategory=$category; Stars=$stars; Plot=$description; Zap2itSeriesID=$seriesid; ProgramID=$programid; ChanID=$chanid; ShowStartTime=$starttime
+ #redefine database var names into mythicalLibrarian var names
+        MovieAirDate=$airdate
+        OriginalAirDate=$originalairdate
+        ShowCategory=$category
+        Stars=$stars
+        Plot=$description
+        Zap2itSeriesID=$seriesid
+        ProgramID=$programid
+        ChanID=$chanid
+        ShowStartTime=$starttime
  
- #cleanup 
+ #cleanup, remove the fifo named pipe
  	test -f "$mythicalLibrarian/mythicalDbOut" && rm "$mythicalLibrarian/mythicalDbOut" 
  	
  }
