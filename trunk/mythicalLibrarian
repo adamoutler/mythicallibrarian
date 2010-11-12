@@ -935,39 +935,73 @@
  }
 
 
-#####MATCH TVDB TO ZAP2ITID#####
-matchTvDbZap2itIDToOurZap2itID(){
+#####USE AbsoluteEpisodeNumber TO SET SXX AND EXX#####
+setSxxAndExxFromAbsoluteEpisodeNumber() {
+#if line match is obtained, then gather new episode name, Sxx and Exx
+
+	EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt`
+
+#gather series and episode names from files created earlier.
+	Exx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".E.txt`
+	Sxx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt`
+	test $Sxx != "" && SeasonNumber=$Sxx
+
+#Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
+	test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
+	test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
+	echo "EPISODE:$EpisodeSubtitle ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
+}
+
+
+#####MATCH ZAP2ITID TO TVDB#####
+attemptToSearchForZap2itIDAndSetSeriesID(){
         Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
         serieslinenumber=0
 #loop through all show names received by TheTvDb and match Zap2it ID.
 	while read line
 	do
                 (( ++ serieslinenumber ))
-		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$Zap2ITCheck $line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`" |tee -a "$mythicalLibrarian"/output.log
+		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$Zap2ITCheck $line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
                 Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
-
 		if [ "$Zap2ItTest" = "$Zap2ItCheck" ]; then
+
 #Mark matched Zap2it ID 
- 
                 	MatchedShowName=1
 			break
 		fi
-
 	done < "$mythicalLibrarian"/zap2it.txt
 }
 
 
+ #####AIRDATE MATCH#####
+ getAbsoluteEpisodeNumberWithOriginalAirdate(){
+ 		AbsolouteEpisodeNumber=0
+ 		AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
+ #Account for original series airdate
+ 		(( --AbsolouteEpisodeNumber ))
+ #Account for original show airdate = first air date
+ 		test "$AbsolouteEpisodeNumber" = "0" && ((++AbsolouteEpisodeNumber))
+ 		echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
+ }
+ 
+ 
+ ######FUZZY LOGIC EPISODE MATCH#####
+ getAbsoluteEpisodeNumberWithFuzzyLogic(){
+ 	echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+ 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 	echo FUZZY LOGIC REPORTS ABSOLOUTE EPISODE: $AbsolouteEpisodeNumber
+ }
 
+ 
+ #####SEARCH THETVDB AND CREATE DATA FILES#####
+ searchTheTvDbAndReturnTxtFileLists(){
 
-#####SEARCH THETVDB AND CREATE DATA FILES#####
-searchTheTvDbAndReturnTxtFileLists(){
-
-#Search TheTvDb and return an XML file with results
-	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
-
-#Separate the XML into textual DBs conatining SeriesID, ShowName and Zap2it IDs
-	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
-	cat "$mythicalLibrarian/working.xml" | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
+ #Search TheTvDb and return an XML file with results
+ 	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
+ 
+ #Separate the XML into textual DBs conatining SeriesID, ShowName and Zap2it IDs
+ 	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
+ 	cat "$mythicalLibrarian/working.xml" | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
  	 
  
  #parse the XML for shows with Zap2ItIDs
@@ -1088,6 +1122,24 @@ searchTheTvDbAndReturnTxtFileLists(){
  	exit 0 
  }
 
+ updateRunningFuzzyLogicErrorCount(){
+ #additional logging for statistical purposes
+	test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
+	FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
+	(( ++FuzzyLogicError ))
+        rm -f "$mythicalLibrarian"/FuzzyLogicError.log
+	echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
+ }
+
+ updateRunningTotalMatchesCount() {
+ #additional logging for statistical purposes
+	test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
+	FuzzyLogicMatches="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
+	(( ++FuzzyLogicMatches ))
+	rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
+	echo "$FuzzyLogicMatches">"$mythicalLibrarian"/TotalEpisodeMatches.log
+ }
+
  #Function DoMythTVPermissionsCheck will check to see if the file is 
  #file is owned by mythtv and cause mythicalLibrarian to exit with a
  #descriptive message if certain criteria are met.
@@ -1162,6 +1214,12 @@ searchTheTvDbAndReturnTxtFileLists(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb zap2it id %%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+	echo -e "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%% \n CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
+        DEBUGMODE=Enabled
+
+
+
+
  }
  InvalidFileErrorMessage(){
  	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
@@ -2160,129 +2218,60 @@ AlternateMoveDir=$AlternateMoveDir
 
   
  
- #####SEARCH FOR SHOW NAME AND GET SID #####
+ #####SEARCH FOR SHOW AND BUILD INFORMATION#####
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle">>"$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
- 
- #DEBUG START
-
+        searchTheTvDbAndReturnTxtFileLists  
 
 #download series info for show, parse into temporary text db- sid.txt shn.txt
+        attemptToSearchForZap2itIDAndSetSeriesID
 
-
-
-
-
-        searchTheTvDbAndReturnTxtFileLists  
-        matchTvDbZap2itIDToOurZap2itID
-
-	if [ -n "$MatchedShowName" ]; then
-echo woot
- 		DownloadSeriesDataFromTvDbAndSetSeriesID
+	if [ "$MatchedShowName" = "1" ]; then
+ 		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
-		MatchedShowName=$NewShowName
-		MatchedSeriesID=$SeriesID
-		MatchedSeriesLineNumber=$serieslinenumber
         else
 #when no match is found:
 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
 #Use fuzzy logic to make the best match of the show name as a last resort
 	 	MatchSeriesTitleWithFuzzyLogic
-		echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $SeriesID"|tee -a "$mythicalLibrarian"/output.log
-		DownloadSeriesDataFromTvDbAndSetSeriesID
+		downloadInfoAboutMatchedTitle
 	fi
 elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$InputSubtitle" != "" ]; then
 
 #If no zap2it ID is present, then use fuzzy logic to do show tranlation
 	MatchSeriesTitleWithFuzzyLogic
-	echo "FUZZY LOGIC SHOW NAME: $NewShowName ID: $SeriesID"
-	DownloadSeriesDataFromTvDbAndSetSeriesID
-
-        if [ -z "$MovieAirDate" ]; then
-	       NewShowName=$InputTitle
-        fi
+	downloadInfoAboutMatchedTitle
 fi
 
 
 
 
-
-
-if [ "$SeriesID" != "" ] ; then
-
-
 #####PROCESS EPISODE INFORMATION##### 	
+if [ "$SeriesID" != "" ] ; then
 #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
+	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
 
-
-##AIRDATE MATCH##
-	if [ "$ChanID" != "" ]; then
-		if [ "$OriginalAirDate" != "" ] ; then
-			AbsolouteEpisodeNumber=0
-			AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
-#Account for original series airdate
-			((--AbsolouteEpisodeNumber))
-#Account for original show airdate = first air date
-			test "$AbsolouteEpisodeNumber" = "0" && ((++AbsolouteEpisodeNumber))
-			echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"
-		fi
-#Remove no match found, "-1" = ""
-		test "$AbsolouteEpisodeNumber" = "-1" && AbsolouteEpisodeNumber=""
-		test
-	fi
-
-	
-##FUZZY LOGIC SUBTITLE MATCH##
-	if [ "$AbsolouteEpisodeNumber" = "" ]; then
-		AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
-		echo "COULD NOT MATCH AIRDATE. FUZZY LOGIC Exx NUMBER:$AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
-
-	else
+ #verify our absolute episode number from airdate with fuzzy logic
+	if [ "$AbsolouteEpisodeNumber" != "" ]; then
 		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
-		AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
+ 		getAbsoluteEpisodeNumberWithFuzzyLogic
 		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
 			fuzzyLogicDoesNotJiveMessage
-echo "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%%"
-			echo "CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
-			DEBUGMODE=Enabled
-			test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
-			FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
-			(( ++FuzzyLogicError ))
-			rm -f "$mythicalLibrarian"/FuzzyLogicError.log
-			echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
-			echo FUZZY LOGIC REPORTS: $AbsolouteEpisodeNumber
+ 			updateRunningFuzzyLogicErrorCount
 		fi
 		AbsolouteEpisodeNumber=$AbsolouteEpisodeNumberBackup
+	else
 
+ #Get our absolute episode number with fuzzy logic
+ 		getAbsoluteEpisodeNumberWithFuzzyLogic
 	fi
-		test ! -f "$mythicalLibrarian"/TotalEpisodeMatches.log && echo "0">"$mythicalLibrarian"/TotalEpisodeMatches.log
-		FuzzyLogicMatches="`cat "$mythicalLibrarian"/TotalEpisodeMatches.log`"
-		(( ++FuzzyLogicMatches ))
-		rm -f "$mythicalLibrarian"/TotalEpisodeMatches.log
-		echo "$FuzzyLogicMatches">"$mythicalLibrarian"/TotalEpisodeMatches.log
-		echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
 
+#Statistical Fuzzy Logic monitoring
+        updateRunningTotalMatchesCount
+	echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
 
-
-
-
-
-#if line match is obtained, then gather new episode name, Sxx and Exx
-	if [ "$AbsolouteEpisodeNumber" !=  ""  ]; then
-		EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt`
-
-#gather series and episode names from files created earlier.
-		Exx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".E.txt`
-		Sxx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt`
-		test $Sxx != "" && SeasonNumber=$Sxx
-
-#Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
-		test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
-		test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
-	fi
-	echo "EPISODE:$EpisodeSubtitle ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
 
 #if series id is not obtained send failure message
 elif [ -z "$SeriesID" ]; then
@@ -2294,30 +2283,8 @@ elif [ -z "$SeriesID" ]; then
 fi
 
 
-
-
-
-
-
-####DEBUG END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
+ test "$AbsolouteEpisodeNumber" !=  "" && thensetSxxAndExxFromAbsoluteEpisodeNumber
 
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
