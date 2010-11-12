@@ -2219,37 +2219,36 @@ AlternateMoveDir=$AlternateMoveDir
   
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
- if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
+ if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$Zap2itSeriesID" != "" ]; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
         searchTheTvDbAndReturnTxtFileLists  
 
-#download series info for show, parse into temporary text db- sid.txt shn.txt
+ #download series info for show, parse into temporary text db- sid.txt shn.txt
         attemptToSearchForZap2itIDAndSetSeriesID
-
-	if [ "$MatchedShowName" = "1" ]; then
+ 
+ 	if [ "$MatchedShowName" = "1" ]; then
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
-#when no match is found:
-		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
-#Use fuzzy logic to make the best match of the show name as a last resort
-	 	MatchSeriesTitleWithFuzzyLogic
-		downloadInfoAboutMatchedTitle
-	fi
-elif [ "Zap2itSeriesID" != "" ] && [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$InputSubtitle" != "" ]; then
-
-#If no zap2it ID is present, then use fuzzy logic to do show tranlation
-	MatchSeriesTitleWithFuzzyLogic
-	downloadInfoAboutMatchedTitle
-fi
-
+ #when no match is found use fuzzy logic to make the best match of the show name as a last resort
+ 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
+ 	 	MatchSeriesTitleWithFuzzyLogic
+ 		downloadInfoAboutMatchedTitle
+ 	fi
+ elif [ "$InputSubtitle" != "" ]; then
+ 
+ #If no zap2it ID is present, then just use fuzzy logic to get seriesid 
+ 	MatchSeriesTitleWithFuzzyLogic
+ 	downloadInfoAboutMatchedTitle
+ fi
 
 
 
-#####PROCESS EPISODE INFORMATION##### 	
-if [ "$SeriesID" != "" ] ; then
-#If info was pulled from database, then plug name into newshowname	
+
+ #####PROCESS EPISODE INFORMATION##### 	
+ if [ "$SeriesID" != "" ] ; then
+ #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
 
@@ -2268,20 +2267,18 @@ if [ "$SeriesID" != "" ] ; then
  		getAbsoluteEpisodeNumberWithFuzzyLogic
 	fi
 
-#Statistical Fuzzy Logic monitoring
+ #Statistical Fuzzy Logic monitoring
         updateRunningTotalMatchesCount
-	echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
-
-
-#if series id is not obtained send failure message
-elif [ -z "$SeriesID" ]; then
-	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
+ 	echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
+ 
+ #if series id is not obtained send failure message
+ elif [ -z "$SeriesID" ]; then
+ 	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
 	if [ "$Database" = "Enabled" ]; then
-		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
-		Exx=$null
-	fi
-fi
-
+ 		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
+ 		Exx=$null
+ 	fi
+ fi
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
  test "$AbsolouteEpisodeNumber" !=  "" && setSxxAndExxFromAbsoluteEpisodeNumber
@@ -2297,27 +2294,24 @@ fi
  	 SYMLINK=LINK
  fi 
  
+
+ ##TEST FILESYSTEM##
  #Get file size and free space
  MoveFileSize=`stat "$InputPath"`|awk '{print $1}'
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
-
  if [ "$Database" = "Enabled" ]; then
  	PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
  	AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
  	PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'`|| PrimaryShowDirFreeSpace=0
  	AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
  fi
- 
-
- 
  #Call permissions check from function.  Write small file, delete, get results
  checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
  MoveDirWritable=$TMoveDirWritable
  checkPermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
  AlternateMoveDirWritable=$TMoveDirWritable
- 
  if [ "$Database" = "Enabled" ]; then
  	checkPermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
  	PrimaryMovieDirWritable=$TMoveDirWritable
@@ -2328,7 +2322,6 @@ fi
  	checkPermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
  	AlternateShowDirWritable=$TMoveDirWritable
  fi
-
  OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
  WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
  checkPermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
@@ -2462,7 +2455,7 @@ fi
  test "$InputPath" = "testfile.ext" && test "$Exx" = "0" && echo 'FUZZY FAILURE' && exit 1
  test "$InputPath" = "testfile.ext" && DoTestFileExit
 
- #If the user is not mythtv, then exit, display a clear status message.
+ #If the user is not mythtv and the settings are set for mythtv only, then exit, display a clear status message.
  DoMythTVPermissionsCheck
 
 
