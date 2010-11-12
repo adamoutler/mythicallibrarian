@@ -2220,7 +2220,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] ; then
- 	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle">>"$mythicalLibrarian"/output.log
+ 	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
         searchTheTvDbAndReturnTxtFileLists  
 
