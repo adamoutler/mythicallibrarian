@@ -2375,7 +2375,7 @@ AlternateMoveDir=$AlternateMoveDir
  
 
  ######PRE-NAMING CHECKS#####
- if [ "$Exx" = "" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
+ if [ "$Exx" = "" ] && [ ProgramIDType="Series With Episode Data" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
  	if [ "$ShowStopper" = "Enabled" ]; then 
 
 
@@ -2460,7 +2460,7 @@ AlternateMoveDir=$AlternateMoveDir
 
 
  #If the show is generic programming, this is the best mythicalLibrarian can do. 
- test  "$mythicalLibrarianProgramIDCheck" = "SH" && DisplayShowWarning
+ test  "$mythicalLibrarianProgramIDCheck" = "SH" && test $ProgramIDType = "Series With Episode Data" && DisplayShowWarning
 
 
 
