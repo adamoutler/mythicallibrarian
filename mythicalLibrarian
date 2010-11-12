@@ -2284,7 +2284,7 @@ fi
 
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
- test "$AbsolouteEpisodeNumber" !=  "" && thensetSxxAndExxFromAbsoluteEpisodeNumber
+ test "$AbsolouteEpisodeNumber" !=  "" && setSxxAndExxFromAbsoluteEpisodeNumber
 
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
