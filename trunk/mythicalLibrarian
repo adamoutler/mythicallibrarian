@@ -1022,7 +1022,7 @@ attemptToSearchForZap2itIDAndSetSeriesID(){
 
  #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
  #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
- DownloadAndParse () {
+ downloadInfoAboutMatchedTitle () {
  #Get the seriesid based on the showname
  	 SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
  	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
