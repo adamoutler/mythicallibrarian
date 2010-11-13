@@ -241,7 +241,7 @@ test "$?" != "0" && echo "please select a version" && exit 1
 
  
 if [ "$mythtv" = "1" ]; then
- dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  UseOriginalDir=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n  XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
+ dialog --title "Use Defaults" --yesno "mythicalLibrarian can specify defaults which will be acceptable for aproximately 96.382% of users.\n\nWould you like to use these settings? \n\n  TargetPathIsInputPath=Enabled\n  Database=1\n  GuideDataType=SchedulesDirect\n  SYMLINK=MOVE\n  XBMCUpdate=Enabled\n  XBMCNotify=Enabled\n  ShowStopper=Disabled\n  DesktopNotificationName=$SUDO_USER\n  UserRunningmythicalLibrarian=mythtv" 25 50
  test $? = 0 && automode=1 || automode=0
 fi
 
@@ -283,10 +283,10 @@ fi
  echo $AlternateMoveDir > ./AlternateMoveDir
  echo "AlternateMoveDir=$AlternateMoveDir">> ./mythicalPrep
  test "$UserChoosesFolder" = "0" && test ! -d "$AlternateMoveDir" && sudo -u $SUDO_USER mkdir "$AlternateMoveDir"
-echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
-echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
+echo " #If TargetPathIsInputPath is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.">> ./mythicalPrep
+echo " #TargetPathIsInputPath will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
 
-test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./mythicalPrep || echo "UseOriginalDir=Enabled">>./mythicalPrep
+test "$UserChoosesFolder" = "0" && echo "TargetPathIsInputPath=Disabled">>./mythicalPrep || echo "TargetPathIsInputPath=Enabled">>./mythicalPrep
 
 echo " #Internet access Timeout in seconds: Default Timeout=50 (seconds)">> ./mythicalPrep
 
