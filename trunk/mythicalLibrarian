@@ -120,8 +120,6 @@
  #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.
  #UseOriginalDir will separate generic shows from episodes and movies. Enabled|Disabled
  UseOriginalDir=Enabled
- #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled
- UseShowNameAsDir=Enabled
  #Internet access Timeout in seconds: Default Timeout=50 (seconds)
  Timeout=50
  #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='84000' (1 day)
@@ -1303,7 +1301,7 @@ attemptToSearchForZap2itIDAndSetSeriesID(){
  #####MAKE FOLDER#####
 
  #If specified, make $movedir = $movedir/show name
- 	test "$UseShowNameAsDir" = "Enabled" && MoveDir=`echo "$MoveDir"/"$NewShowName"`
+ 	MoveDir=`echo "$MoveDir"/"$NewShowName"`
  
  #Make the Show folder if it does not exist
  	if [ ! -d "$MoveDir" ]; then
@@ -2337,7 +2335,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "JOB: mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'"
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
- 	echo "MOVE DIR:$MoveDir- USING SHOWNAME AS FOLDER:$UseShowNameAsDir-">>"$mythicalLibrarian"/output.log
+ 	echo "MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
@@ -2389,7 +2387,6 @@ AlternateMoveDir=$AlternateMoveDir
  
  		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
  #change the show to a Generic type
-   		mythicalLibrarianProgramIDCheck=SH
 		NewShowName=$SafeShowName
  		DisplayEpiShowMessage 
  	fi
@@ -2460,7 +2457,7 @@ AlternateMoveDir=$AlternateMoveDir
 
 
  #If the show is generic programming, this is the best mythicalLibrarian can do. 
- test  "$mythicalLibrarianProgramIDCheck" = "SH" && test $ProgramIDType = "Series With Episode Data" && DisplayShowWarning
+ test  "$mythicalLibrarianProgramIDCheck" = "SH" && DisplayShowWarning
 
 
 
