@@ -117,9 +117,9 @@
  MoveDir="/home/mythtv/Episodes"  #<------THIS VALUE MUST BE SET-------
  #AlternateMoveDir will act as a seccondary MoveDir if the primary MoveDir fails.  No trailing / is accepted eg. "~/videos"
  AlternateMoveDir=/home/mythtv/Episodes
- #If UseOriginalDir is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.
- #UseOriginalDir will separate generic shows from episodes and movies. Enabled|Disabled
- UseOriginalDir=Enabled
+ #If TargetPathIsInputPath is Enabled, original dir will override MoveDir.  Useful for multiple recording dirs.
+ #TargetPathIsInputPath will separate generic shows from episodes and movies. Enabled|Disabled
+ TargetPathIsInputPath=Enabled
  #Internet access Timeout in seconds: Default Timeout=50 (seconds)
  Timeout=50
  #Update database time in secconds, Longer duration means faster processing time and less strain on TheTvDb. Default='84000' (1 day)
@@ -1337,11 +1337,11 @@ attemptToSearchForZap2itIDAndSetSeriesID(){
 
 
  #####USE ORIGINAL DIR#####
- #If UseOriginalDir is set, then this changes movedir to original dir.
+ #If TargetPathIsInputPath is set, then this changes movedir to original dir.
 PrimaryMovieDir=$PrimaryMovieDir
 AlternateMoveDir=$AlternateMoveDir
 
- UseOriginalDir () {
+ setTargetFolderAsInputPathFolder () {
  #Set originaldir name if none was supplied
   	 test "$originaldirname" = "./" && originaldirname=$(pwd)
    	 test "$originaldirname" = "." && originaldirname=$(pwd)        
@@ -1682,9 +1682,10 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "Testing file system permissions"
 
 
- 	test "$UseOriginalDir" = "Enabled" && echo "UseOriginalDir is selected."
-  	test "$UseOriginalDir" = "Enabled" && echo "Testing with current folder"
-	test "$UseOriginalDir" = "Enabled" && UseOriginalDir
+ 	if [ "$TargetPathIsInputPath" = "Enabled" ]; then
+ 		echo "TargetPathIsInputPath is selected. Testing with current folder"
+ 	        setTargetFolderAsInputPathFolder
+        fi
 
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
@@ -2209,8 +2210,8 @@ AlternateMoveDir=$AlternateMoveDir
  DoMaintenance
 
 
- #Setup paths if useoriginaldir is active.
- test "$UseOriginalDir" = "Enabled" && UseOriginalDir
+ #Setup paths if TargetPathIsInputPath is active.
+ test "$TargetPathIsInputPath" = "Enabled" && setTargetFolderAsInputPathFolder
  
 
 
@@ -2337,7 +2338,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
  	echo "MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
- 	echo "USE ORIGINAL DIR:$UseOriginalDir NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
+ 	echo "USE ORIGINAL DIR:$TargetPathIsInputPath NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
