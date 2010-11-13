@@ -287,9 +287,7 @@ echo " #If UseOriginalDir is Enabled, original dir will override MoveDir.  Usefu
 echo " #UseOriginalDir will separate episodes from movies and shows. Enabled|Disabled">> ./mythicalPrep
 
 test "$UserChoosesFolder" = "0" && echo "UseOriginalDir=Disabled">>./mythicalPrep || echo "UseOriginalDir=Enabled">>./mythicalPrep
-echo " #When Enabled, mythicalLibrarian will move the file to a folder of the same name as the show. This is not affected by UseOriginalDir. Enabled|Disabled">> ./mythicalPrep
 
-echo "UseShowNameAsDir=Enabled">>./mythicalPrep
 echo " #Internet access Timeout in seconds: Default Timeout=50 (seconds)">> ./mythicalPrep
 
 echo "Timeout=50">>./mythicalPrep
