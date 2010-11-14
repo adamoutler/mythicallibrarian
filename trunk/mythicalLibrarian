@@ -363,7 +363,12 @@
  	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
  		Exx="Movie"
  		MoveDir="$PrimaryMovieDir"
-  		ShowFileName=`echo "$NewShowName ($MovieAirDate)"` 
+  		if [ "$MovieAirDate" != "" ]; then
+                	ShowFileName="$NewShowName ($MovieAirDate)"
+                else
+                        ShowFileName="$NewShowName"
+                fi
+                
 	
  #Format generic Shows
  	else
