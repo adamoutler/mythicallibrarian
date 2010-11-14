@@ -952,7 +952,8 @@ setSxxAndExxFromAbsoluteEpisodeNumber() {
 #Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
 	test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
 	test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
-	echo "EPISODE:$EpisodeSubtitle ABSOLUTE NUMBER:$AbsolouteEpisodeNumber" $Sxx$Exx
+	echo "EPISODE:$EpisodeSubtitle ABSOLUTE NUMBER:$AbsolouteEpisodeNumber $Sxx$Exx  
+   CONFIDENCE RATING : $ConfidenceRating"|tee -a "$mythicalLibrarian/output.log"
 }
 
 
@@ -2223,25 +2224,29 @@ AlternateMoveDir=$AlternateMoveDir
   
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
+ ConfidenceRating=0
  if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$Zap2itSeriesID" != "" ]; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
         searchTheTvDbAndReturnTxtFileLists  
 
  #download series info for show, parse into temporary text db- sid.txt shn.txt
+
+
         attemptToSearchForZap2itIDAndSetSeriesID
- 
+        ((--ConfidenceRating))
  	if [ "$MatchedShowName" = "1" ]; then
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
+                ((--ConfidenceRating))
  #when no match is found use fuzzy logic to make the best match of the show name as a last resort
  		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
  	 	MatchSeriesTitleWithFuzzyLogic
  		downloadInfoAboutMatchedTitle
  	fi
  elif [ "$InputSubtitle" != "" ]; then
- 
+        ((--ConfidenceRating))
  #If no zap2it ID is present, then just use fuzzy logic to get seriesid 
  	MatchSeriesTitleWithFuzzyLogic
  	downloadInfoAboutMatchedTitle
@@ -2255,7 +2260,7 @@ AlternateMoveDir=$AlternateMoveDir
  #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
-
+        ((--ConfidenceRating))
  #verify our absolute episode number from airdate with fuzzy logic
 	if [ "$AbsolouteEpisodeNumber" != "" ]; then
 		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
@@ -2269,6 +2274,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  #Get our absolute episode number with fuzzy logic
  		getAbsoluteEpisodeNumberWithFuzzyLogic
+                ((--ConfidenceRating))
 	fi
 
  #Statistical Fuzzy Logic monitoring
@@ -2341,7 +2347,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "JOB: mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'"
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
- 	echo "MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log
+ 	echo "CONFIDENCE RATING:$ConfidenceRating- MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log    
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$TargetPathIsInputPath NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
