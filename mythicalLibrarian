@@ -2235,13 +2235,13 @@ AlternateMoveDir=$AlternateMoveDir
 
         attemptToSearchForZap2itIDAndSetSeriesID
         ((--ConfidenceRating))
-        ConfidenceReasoning=ConfidenceReasoning+" Attempted Match On Zap2itID:"
+        ConfidenceReasoning=$ConfidenceReasoning+" Attempted Match On Zap2itID:"
  	if [ "$MatchedShowName" = "1" ]; then
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
                 ((--ConfidenceRating))
-                ConfidenceReasoning=ConfidenceReasoning+"Failed; Attemted match on Fuzzy Logic:"
+                ConfidenceReasoning=$ConfidenceReasoning+"Failed; Attemted match on Fuzzy Logic:"
  #when no match is found use fuzzy logic to make the best match of the show name as a last resort
  		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
  	 	MatchSeriesTitleWithFuzzyLogic
@@ -2259,14 +2259,14 @@ AlternateMoveDir=$AlternateMoveDir
 
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
-        ConfidenceReasoning=ConfidenceReasoning+"Sucessful; Attemping match on OriginalAirDate:"
+        ConfidenceReasoning=$ConfidenceReasoning+"Sucessful; Attemping match on OriginalAirDate:"
  #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
         ((--ConfidenceRating))
  #verify our absolute episode number from airdate with fuzzy logic
 	if [ "$AbsolouteEpisodeNumber" != "" ]; then
-                ConfidenceReasoning=ConfidenceReasoning+"Sucessful; "
+                ConfidenceReasoning=$ConfidenceReasoning+"Sucessful; "
 		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
  		getAbsoluteEpisodeNumberWithFuzzyLogic
 		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
@@ -2282,7 +2282,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  #Get our absolute episode number with fuzzy logic
                 ((--ConfidenceRating))
-                ConfidenceReasoning=ConfidenceReasoning+"Failed; Attempting Match on Fuzzy Logic: "
+                ConfidenceReasoning=$ConfidenceReasoning+"Failed; Attempting Match on Fuzzy Logic: "
  		getAbsoluteEpisodeNumberWithFuzzyLogic
 	fi
 
@@ -2292,7 +2292,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #if series id is not obtained send failure message
  elif [ -z "$SeriesID" ]; then
-        ConfidenceReasoning=ConfidenceReasoning+"Failed; "
+        ConfidenceReasoning=$ConfidenceReasoning+"Failed; "
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
 	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
@@ -2302,10 +2302,10 @@ AlternateMoveDir=$AlternateMoveDir
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
  if [ "$AbsolouteEpisodeNumber" !=  "" ]; then
-        ConfidenceReasoning=ConfidenceReasoning+"Sucessful; "
+        ConfidenceReasoning=$ConfidenceReasoning+"Sucessful; "
         setSxxAndExxFromAbsoluteEpisodeNumber
  else
-        ConfidenceReasoning=ConfidenceReasoning+"Failed; "
+        ConfidenceReasoning=$ConfidenceReasoning+"Failed; "
  fi
 
  #If it's a movie, give it a name.
