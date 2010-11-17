@@ -2235,11 +2235,13 @@ AlternateMoveDir=$AlternateMoveDir
 
         attemptToSearchForZap2itIDAndSetSeriesID
         ((--ConfidenceRating))
+        ConfidenceReasoning=ConfidenceReasoning+" Attempted Match On Zap2itID:"
  	if [ "$MatchedShowName" = "1" ]; then
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
                 ((--ConfidenceRating))
+                ConfidenceReasoning=ConfidenceReasoning+"Failed; Attemted match on Fuzzy Logic:"
  #when no match is found use fuzzy logic to make the best match of the show name as a last resort
  		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
  	 	MatchSeriesTitleWithFuzzyLogic
@@ -2257,24 +2259,30 @@ AlternateMoveDir=$AlternateMoveDir
 
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
+        ConfidenceReasoning=ConfidenceReasoning+"Sucessful; Attemping match on OriginalAirDate:"
  #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
         ((--ConfidenceRating))
  #verify our absolute episode number from airdate with fuzzy logic
 	if [ "$AbsolouteEpisodeNumber" != "" ]; then
+                ConfidenceReasoning=ConfidenceReasoning+"Sucessful; "
 		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
  		getAbsoluteEpisodeNumberWithFuzzyLogic
 		if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ] && [ "$InputSubtitle" != "" ]; then
 			fuzzyLogicDoesNotJiveMessage
  			updateRunningFuzzyLogicErrorCount
+                       
+                        (( ++ConfidenceRating ));(( ++ConfidenceRating ))
+                        ConfidenceReasoning=$ConfidenceReasoning+" Verified with Fuzzy logic."
 		fi
 		AbsolouteEpisodeNumber=$AbsolouteEpisodeNumberBackup
 	else
 
  #Get our absolute episode number with fuzzy logic
- 		getAbsoluteEpisodeNumberWithFuzzyLogic
                 ((--ConfidenceRating))
+                ConfidenceReasoning=ConfidenceReasoning+"Failed; Attempting Match on Fuzzy Logic: "
+ 		getAbsoluteEpisodeNumberWithFuzzyLogic
 	fi
 
  #Statistical Fuzzy Logic monitoring
@@ -2283,6 +2291,7 @@ AlternateMoveDir=$AlternateMoveDir
  
  #if series id is not obtained send failure message
  elif [ -z "$SeriesID" ]; then
+        ConfidenceReasoning=ConfidenceReasoning+"Failed; "
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
 	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
@@ -2291,7 +2300,12 @@ AlternateMoveDir=$AlternateMoveDir
  fi
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
- test "$AbsolouteEpisodeNumber" !=  "" && setSxxAndExxFromAbsoluteEpisodeNumber
+ if [ "$AbsolouteEpisodeNumber" !=  "" ]; then
+        ConfidenceReasoning=ConfidenceReasoning+"Sucessful; "
+        setSxxAndExxFromAbsoluteEpisodeNumber
+ else
+        ConfidenceReasoning=ConfidenceReasoning+"Failed; "
+ fi
 
  #If it's a movie, give it a name.
  test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
@@ -2347,7 +2361,7 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "JOB: mythicalLibrarian '$InputPath' '$InputTitle' '$InputSubtitle'"
  	echo "LISTING INTERNAL VARIABLES USED BY mythicalLibrarian.">>"$mythicalLibrarian"/output.log
  	echo "INTERNET TIMEOUT:$Timeout- TVDB API KEY:$APIkey- mythicalLibrarian WORKING DIR:$mythicalLibrarian-">>"$mythicalLibrarian"/output.log
- 	echo "CONFIDENCE RATING:$ConfidenceRating- MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log    
+ 	echo - MOVE DIR:$MoveDir-">>"$mythicalLibrarian"/output.log    
  	echo "FAILSAFE MODE:$FailSafeMode- FAILSAFE DIR:$FailSafeDir- ALTERNATE MOVE DIR:$AlternateMoveDir-">>"$mythicalLibrarian"/output.log
  	echo "USE ORIGINAL DIR:$TargetPathIsInputPath NOTIFICATIONS:$Notify">>"$mythicalLibrarian"/output.log
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
@@ -2356,7 +2370,8 @@ AlternateMoveDir=$AlternateMoveDir
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
-	 echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
+	echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
+        echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning"
 	 if [ "$Database" = "Enabled"	 ]; then
  		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable-  FREE:$PrimaryShowDirFreeSpace""kB-""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable- FREE:$AlternateShowDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 		 echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
@@ -2504,7 +2519,6 @@ AlternateMoveDir=$AlternateMoveDir
 
  
  #If symlink=disabled, remove database entries
-                        echo "--DEBUG TESTING mythicalEpiShow = $mythicalEpiShow">>"$mythicalLibrarian"/output.log
   			test "$mythicalEpiShow" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
  
  #Send notification of completion and exit
