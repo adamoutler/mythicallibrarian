@@ -2235,13 +2235,14 @@ AlternateMoveDir=$AlternateMoveDir
 
         attemptToSearchForZap2itIDAndSetSeriesID
         ((--ConfidenceRating))
-        ConfidenceReasoning=$ConfidenceReasoning+" Attempted Match On Zap2itID:"
+        ConfidenceReasoning=$ConfidenceReasoning " Attempted Match On Zap2itID:"
  	if [ "$MatchedShowName" = "1" ]; then
+                ConfidenceReasoning=$ConfidenceReasoning "Sucessful; "
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
                 ((--ConfidenceRating))
-                ConfidenceReasoning=$ConfidenceReasoning+"Failed; Attemted match on Fuzzy Logic:"
+                ConfidenceReasoning=$ConfidenceReasoning"Failed; Attemted match on Fuzzy Logic:"
  #when no match is found use fuzzy logic to make the best match of the show name as a last resort
  		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
  	 	MatchSeriesTitleWithFuzzyLogic
@@ -2259,7 +2260,7 @@ AlternateMoveDir=$AlternateMoveDir
 
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
-        ConfidenceReasoning=$ConfidenceReasoning+"Sucessful; Attemping match on OriginalAirDate:"
+        ConfidenceReasoning=$ConfidenceReasoning"Sucessful; Attemping match on OriginalAirDate:"
  #If info was pulled from database, then plug name into newshowname	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
