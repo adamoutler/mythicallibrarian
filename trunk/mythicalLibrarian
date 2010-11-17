@@ -1551,10 +1551,18 @@ AlternateMoveDir=$AlternateMoveDir
  mythicalScan () {
  	DoMythTVPermissionsCheck
  	checkext=$InputTitle
-	if [ "$SUDO_USER" != "" ]; then
-	 	echo "Do not run this command with sudo."
-		exit 1
-	elif [ "$checkext" = "" ]; then
+	if [ "$UID" = "0" ]; then
+	 	echo "mythicalLibrarian has detected that you are (or were previously) 
+running as a priviliged user.  This may lead to permission
+contamination of normally unprivliged files.
+Do not run this command with sudo."
+                read -p "Exit? yes/(no)" exitvalue
+                test "$exitvalue" = "y" && exit 1
+                test "$exitvalue" = "Y" && exit 1
+                test "$exitvalue" = "yes" && exit 1
+        fi
+
+	if [ "$checkext" = "" ]; then
 	 	echo "Cannot process blank file extensions"
 		echo 'usage: mythicalLibrarian --scan "ext" "/path/to/folder"'
 		echo 'usage: mythicalLibrarian --scan "mpg" "/home/mythtv/videos"'
