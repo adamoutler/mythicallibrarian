@@ -1009,7 +1009,7 @@ attemptToSearchForZap2itIDAndSetSeriesID(){
  	 
  
  #parse the XML for shows with Zap2ItIDs
-        test -f ./zap2it.txt && rm ./zap2it.txt
+        test -f "$mythicalLibrarian/zap2it.txt" && rm "$mythicalLibrarian/zap2it.txt"
         while read line
         do 
 
