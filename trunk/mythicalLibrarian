@@ -2245,7 +2245,6 @@ Do not run this command with sudo."
         ((--ConfidenceRating))
         ConfidenceReasoning="$ConfidenceReasoning Attempted Match On Zap2itID:"
  	if [ "$MatchedShowName" = "1" ]; then
-                ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  		downloadInfoAboutMatchedTitle
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
