@@ -657,8 +657,8 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo rm "\"$mythicalLibrarian/undo.sh\"">"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
 
  	test "$SYMLINK" != "Disabled" && echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
@@ -680,7 +680,7 @@
 
 
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo rm "\"$mythicalLibrarian/doover.sh\"">"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
  	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
