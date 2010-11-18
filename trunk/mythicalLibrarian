@@ -1551,7 +1551,7 @@ AlternateMoveDir=$AlternateMoveDir
  mythicalScan () {
  	DoMythTVPermissionsCheck
  	checkext=$InputTitle
-	if [ "$UID" = "0" ]; then
+	if [ "$UID" = "0" -o "$USER" = "root"]; then
 	 	echo "mythicalLibrarian has detected that you are (or were previously) 
 running as a priviliged user.  This may lead to permission
 contamination of normally unprivliged files.
@@ -2452,7 +2452,7 @@ Do not run this command with sudo."
  MakeFolder
  
  #check to see if output folder exists
- test -d "$MoveDir" && echo "TARGET SET:$MoveDir/$ShowFileName"||echo "ERROR: COULD NOT CREATE FOLDER:$MoveDir/$ShowFileName" 
+ test -d "$MoveDir" && echo "TARGET SET:$MoveDir/$ShowFileName.$OriginalExt"||echo "ERROR: COULD NOT CREATE FOLDER:$MoveDir/$ShowFileName" 
 
  #####FAILSAFE HANDLING#####
  #If failsafe state is set then create link in FailSafeMode
