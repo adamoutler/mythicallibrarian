@@ -481,7 +481,7 @@
  
  #####FUZZY LOGIC RECOGNITION OF SERIES#####
  #This function provides fuzzy logic matching of a show name and returns a seriesid
- FuzzySeriesMatch () {
+ MatchSeriesTitleWithFuzzyLogic () {
 
  	showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
  	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
