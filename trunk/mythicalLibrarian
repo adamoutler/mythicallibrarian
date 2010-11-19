@@ -647,16 +647,16 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo and doover file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
 
- 	test "$SYMLINK" != "Disabled" && echo  "test -L \"$InputPath\" && rm \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
+ 	test "$SYMLINK" != "Disabled" && echo  "test -L \"$InputPath\" && rm -f \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
 	test "$SYMLINK" != "Disabled" && echo  "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" \"$InputPath\" && echo moved \"$MoveDir/$ShowFileName.$OriginalExt\" to \"$InputPath\"">>"$mythicalLibrarian/undo.sh"
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && test -L \"$InputPath\" && rm \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
+ 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && test -L \"$InputPath\" && rm -f \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
  		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
@@ -668,12 +668,12 @@
 
 
  #Create undo and doover file if not present
- 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
- 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
+ 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
  	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
- 	echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/undo.sh"
+ 	echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/undo.sh"
  	echo "'$MoveDir/$ShowFileName.$OriginalExt'" "'$InputPath'">>"$mythicalLibrarian"/created.tracking
 
 
@@ -813,7 +813,7 @@
         ShowStartTime=$starttime
  
  #cleanup, remove the fifo named pipe
- 	test -p "$mythicalLibrarian/mythicalDbOut" && rm "$mythicalLibrarian/mythicalDbOut" 
+ 	test -p "$mythicalLibrarian/mythicalDbOut" && rm -f "$mythicalLibrarian/mythicalDbOut" 
  	
  }
 
@@ -1068,7 +1068,7 @@ GetSeriesIDWIthZap2itID(){
  	 
  
  #parse the XML for shows with Zap2ItIDs
-        test -f "$mythicalLibrarian/zap2it.txt" && rm "$mythicalLibrarian/zap2it.txt"
+        test -f "$mythicalLibrarian/zap2it.txt" && rm -f "$mythicalLibrarian/zap2it.txt"
         while read line
         do 
 
@@ -1387,7 +1387,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####GENERATE tvshow.nfo#####
  #Generates folder tvshow.nfo file
  GenerateTVShowNFO () {
- 	test -f "$MoveDir/tvshow.nfo" && rm "$MoveDir/tvshow.nfo"
+ 	test -f "$MoveDir/tvshow.nfo" && rm -f "$MoveDir/tvshow.nfo"
  	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
  	test "$SeriesID" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
@@ -1399,7 +1399,7 @@ AlternateMoveDir=$AlternateMoveDir
  #####GENERATE NFO FILE#####
  #Create an NFO file based upon extracted information
  GenerateEpisodeNFO () {
- 	test -f "$MoveDir/$ShowFileName.nfo" && rm "$MoveDir/$ShowFileName.nfo"
+ 	test -f "$MoveDir/$ShowFileName.nfo" && rm -f "$MoveDir/$ShowFileName.nfo"
  	echo -e "<tvshow>">>"$MoveDir/$ShowFileName.nfo"
 
  	if [ "$NamingConvention" = "" ] ; then
@@ -1472,13 +1472,13 @@ AlternateMoveDir=$AlternateMoveDir
 
  DoMaintenance() {
 
+ #check for interrupted undo jobs
+        test -f "$mythicalLibrarian/undo.lock" && test !-f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
 
-  #Check if doover or undo was interupted and restore the file
- 	#test -f "$mythicalLibrarian/doover.lock" && mv "$mythicalLibrarian/doover.lock" "$mythicalLibrarian/doover.sh"
- 	#test -f "$mythicalLibrarian/undo.lock" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
  #Check and make doover.sh and undo.sh if it does not exist
+
  	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
-	 test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
+	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
  	if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
  		mythicalLibrarianCounter=0
  		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
@@ -1535,7 +1535,7 @@ AlternateMoveDir=$AlternateMoveDir
 #remove database folders
 
 	if [ "$removedead" = "1" ]; then
- 		test -f "$mythicalLibrarian/cleanup" && rm "$mythicalLibrarian/cleanup"
+ 		test -f "$mythicalLibrarian/cleanup" && rm -f "$mythicalLibrarian/cleanup"
  		ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
 
  		while read line
@@ -1550,7 +1550,7 @@ AlternateMoveDir=$AlternateMoveDir
  				fi
  			 fi
  	 	done < "$mythicalLibrarian/cleanup"
-		rm "$mythicalLibrarian/cleanup"
+		rm -f "$mythicalLibrarian/cleanup"
 	fi
  	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
 }
@@ -1627,7 +1627,7 @@ Do not run this command with sudo."
  				test ! -L "$line" && test ! -S "$line" && test ! -d "$line" && mythicalLibrarian "$line" 
  			fi
  		done<"$mythicalLibrarian/scan.temp"
- 		rm "$mythicalLibrarian/scan.temp"
+ 		rm -f "$mythicalLibrarian/scan.temp"
  		exit 0
  	else
  	 	echo "you must press 'y' to scan"
@@ -1904,7 +1904,7 @@ Do not run this command with sudo."
  		DoMaintenance
  		test -f "$mythicalLibrarian/created.tracking" && cat "$mythicalLibrarian/created.tracking">>"$mythicalLibrarian/created.tracking.old"
  		test -f "$mythicalLibrarian/created.tracking" && rm -f "$mythicalLibrarian/created.tracking"
- 		rm "$mythicalLibrarian/undo.lock"
+ 		rm -f "$mythicalLibrarian/undo.lock"
  		echo "done."
 		exit 0
 	else
