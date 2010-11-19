@@ -479,18 +479,8 @@
  	return 0
  }
  
- #####FUZZY LOGIC RECOGNITION OF SERIES#####
- #This function provides fuzzy logic matching of a show name and returns a seriesid
- MatchSeriesTitleWithFuzzyLogic () {
 
- 	showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
- 	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
- 
- #Get the seriesid based on the showname
-  	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
- 	NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
- 	return 0
- }
+
 
  #####COMSKIP FILES#####
  #Function GenComSkip creates a comskip.txt file for use with the show upon moving, created from data from library
@@ -582,7 +572,7 @@
 	if [ "$mythicalLibrarianProgramIDCheck" = "EP" ]; then
  		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$SeriesID</link>">>$rssDir/$TEMPrssFile 
 	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
- 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$showname</link>">>$rssDir/$TEMPrssFile 
+ 		echo -e "\t\t\t<link>http://www.thetvdb.com/?tab=series&amp;id=$ShowName</link>">>$rssDir/$TEMPrssFile 
  	else
  		tvdotcomshowname=`echo $ShowName|sed s/" "/"%20"/g`
  		echo -e "\t\t\t<link>http://www.tv.com/search.php?type=11&amp;stype=all&amp;tag=search%3Bfrontdoor&amp;qs=$tvdotcomshowname	</link>">>$rssDir/$TEMPrssFile 
@@ -957,8 +947,26 @@ setSxxAndExxFromAbsoluteEpisodeNumber() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#debug
+
+
 #####MATCH ZAP2ITID TO TVDB#####
-attemptToSearchForZap2itIDAndSetSeriesID(){
+GetSeriesIDWIthZap2itID(){
         Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
         serieslinenumber=0
 #loop through all show names received by TheTvDb and match Zap2it ID.
@@ -968,13 +976,60 @@ attemptToSearchForZap2itIDAndSetSeriesID(){
 		echo "TESTING FOR ZAP2IT SERIES ID MATCH:$Zap2ITCheck $line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
                 Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
 		if [ "$Zap2ItTest" = "$Zap2ItCheck" ]; then
-
-#Mark matched Zap2it ID 
-                	MatchedShowName=1
+ 	                SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
+ 	                NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`   
+                        return 0                     
 			break
 		fi
 	done < "$mythicalLibrarian"/zap2it.txt
+        return 1
 }
+
+
+
+ #####FUZZY LOGIC RECOGNITION OF SERIES#####
+ #This function provides fuzzy logic matching of a show name and returns a seriesid
+ GetSeriesIDWithFuzzyLogic () {
+
+   #DEBUG- REMOVED THIS LINE showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
+  	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
+
+ #Get the seriesid based on the showname
+        if [ $serieslinenumber -ge 1 ]; then
+  	 	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
+ 		NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
+ 		return 0
+ 	fi
+ 	return 1
+ }
+
+
+ GetSeriesIDWithStandardLogic () {
+
+   #DEBUG- REMOVED THIS LINE showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
+ 	serieslinenumber=`grep -nix "$ShowName" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
+ 
+ #Get the seriesid based on the showname
+        if [ $serieslinenumber -ge 1 ]; then
+  	 	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
+ 		NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|sed s/"&amp;"/"\&"/g| tr -d '"<>:!\|/'|grep -m1 ^`
+ 		return 0
+ 	fi
+ 	return 1
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  #####AIRDATE MATCH#####
@@ -2230,45 +2285,59 @@ Do not run this command with sudo."
 
 
   
+##DEBUG CHECK TO MAKE SURE WE CANT GET THIS FAR WITHOUT DATABASE INFORMATION OR A SUBTITLE
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
  ConfidenceRating=0
- if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$Zap2itSeriesID" != "" ]; then
+ if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$Zap2itSeriesID" = "" ]; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
+
+        #Query thetvdb on show title, then return a list of Zap2itID, ShowName and seriesid.
         searchTheTvDbAndReturnTxtFileLists  
 
- #download series info for show, parse into temporary text db- sid.txt shn.txt
 
-
-        attemptToSearchForZap2itIDAndSetSeriesID
-        ((--ConfidenceRating))
         ConfidenceReasoning="$ConfidenceReasoning Attempted Match On Zap2itID:"
- 	if [ "$MatchedShowName" = "1" ]; then
- 		downloadInfoAboutMatchedTitle
+        GetSeriesIDWIthZap2itID
+        if [ $? = 0 ]; then 
+		((++ConfidenceRating))
+                ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+                MatchedSeries=1
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
         else
-                ((--ConfidenceRating))
-                ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted match on Fuzzy Logic:"
- #when no match is found use fuzzy logic to make the best match of the show name as a last resort
- 		echo "NO ZAP2IT ID FOUND. USING FUZZY LOGIC FOR TITLE RECOGNITION."|tee -a "$mythicalLibrarian"/output.log
- 	 	MatchSeriesTitleWithFuzzyLogic
- 		downloadInfoAboutMatchedTitle
- 	fi
- elif [ "$InputSubtitle" != "" ]; then
-        ((--ConfidenceRating))
- #If no zap2it ID is present, then just use fuzzy logic to get seriesid 
- 	MatchSeriesTitleWithFuzzyLogic
- 	downloadInfoAboutMatchedTitle
- fi
+        	((--ConfidenceRating))
+                ConfidenceReasoning="$ConfidenceReasoning Failed; Attemting match on Standard Logic:"
+                MatchedSeries=0
+                GetSeriesIDWithStandardLogic
+                if [ $? = 0 ]; then
+                	ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+                	MatchedSeries=1
+ 		else
+  			((--ConfidenceRating))
+                	ConfidenceReasoning="$ConfidenceReasoning Failed; Attemting match on Fuzzy Logic:"
+                	MatchedSeries=0
+                	GetSeriesIDWithfuzzyLogic
+ 			if [ $? = 0 ]; then
+                		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+                		MatchedSeries=1
+ 			else
+  				((--ConfidenceRating))
+                		ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable"
+                		MatchedSeries=0
+####DEBUG TURN THIS EPISODE INTO A SHOWING, ACTIVATE DOOVER.
 
+ 			fi
+ 		fi
+        fi
+ fi
+echo $SeriesID"DEBUG"
 
 
 
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
         ConfidenceReasoning="$ConfidenceReasoning Sucessful; Attemping match on OriginalAirDate:"
- #If info was pulled from database, then plug name into newshowname	
+ #If info was pulled from database, then plug name into NewShowName	
 	test -z "$NewShowName" && NewShowName=$ShowName
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
         ((--ConfidenceRating))
@@ -2307,7 +2376,7 @@ Do not run this command with sudo."
  		Exx=$null
  	fi
  fi
-
+ echo $AbsoluteEpisodeNumber"DEBUG"
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
  if [ "$AbsolouteEpisodeNumber" !=  "" ]; then
         ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
