@@ -2420,7 +2420,7 @@ DetermineIfDatabaseIsUpToDate(){
 
  ##TEST FILESYSTEM##
  #Get file size and free space
- MoveFileSize=`stat "$InputPath" --format=%s` |awk '{print $1}'
+ test -f "./$InputPath" && MoveFileSize=`stat "$InputPath" --format=%s` |awk '{print $1}' || MoveFileSize=0
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
