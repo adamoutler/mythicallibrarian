@@ -443,7 +443,7 @@
  		 if [ "$1" != "" ]; then
  			if [ -d "$3" ]; then
 		 		if [ $1 -lt $2 ]; then
-		 			echo "Testing write permission on $3">$3/arbitraryfile.ext 
+		 			echo "Testing write permission on $3">"$3/arbitraryfile.ext"
 		 			if [ -f "$3/arbitraryfile.ext" ] ; then
 		 				if [ -s "$3/arbitraryfile.ext" ]; then
 		 					rm -f "$3/arbitraryfile.ext"
@@ -646,7 +646,7 @@
  #####MOVE MODE LOGGING#####
  #This function provides logging for move mode
  performLoggingForMoveMode () {
- #Create undo file if not present
+ #Create undo and doover file if not present
   	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
 
@@ -667,8 +667,7 @@
  performLoggingForLinkMode () {
 
 
-
-
+ #Create undo and doover file if not present
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
@@ -792,10 +791,10 @@
  
 
  	if [ "$CommercialMarkup" = "Enabled" ]; then
- #Output to initial files
+ #Output commercial data to initial files
  		printf "%s\n" "${startdata[@]}" >$mythicalLibrarian/markupstart.txt
  		printf "%s\n" "${stopdata[@]}"  >$mythicalLibrarian/markupstop.txt
- #Combine data into a single comskip file and remove the initial files
+ #Combine commercial data into a single comskip file and remove the initial files
  		GenComSkip
  	fi
  
