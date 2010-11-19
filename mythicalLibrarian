@@ -995,7 +995,7 @@ GetSeriesIDWIthZap2itID(){
   	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Correct for serieslinenumber = ""
-        test $serieslinenumber = "" && serieslinenumber="0" 
+        test "$serieslinenumber" = "" && serieslinenumber="0" 
    
  #Get the seriesid based on the showname
         if [ $serieslinenumber -ge 1 ]; then
@@ -1013,7 +1013,7 @@ GetSeriesIDWIthZap2itID(){
  	serieslinenumber=`grep -nix "$ShowName" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
 
   #Correct for serieslinenumber = ""
-        test $serieslinenumber = "" && serieslinenumber="0" 
+        test "$serieslinenumber" = "" && serieslinenumber="0" 
  #Get the seriesid based on the showname
         if [ $serieslinenumber -ge 1 ]; then
   	 	SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt| grep -m1 ^`
