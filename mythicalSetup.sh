@@ -766,7 +766,8 @@ test "$mythtv" != "1" && chown -hR "$UserName" "$AlternateMoveDir" "$AlternateMo
 sudo -u $SUDO_USER /usr/local/bin/mythicalLibrarian -m
 test $? = "0" && passed="0" || passed="1"
 
-test -d ~/.mythicalLibrarian && sudo chown -hR "$UserName" ~/.mythicalLibrarian
+test -d ~/.mythicalLibrarian && sudo chgrp -hR "$UserName" ~/.mythicalLibrarian
+test -d ~/.mythicalLibrarian && sudo chown -hR "$SUDO_USER" ~/.mythicalLibrarian
 test -d "~/.mythicalLibrarian/Mister Rogers' Neighborhood/" && chown -hR "$UserName" "~/.mythicalLibrarian/Mister Rogers' Neighborhood/"
 test "$passed" = "0" && echo "Installation and tests completed successfully."  || echo "Please try again.  If problem persists, please post here: http://forum.xbmc.org/showthread.php?t=65644"
 
