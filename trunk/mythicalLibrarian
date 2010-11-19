@@ -182,7 +182,7 @@
  #Notify tells mythicalLibrarian to send a notification to GNOME Desktop upon completion. Enabled|Disabled
  Notify=Enabled
  #If notifications are enabled, NotifyUserName should be the same as the user logged into the GNOME Session. (your username)
- NotifyUserName="MYUSERNAME" #<------THIS VALUE MUST BE SET-------
+ NotifyUserName="adam" #<------THIS VALUE MUST BE SET-------
  #Send a notification to XBMC to Update library upon Successful move job Enabled|Disabled
  XBMCUpdate=Enabled
  #Send a notification to XBMC to cleanup the library upon Successful move job Enabled|Disabled
@@ -518,9 +518,9 @@
   	for XBMCIP in ${XBMCIPs[@]}
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
- 		test "$XBMCNotify" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%20$tvdbshowname%20to%20library))" > /dev/null 2>&1
- 		test "$XBMCUpdate" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
- 		test "$XBMCClean" = "Enabled" && curl -s -m1 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary)" > /dev/null 2>&1
+ 		test "$XBMCNotify" = "Enabled" && curl -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%20$tvdbshowname%20to%20library))" > /dev/null 2>&1
+ 		test "$XBMCUpdate" = "Enabled" && curl -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
+ 		test "$XBMCClean" = "Enabled" && curl -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary)" > /dev/null 2>&1
  	done
  	fi
  	return 0
@@ -1086,51 +1086,9 @@ GetSeriesIDWIthZap2itID(){
 
  #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
  #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
- downloadInfoAboutMatchedTitle () {
- #Get the seriesid based on the showname
- 	 SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
- 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
- #Create folder for database if it does not exist
- if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
- 	mkdir "$mythicalLibrarian"/"$NewShowName"
- 	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
- fi
- echo "SEARCH FOUND:""$NewShowName" "ID#:" $SeriesID >>"$mythicalLibrarian"/output.log
- 
- #If series ID is obtained, then get show information.
- if [ "$SeriesID" != "" ] ; then
- 
- 
- #####GET SERIES INFORMATION#####
- #Get current server time
- 	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
- 
- #Parse file into usable data only
- 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep '<Time>'|sed s/"<Time>"/""/g|sed s/"<\/Time>"//g>"$mythicalLibrarian/$NewShowName/current.tim"
-        test -f "$mythicalLibrarian/$NewShowName/current.tim" && rm -f "$mythicalLibrarian/$NewShowName/current.time" && mv "$mythicalLibrarian/$NewShowName/current.tim" "$mythicalLibrarian/$NewShowName/current.time"
-  	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
- 
- #If file exist for last updated time, then get value 
- 	if [ -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
- 		LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
- 
- #If no last updated time, then assign a never updated value
-  	elif [ ! -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
- 		LastUpdated=0
- 	fi	 
- 
- #Check for valid time, if blank, then assign 0 value
- 	test "$LastUpdated" = "" && LastUpdated="0"
- 	test "$TvDbTime" = "" && TvDbTime="9999999" && echo "THETVDB TIME SERVER WAS DOWN"
- #Apply Database Update interval to last update time  LastUpdated = NextUpdated
- 	let LastUpdated=$LastUpdated+$UpdateDatabase
- 
- 
- #if episode information is out of date or not created
- 	if [ "$TvDbTime" -gt "$LastUpdated" ]; then
- 
- 		DatabaseWasUpdate="YES"
 
+
+ downloadInfoAboutMatchedTitle () {
  #####GET EPISODE INFORMATION#####
  #Strip XML tags
  		SeriesID=`echo $SeriesID|sed s/"<seriesid>"/""/g | sed s/"<\/seriesid>"/""/g`
@@ -1170,12 +1128,7 @@ GetSeriesIDWIthZap2itID(){
  		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" ]; then
  			echo "*** PERMISSION ERROR $mythicalLibrarian/$NewShowName/">>"$mythicalLibrarian"/output.log
  		fi
- #Send report to the log if database was not updated.
- 	elif [ "$TvDbTime" -le "$LastUpdated" ]; then
- 		echo "DATABASE IS MAINTAINED. TIME IS:$TvDbTime NEXT UPDATE IS:$LastUpdated"
- 		DatabaseWasUpdate="NO"
- 	fi
- fi
+
  	return 0
  }
  
@@ -2339,8 +2292,71 @@ echo $SeriesID"DEBUG"
 
 
 
+
+
+DetermineIfDatabaseIsUpToDate(){
+ #Get the seriesid based on the showname
+ 	 SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
+ 	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
+ #Create folder for database if it does not exist
+ if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
+ 	mkdir "$mythicalLibrarian"/"$NewShowName"
+ 	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
+ fi
+ echo "SEARCH FOUND:""$NewShowName" "ID#:" $SeriesID >>"$mythicalLibrarian"/output.log
+ 
+ #If series ID is obtained, then get show information.
+ if [ "$SeriesID" != "" ] ; then
+ 
+ 
+ #####GET SERIES INFORMATION#####
+ #Get current server time
+ 	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
+ 
+ #Parse file into usable data only
+ 	test -f "$mythicalLibrarian/$NewShowName/current.time" && cat "$mythicalLibrarian/$NewShowName/current.time"|grep '<Time>'|sed s/"<Time>"/""/g|sed s/"<\/Time>"//g>"$mythicalLibrarian/$NewShowName/current.tim"
+        test -f "$mythicalLibrarian/$NewShowName/current.tim" && rm -f "$mythicalLibrarian/$NewShowName/current.time" && mv "$mythicalLibrarian/$NewShowName/current.tim" "$mythicalLibrarian/$NewShowName/current.time"
+  	test -f "$mythicalLibrarian/$NewShowName/current.time" && TvDbTime=`cat "$mythicalLibrarian/$NewShowName/current.time"` 
+ 
+ #If file exist for last updated time, then get value 
+ 	if [ -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
+ 		LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
+ 
+ #If no last updated time, then assign a never updated value
+  	elif [ ! -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
+ 		LastUpdated=0
+ 	fi	 
+ 
+ #Check for valid time, if blank, then assign 0 value
+ 	test "$LastUpdated" = "" && LastUpdated="0"
+ 	test "$TvDbTime" = "" && TvDbTime="9999999" && echo "THETVDB TIME SERVER WAS DOWN"
+ #Apply Database Update interval to last update time  LastUpdated = NextUpdated
+ 	let LastUpdated=$LastUpdated+$UpdateDatabase
+ 
+ 
+ #if episode information is out of date or not created
+ 	if [ "$TvDbTime" -gt "$LastUpdated" ]; then
+ 
+ 		DatabaseWasUpdate="YES"
+       fi
+ #Send report to the log if database was not updated.
+ 	elif [ "$TvDbTime" -le "$LastUpdated" ]; then
+ 		echo "DATABASE IS MAINTAINED. TIME IS:$TvDbTime NEXT UPDATE IS:$LastUpdated"
+ 		DatabaseWasUpdate="NO"
+ 	fi
+
+
+ }
+
+
+
+
+
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
+        DetermineIfDatabaseIsUpToDate
+        echo $?"DEBUG"
+
         ConfidenceReasoning="$ConfidenceReasoning Sucessful; Attemping match on OriginalAirDate:"
  #If info was pulled from database, then plug name into NewShowName	
 	test -z "$NewShowName" && NewShowName=$ShowName
