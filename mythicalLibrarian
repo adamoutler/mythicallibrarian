@@ -1700,7 +1700,8 @@ Do not run this command with sudo."
   	for XBMCIP in ${XBMCIPs[@]}
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
-		XBMCcomm=`curl -s "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
+		XBMCcomm=`curl -s --connect-timeout 3 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
+                test "$XBMCcomm" != "" && echo "RECEIVED:$XBMCcomm" || echo "COMMUNICATIONS NOT ESTABLISHED: $XBMCIP"
  	done
  	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
@@ -1718,10 +1719,10 @@ Do not run this command with sudo."
  	MoveFileSize=$((MoveFileSize/1024))
  	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
  	AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- 	test "$Database" = "Enabled" && test -d $PrimaryMovieDir && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d $AlternateMovieDir &&  AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d $PrimaryShowDir &&  PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'` || PrimaryShowDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d $AlternateShowDir && AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d "$PrimaryMovieDir" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d "$AlternateMovieDir" &&  AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d "$PrimaryShowDir" &&  PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'` || PrimaryShowDirFreeSpace=0
+ 	test "$Database" = "Enabled" && test -d "$AlternateShowDir" && AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
  	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
  	checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
  	MoveDirWritable=$TMoveDirWritable
@@ -2420,7 +2421,7 @@ DetermineIfDatabaseIsUpToDate(){
 
  ##TEST FILESYSTEM##
  #Get file size and free space
- MoveFileSize=`stat "$InputPath"`|awk '{print $1}'
+ MoveFileSize=`stat "$InputPath" --format=%s` |awk '{print $1}'
  MoveFileSize=$((MoveFileSize/1024))
  MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
  AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
