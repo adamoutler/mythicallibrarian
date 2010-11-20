@@ -395,7 +395,7 @@
  	testedmethod1=0
  fi
  
- if [ "$EventMonthDay" != "" -a "$EventYear" -gt "1900" -a "$EventMonthDay" -gt "0" ]; then
+ if [ "$EventMonthDay" != "" ] && [ "$EventYear" -gt "1900" ] && [ "$EventMonthDay" -gt "0" ]; then
  	testedmethod1=1 
  else 
  	testedmethod1=0
@@ -1049,7 +1049,7 @@ GetSeriesLineNumberFromTableWithZap2itID(){
                 (( ++ serieslinenumber ))
 		echo "TESTING FOR ZAP2ITID MATCH:$line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
                 Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
-		if [ "$Zap2ItTest" = "$Zap2ItCheck" -a "$Zap2ItCheck" != "" ]; then
+		if [ "$Zap2ItTest" = "$Zap2ItCheck" ] && [ "$Zap2ItCheck" != "" ]; then
                         return 0                     
 			break
 		fi
@@ -1120,7 +1120,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	AbsolouteEpisodeNumber=""
  	AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Account for original series airdate
- 	if [ "$AbsoluteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
+ 	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		(( --AbsolouteEpisodeNumber ))
  #Account for original show airdate = first air date
  		test "$AbsolouteEpisodeNumber" = "0" && ((++AbsolouteEpisodeNumber))
@@ -1134,7 +1134,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  getAbsoluteEpisodeNumberWithStandardLogic(){
         AbsolouteEpisodeNumber=""
  	AbsolouteEpisodeNumber=`agrep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
-         if [ "$AbsoluteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
+         if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
@@ -1149,7 +1149,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  	AbsolouteEpisodeNumber=""
  	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1|sed 's/:.*//' ^`
- 	if [ "$AbsolouteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
+ 	if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
@@ -1216,7 +1216,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
 
- if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" -a "$InputSubtitle" = "" -a $InputTitle != "--BypassPermissionsCheck" ]; then
+ if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ $InputTitle != "--BypassPermissionsCheck" ]; then
  	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
  		echo -e " ########################################################################"|tee -a "$mythicalLibrarian"/output.log
@@ -1369,7 +1369,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #Command line, no database Episodes: Determine where File will fit
  	FailSafeState=0
  	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
- 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" ] && [ "$AlternateMoveDirWritable" != "1" && FailSafeState=1
 
  #Episode handling: Determine where File will fit
  	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
@@ -1544,7 +1544,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
 	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
- 	if [ "$CommercialMarkupCleanup" = "Enabled" -a -f "$mythicalLibrarian/created.tracking" ]; then
+ 	if [ "$CommercialMarkupCleanup" = "Enabled" ] && [ -f "$mythicalLibrarian/created.tracking" ]; then
  		mythicalLibrarianCounter=0
  		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
  		while read line
@@ -1572,7 +1572,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 	 fi
  
  #Check if folders are empty and remove dir if needed and it was created by mythicalLibrarian
- 	if [ "$DirTracking" = "Enabled" -a -f "$mythicalLibrarian/dir.tracking" ]; then
+ 	if [ "$DirTracking" = "Enabled" ] && [ -f "$mythicalLibrarian/dir.tracking" ]; then
  		while read line
  		do
  			DirToCheck=$line
@@ -2420,7 +2420,7 @@ Do not run this command with sudo."
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
-        if [ "$AbsolouteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
+        if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		((++EpisodeConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
         else
@@ -2509,7 +2509,7 @@ Do not run this command with sudo."
 
  #######SANITY CHECKS#####
 
- if [ "$mythicalLibrarianProgramIDCheck" = "EP" -a "$Exx" = "E" ]; then
+ if [ "$mythicalLibrarianProgramIDCheck" = "EP" ] && [ "$Exx" = "E" ]; then
    	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
 
  #If it's a movie, give it a name.
@@ -2629,7 +2629,7 @@ Do not run this command with sudo."
  #if no episode data and it's not a movie or a test
  if [ "$Exx" = "" ] &&  [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
 
- 	if [ "$ChanID" = "" -a "$InputPath" ]; then
+ 	if [ "$ChanID" = "" ] && [ "$InputPath" ]; then
                 echo "This episode could not be matched based on supplied Title and SubTitle."
  		jobType="NameCouldNotBeAssigned"
  	        runjob
