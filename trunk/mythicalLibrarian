@@ -1543,9 +1543,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  			(( ++mythicalLibrarianCounter ))
  			SupportFile=`echo $line|cut -d"'" -f2`
  		 	MainFile=`echo $line|cut -d"'" -f4`
-
-#debug
-echo $MainFile and $SupportFile
  			ls "$MainFile" > /dev/null 2>&1
  			if [ "$?" != "0" ]; then
   				if [ -d "`dirname "$SupportFile"`" ]; then
