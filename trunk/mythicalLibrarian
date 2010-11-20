@@ -2618,16 +2618,22 @@ Do not run this command with sudo."
  ######PRE-NAMING CHECKS#####
  #if no episode data and it's not a movie or a test
  if [ "$Exx" = "" ] &&  [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
+
+ 	if [ "$ChanID" = "" -a "$InputPath" ]; then
+                echo "This episode could not be matched based on supplied Title and SubTitle."
+ 		jobType="NameCouldNotBeAssigned"
+ 	        runjob
+
  #If user has determined that they do not want unrecognizable tv shows in their library
-	if [ "$ShowStopper" = "Enabled" ]; then 
+	elif [ "$ShowStopper" = "Enabled" ]; then 
 		tvDbIsIncomplete
  		writeJobToDooverQue
 		jobtype=NameCouldNotBeAssigned
  		runjob
+
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
- 
  		mythicalEpiShow=1
  #change the show to a Generic type
 		NewShowName=$SafeShowName
@@ -2735,7 +2741,7 @@ Do not run this command with sudo."
 
  
  #If symlink=disabled, remove database entries
-  			test "$mythicalEpiShow" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
+  			test "$RequiresDoover" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
