@@ -2380,7 +2380,7 @@ Do not run this command with sudo."
 
 
  #If it's not a recognized episode, then we need to assign the name
- test -z $ShowName && ShowName=$InputTitle
+ test -z "$ShowName" && ShowName=$InputTitle
  test -z "$NewShowName" && NewShowName=$ShowName
 
 
