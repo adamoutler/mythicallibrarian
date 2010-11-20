@@ -970,7 +970,7 @@ determineIfDatabaseIsUpToDate(){
  #if time server is down, then just update
  	if [ "$CurrentTime" = "" -o "$CurrentTime" = "99999999" ]; then
  		echo "THETVDB TIME SERVER WAS DOWN"
-   		return 1
+ 		return 1
         fi
 
  #Apply Database Update interval to last update time  LastUpdated = NextUpdated
@@ -981,7 +981,7 @@ determineIfDatabaseIsUpToDate(){
  #if episode information is out of date or not created
  	if [ $CurrentTime -gt $NextUpdate ]; then
  		echo "DATABASE IS OUT OF DATE. NEXT UPDATE $NextUpdate Current $CurrentTime"	
-                return 1
+ 		return 1
        
  #Send report to the log if database was not updated.
  	elif [ $CurrentTime -le $NextUpdate ]; then
@@ -1384,25 +1384,28 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #####MAKE FOLDER#####
  MakeFolder() {
  #If specified, make $movedir = $movedir/show name
- 	MoveDir=`echo "$MoveDir"/"$NewShowName"`
- 
- #Make the Show folder if it does not exist
- 	if [ ! -d "$MoveDir" ]; then
- 		echo "CREATING FOLDER: $MoveDir">>"$mythicalLibrarian"/output.log
-		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
- 		mkdir "$MoveDir"
- 		chmod 775 "$MoveDir"
- 	fi
+
+ 	if [ "$NewShowName" != "" ]; then
+ 	 	MoveDir="$MoveDir/$NewShowName"
+  
+ 		if [ ! -d "$MoveDir" ]; then
+ 			echo "CREATING FOLDER: $MoveDir">>"$mythicalLibrarian"/output.log
+			echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
+ 			mkdir "$MoveDir"
+ 			chmod 775 "$MoveDir"
+ 		fi
  
  #Make the Season folder if it is applicable and does not exist
- 	if [ "$SeasonNumber" != "" ]; then
- 		MoveDir="$MoveDir/Season $SeasonNumber" 
-		test ! -d "$MoveDir" && mkdir "$MoveDir"
- 		chmod 775 "$MoveDir"
-		echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
- 	fi
+ 		if [ "$SeasonNumber" != "" ]; then
+ 			MoveDir="$MoveDir/Season $SeasonNumber" 
+			if [ ! -d "$MoveDir" ];then
+ 			 	mkdir "$MoveDir" 
+ 				chmod 775 "$MoveDir"
+				echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
+ 			fi
+ 		fi
  
- 
+  	fi
  #Error message if folder was not created
  	if [ ! -d "$MoveDir" ];then
  		echo "COULD NOT CREATE $MoveDir/$NewShowName">>"$mythicalLibrarian"/output.log
@@ -1414,6 +1417,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 	 	fi
  		SYMLINK=LINK
  		MoveDir=$FailSafeDir
+ 		FailSafeState=1
+ 		RequiresDoover=1
  	fi
  }
 
@@ -2411,7 +2416,7 @@ Do not run this command with sudo."
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
 	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
-        if [ "$AbsolouteEpisodeNumber" != "" ]; then
+        if [ "$AbsolouteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
  		((++EpisodeConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
         else
@@ -2500,7 +2505,8 @@ Do not run this command with sudo."
 
  #######SANITY CHECKS#####
 
- 
+ if [ "$mythicalLibrarianProgramIDCheck" = "EP" -a "$Exx" = "E" ]; then
+   	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
 
  #If it's a movie, give it a name.
  if [ "$mythicalLibrarianProgramIDCheck" = "MV" ];then
