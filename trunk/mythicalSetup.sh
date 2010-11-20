@@ -144,6 +144,8 @@ if [ "$DownloadML" = "Stable" ]; then
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g|sed s/\ /\\ /g>"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
  	rm ./mythicalLibrarian.sh
+        curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
+ 	chmod 755 /usr/local/bin/MythDataGrabber
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
