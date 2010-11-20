@@ -1182,7 +1182,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  	AbsolouteEpisodeNumber=0
  	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 	if [ "$AbsoluteEpisodeNumber" != "" ]; then
+ 	if [ "$AbsolouteEpisodeNumber" != "" ]; then
  		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
@@ -1556,7 +1556,7 @@ AlternateMoveDir=$AlternateMoveDir
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
  DoMaintenance() {
-        echo "PERFORMING MAINTENANCE ROUTINE...
+        echo "PERFORMING MAINTENANCE ROUTINE..."
  #check for interrupted undo jobs
         test -f "$mythicalLibrarian/undo.lock" && test !-f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
 
@@ -1649,7 +1649,7 @@ AlternateMoveDir=$AlternateMoveDir
  	DoMythTVPermissionsCheck
  	checkext=$InputTitle
 	if [ "$UID" = "0" -o "$USER" = "root"]; then
-	 	echo "mythicalLibrarian has detected that you are (or were previously) 
+	 	echo "mythicalLibrarian has detected that you are (or were previously)
 running as a priviliged user.  This may lead to permission
 contamination of normally unprivliged files.
 Do not run this command with sudo."
