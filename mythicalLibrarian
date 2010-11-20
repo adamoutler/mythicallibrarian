@@ -1117,20 +1117,24 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #####AIRDATE MATCH#####
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
- 		AbsolouteEpisodeNumber=0
- 		AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
+ 	AbsolouteEpisodeNumber=""
+ 	AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Account for original series airdate
+ 	if [ "$AbsoluteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]
  		(( --AbsolouteEpisodeNumber ))
  #Account for original show airdate = first air date
  		test "$AbsolouteEpisodeNumber" = "0" && ((++AbsolouteEpisodeNumber))
- 		test "$AbsoluteEpisodeNumber" != "" && echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
+ 		echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
+ 		return 0
+ 	fi
+ 	return 1
  }
  
  ######STANDARD LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithStandardLogic(){
-        AbsolouteEpisodeNumber=0
- 	AbsolouteEpisodeNumber=`agrep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
-         if [ "$AbsoluteEpisodeNumber" != "" ]; then
+        AbsolouteEpisodeNumber=""
+ 	AbsolouteEpisodeNumber=`agrep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
+         if [ "$AbsoluteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
@@ -1143,9 +1147,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  ######FUZZY LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithFuzzyLogic(){
 
- 	AbsolouteEpisodeNumber=0
- 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|sed 's/:.*//'|grep -m1 ^`
- 	if [ "$AbsolouteEpisodeNumber" != "" ]; then
+ 	AbsolouteEpisodeNumber=""
+ 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1|sed 's/:.*//' ^`
+ 	if [ "$AbsolouteEpisodeNumber" != "" -a $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
