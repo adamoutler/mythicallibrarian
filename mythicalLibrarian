@@ -656,9 +656,9 @@
 
  	if [ "$SYMLINK" = "MOVE" ]; then
 
- 		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && test -L \"$InputPath\" && rm -f \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
-		test "$mythicalEpiShow" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
- 		test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
+ 		test "$RequiresDoover" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && test -L \"$InputPath\" && rm -f \"$InputPath\" && echo Moving \"$InputPath\" to original location">>"$mythicalLibrarian/doover.sh"
+		test "$RequiresDoover" = "1" && echo "test -f \"$MoveDir/$ShowFileName.$OriginalExt\" && mv \"$MoveDir/$ShowFileName.$OriginalExt\" '$InputPath'">>"$mythicalLibrarian/doover.sh"
+ 		test "$RequiresDoover" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"" >>"$mythicalLibrarian/doover.sh"
  	fi
 }
 
@@ -671,8 +671,8 @@
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
         
- 	test "$mythicalEpiShow" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
- 	test "$mythicalEpiShow" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
+ 	test "$RequiresDoover" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
+ 	test "$RequiresDoover" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
  	echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/undo.sh"
  	echo "'$MoveDir/$ShowFileName.$OriginalExt'" "'$InputPath'">>"$mythicalLibrarian"/created.tracking
 
@@ -947,23 +947,6 @@ setSxxAndExxFromAbsoluteEpisodeNumber() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#debug
-
-
-
 determineIfDatabaseIsUpToDate(){
 
  #Get current server time
@@ -1010,14 +993,8 @@ determineIfDatabaseIsUpToDate(){
  return 1
  }
  
-
-
-
-
-
-
  #####GET EPISODE INFORMATION#####
-downloadInfoAboutMatchedTitle () {
+ downloadInfoAboutMatchedTitleAndCreateTxtFileTables () {
  
  #Download information from server
  		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
@@ -1063,7 +1040,7 @@ downloadInfoAboutMatchedTitle () {
 
 
 #####MATCH ZAP2ITID TO TVDB#####
-GetSeriesIDWIthZap2itID(){
+GetSeriesLineNumberFromTableWithZap2itID(){
         Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
         serieslinenumber=0
 #loop through all show names received by TheTvDb and match Zap2it ID.
@@ -1084,7 +1061,7 @@ GetSeriesIDWIthZap2itID(){
 
  #####FUZZY LOGIC RECOGNITION OF SERIES#####
  #This function provides fuzzy logic matching of a show name and returns a seriesid
- GetSeriesIDWithFuzzyLogic () {
+ GetSeriesLineNumberFromTableWithFuzzyLogic () {
 
    #DEBUG- REMOVED THIS LINE showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
   	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
@@ -1102,9 +1079,7 @@ GetSeriesIDWIthZap2itID(){
 
 
 #####STANDARD TITLE RECOGNITION OF SERIES#####
- GetSeriesIDWithStandardLogic () {
-
- #DEBUG- REMOVED THIS LINE showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
+ GetSeriesLineNumberFromTableWithStandardLogic () {
  	serieslinenumber=`grep -nix "$ShowName" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
 
  #Correct for serieslinenumber = ""
@@ -1139,18 +1114,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
          #test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
          #test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
  #####AIRDATE MATCH#####
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
@@ -1191,7 +1154,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  
  #####SEARCH THETVDB AND CREATE DATA FILES#####
- searchTheTvDbAndReturnTxtFileLists(){
+ searchTheTvDbAndReturnTxtFileTables(){
 
  #Search TheTvDb and return an XML file with results
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
@@ -1317,11 +1280,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
 	echo -e "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%% \n CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
         DEBUGMODE=Enabled
-
-
-
-
  }
+
+
  InvalidFileErrorMessage(){
  	echo "INPUT FILE NAME NON EXISTANT -CHECK FILE NAME AND READ PERMISSIONS"
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1329,6 +1290,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
 	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  }
+
+
  tvDbIsIncomplete(){
  	echo "%%%%%%%%%%www.TheTvDB.com information is incomplete $InputTitle, $InputSubtitle">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1341,6 +1304,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	test "$Notify" = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Could not obtain information from server about: $InputTitle. TheTvDb is incomplete" web-browser
  }
 
+
  Wrote0LengthFile(){
 	test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1348,6 +1312,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  }
+
+
  PermissionErrorWhileMoving(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%PERMISSION ERROR WHILE MOVING%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1355,6 +1321,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Failure" "$ShowFileName could not be moved to $MoveDir" stop
  }
+
+
  SymlinkNotCreated() {
   	echo "PERMISSION ERROR OR FILE SYSTEM DOES NOT SUPPORT SYMLINKS:$MoveDir"
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1363,6 +1331,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	test $Notify = "Enabled" &&	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian error" "Failure while creating link. Check permissions" error
  }
+
 
  #####GENERIC UNSPECIFIED ERROR#####
  #This function provides an error message on generic errors
@@ -1376,6 +1345,20 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%OPERATION FAILED" `date` "%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian/output.log">>"$mythicalLibrarian"/output.log
  }
 
+ 
+ MaintenanceWarning () {
+ 	echo " --You have entered Maintenance mode."
+ 	echo " mythicalLibrarian will perform maintenance on it's records."  
+	echo " Please ensure that All network attached storage and removable"
+	echo " storage drives are connected and mounted properly before continuing"
+ 	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? y/(n)>" yesorno
+ 	if [ "$yesorno" != "y" ]; then
+ 		echo "" 
+ 		echo "You must press 'y' to continue" 
+		exit 1
+ 	fi
+	echo \n
+ }
 
 
  determinePrimaryOrAlternateFolderUsage(){
@@ -1397,12 +1380,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	test "$mythicalLibrarianProgramIDCheck" = "SH" -a "$PrimaryshowDirWritable" != "1" -a "$AlternateShowDirWritable" != "1" && FailSafeState=1
  }
 
- MakeFolder() {
-
-
 
  #####MAKE FOLDER#####
-
+ MakeFolder() {
  #If specified, make $movedir = $movedir/show name
  	MoveDir=`echo "$MoveDir"/"$NewShowName"`
  
@@ -1441,9 +1421,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #####USE ORIGINAL DIR#####
  #If TargetPathIsInputPath is set, then this changes movedir to original dir.
-PrimaryMovieDir=$PrimaryMovieDir
-AlternateMoveDir=$AlternateMoveDir
-
  setTargetFolderAsInputPathFolder () {
  #Set originaldir name if none was supplied
   	 test "$originaldirname" = "./" && originaldirname=$(pwd)
@@ -1468,6 +1445,7 @@ AlternateMoveDir=$AlternateMoveDir
   	 AlternateShowDir="$originaldirname/Showings" 
   	 test ! -d "$AlternateShowDir" && mkdir "$AlternateShowDir"
  }
+
 
  #####GENERATE tvshow.nfo#####
  #Generates folder tvshow.nfo file
@@ -1507,20 +1485,29 @@ AlternateMoveDir=$AlternateMoveDir
  return 0
  }
 
- ignoreList () {
 
+##### IGNORE LIST #####
+ ignoreList () {
+ #Test if the title is in the titleIgnore file
  	if [ -f "$mythicalLibrarian/titleIgnore" ]; then 
  		ignoreTest=`grep "$InputTitle" "$mythicalLibrarian/titleIgnore"`
- 		test "$InputTitle" = "$ignoreTest" && JobType=titleIgnore && runJob
-  		return 0
+ 		if [ "$InputTitle" = "$ignoreTest" ]; then
+ 			JobType=titleIgnore 
+ 			runJob
+ 		fi
 	fi
-
- 		if [ -f "$mythicalLibrarian/categoricIgnore" ]; then
+ #Test if the Category is in the categoricIgnore file
+ 	if [ -f "$mythicalLibrarian/categoricIgnore" ]; then
   		ignoreTest=`grep "$ShowCategory" "$mythicalLibrarian/categoricIgnore"`
- 		test "$ShowCategory" = "$ignoreTest" && JobType=categoricIgnore && runJob
+ 		if [ "$ShowCategory" = "$ignoreTest" ];then
+ 			JobType=categoricIgnore
+ 			runJob
+ 		fi
         fi
  	return 0
 }
+
+
  #####SHOW TRANSLATIONS HANDLING#####
  #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
  ShowTranslations () {
@@ -1536,25 +1523,9 @@ AlternateMoveDir=$AlternateMoveDir
  	return 0
  }
 
- MaintenanceWarning () {
- 	echo " --You have entered Maintenance mode."
- 	echo " mythicalLibrarian will perform maintenance on it's records."  
-	echo " Please ensure that All network attached storage and removable"
-	echo " storage drives are connected and mounted properly before continuing"
- 	read -n1 -p " Would you like mythicalLibrarian to conduct a scan? y/(n)>" yesorno
- 	if [ "$yesorno" != "y" ]; then
- 		echo "" 
- 		echo "You must press 'y' to continue" 
-		exit 1
- 	fi
-	echo \n
- }
-
-
 
  #####MAINTENANCE ROUTINE#####
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
-
  DoMaintenance() {
         echo "PERFORMING MAINTENANCE ROUTINE..."
  #check for interrupted undo jobs
@@ -1572,6 +1543,9 @@ AlternateMoveDir=$AlternateMoveDir
  			(( ++mythicalLibrarianCounter ))
  			SupportFile=`echo $line|cut -d"'" -f2`
  		 	MainFile=`echo $line|cut -d"'" -f4`
+
+#debug
+echo $MainFile and $SupportFile
  			ls "$MainFile" > /dev/null 2>&1
  			if [ "$?" != "0" ]; then
   				if [ -d "`dirname "$SupportFile"`" ]; then
@@ -1616,9 +1590,7 @@ AlternateMoveDir=$AlternateMoveDir
   		test -f "$mythicalLibrarian/dir.tracking2" && mv "$mythicalLibrarian/dir.tracking2" "$mythicalLibrarian/dir.tracking"
  	fi	 
 
-
-#remove database folders
-
+#clense mythicalLibrarian database folders if in --doMaintenance mode
 	if [ "$removedead" = "1" ]; then
  		test -f "$mythicalLibrarian/cleanup" && rm -f "$mythicalLibrarian/cleanup"
  		ls -A -1 "$mythicalLibrarian" > "$mythicalLibrarian/cleanup"
@@ -1639,8 +1611,6 @@ AlternateMoveDir=$AlternateMoveDir
 	fi
  	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
 }
-
-
 
  
  #####SCAN MODE#####
@@ -1801,27 +1771,35 @@ Do not run this command with sudo."
 
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
- 	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`  
- 	AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
- 	test "$Database" = "Enabled" && test -d "$PrimaryMovieDir" && PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d "$AlternateMovieDir" &&  AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d "$PrimaryShowDir" &&  PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'` || PrimaryShowDirFreeSpace=0
- 	test "$Database" = "Enabled" && test -d "$AlternateShowDir" && AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
- 	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'` 
- 	checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir" 
+ 	MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'` || MoveDirFreeSpace=0
+ 	AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`|| AlternateMoveDirFreeSpace=0
+ 	if [ "$Database" = "Enabled" ]; then
+ 		PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
+ 		AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
+ 		PrimaryShowDirFreeSpace=`df -P "$PrimaryShowDir"|sed -n 2p|awk '{print $4}'`|| PrimaryShowDirFreeSpace=0
+	 	AlternateShowDirFreeSpace=`df -P "$AlternateShowDir"|sed -n 2p|awk '{print $4}'`|| AlternateShowDirFreeSpace=0
+ 	fi
+ 	#Call permissions check from function.  Write small file, delete, get results
+ 	checkPermissions "$MoveFileSize" "$MoveDirFreeSpace" "$MoveDir"
  	MoveDirWritable=$TMoveDirWritable
- 	checkPermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir" 
+ 	checkPermissions "$MoveFileSize" "$AlternateMoveDirFreeSpace" "$AlternateMoveDir"
  	AlternateMoveDirWritable=$TMoveDirWritable
- 
-	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
- 	test "$Database" = "Enabled" && PrimaryMovieDirWritable=$TMoveDirWritable
- 	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
- 	test "$Database" = "Enabled" && AlternateMovieDirWritable=$TMoveDirWritable
-	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
- 	test "$Database" = "Enabled" && PrimaryShowDirWritable=$TMoveDirWritable
-	test "$Database" = "Enabled" && checkPermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
- 	test "$Database" = "Enabled" && AlternateShowDirWritable=$TMoveDirWritable 
- 
+	 if [ "$Database" = "Enabled" ]; then
+ 		checkPermissions "$MoveFileSize" "$PrimaryMovieDirFreeSpace" "$PrimaryMovieDir"
+ 		PrimaryMovieDirWritable=$TMoveDirWritable
+ 		checkPermissions "$MoveFileSize" "$AlternateMovieDirFreeSpace" "$AlternateMovieDir"
+ 		AlternateMovieDirWritable=$TMoveDirWritable
+ 		checkPermissions "$MoveFileSize" "$PrimaryShowDirFreeSpace" "$PrimaryShowDir"
+ 		PrimaryShowDirWritable=$TMoveDirWritable
+ 		checkPermissions "$MoveFileSize" "$AlternateShowDirFreeSpace" "$AlternateShowDir"
+ 		AlternateShowDirWritable=$TMoveDirWritable
+ 	fi
+ 	OriginaldirFreeSpace=`df -P "$originaldirname"|sed -n 2p|awk '{print $4}'`
+ 	WorkingDirFreeSpace=`df -P "$mythicalLibrarian"|sed -n 2p|awk '{print $4}'`
+ 	checkPermissions "1" "$OriginaldirFreeSpace" "$originaldirname"
+ 	OriginalDirWritable=$TMoveDirWritable
+ 	checkPermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
+ 	WorkingDirWritable=$TMoveDirWritable
 	checkPermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
 	WorkingDirWritable=$TMoveDirWritable
 
@@ -2053,6 +2031,11 @@ Do not run this command with sudo."
  		echo "--special"
  		echo "  Special Help: displays extended configuration help."
  		echo "  example: mythicalLibrarian --special"
+ 		echo ""
+ 		echo " --confidence"
+ 		echo "  Confidence Help: Displays information on improving confidence"
+ 		echo "  example: mythicalLibrarian --confidence"
+
  		echo "======================================================="
  	fi
 	echo " ensure you have set the user settings set properly and run"
@@ -2118,15 +2101,27 @@ Do not run this command with sudo."
  	echo " #XBMCIPs=( user:password@192.168.1.110:8080 )                #"
  	echo " #Database=Disabled                                           #"               
 	echo " ##############################################################"
+	echo "Done."
+ }
 
 
- 	echo "Done."
- 	
- 	
- 	
- 	
- 	
- 
+ improveConfidence(){
+        echo -e "About Confidence ratings:"
+  	echo -e ""
+  	echo -e " Confidence Ratings are used by mythicalLibrarian."
+  	echo -e " These ratings serve as a guide to the probability of a"
+  	echo -e " perfect match. Ratings range from +4 to -6.  Any rating"
+  	echo -e " at or above 0 should be considered a good match."
+  	echo -e ""
+  	echo -e "How can I improve my Confidence Rating?"
+  	echo -e " 1. mythicalLibrarian --special provides information on how"
+  	echo -e "    to improve Episode matching confidence by using a "
+  	echo -e "    ShowTranslations file to compensate for bad guide data."
+  	echo -e " 2. Add your favorite show's Zap2it ID to TheTvDb.com."
+  	echo -e " 3. Add your favorite show's OriginalAirdate to TheTvDb.com."
+  	echo -e " 4. Add your favorite show's proper Title to TheTvDb.com"
+ 	echo -e "done."
+ 	exit 0
  }
  
  #mythicalUpdater will download the Stable or SVN version of mythicalSetup
@@ -2213,20 +2208,28 @@ Do not run this command with sudo."
 	--mythicalDiagnostics|-m)
        		mythicalDiagnostics
   	;;
+ 	--confidence)
+ 		improveConfidence
+ 		exit 0
+ 	;;
  
 	--doover|-d)
  		executeDoOver
+ 		exit 0
 	;;
 	--unmanned_doover)
  		DoOverBypass=1
  		executeDoOver
+  		exit 0
 	;;
 	--undo)
  		executeUndo
+ 		exit 0
 	;;
  	--help|-?|-h)
  		switchhelp=1
  		mythicalHelp
+ 		exit 0
  	;;
  	--update|--upgrade|--build|-u)
    		mythicalUpdater
@@ -2314,7 +2317,8 @@ Do not run this command with sudo."
  SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Format Show name for Sending to www.TheTvDb.com and XBMC
  tvdbshowname=`echo $ShowName | sed s/" "/"%20"/g|sed s/"&"/"%26"/g`
-
+ #Setup paths if TargetPathIsInputPath is active.
+ test "$TargetPathIsInputPath" = "Enabled" && setTargetFolderAsInputPathFolder
 
 
   #####MAINTENANCE#####
@@ -2322,8 +2326,7 @@ Do not run this command with sudo."
  DoMaintenance
 
 
- #Setup paths if TargetPathIsInputPath is active.
- test "$TargetPathIsInputPath" = "Enabled" && setTargetFolderAsInputPathFolder
+
  
 
 
@@ -2331,15 +2334,26 @@ Do not run this command with sudo."
 ##DEBUG CHECK TO MAKE SURE WE CANT GET THIS FAR WITHOUT DATABASE INFORMATION OR A SUBTITLE
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
+ #setup defaults for searching
+ Exx=""
+ Sxx=""
+ SeriesID=""
+ NewShowName=""
+ RequiresDoover=0
+ mythicalEpishow=0
  ConfidenceRating=0
- if [ "$InputSubtitle" != "" ] || [ "$mythicalLibrarianProgramIDCheck" = "EP" ] || [ "$Zap2itSeriesID" = "" ]; then
+ SeriesConfidenceRating=0
+ EpisodeConfidenceRating=0
+
+ 
+  if [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ]; then
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
 
         #Query thetvdb on show title, then return a list of Zap2itID, ShowName and seriesid.
-        searchTheTvDbAndReturnTxtFileLists  
+        searchTheTvDbAndReturnTxtFileTables  
         ConfidenceReasoning="$ConfidenceReasoning Attempted Match On Zap2itID:"
-        GetSeriesIDWIthZap2itID
+        GetSeriesLineNumberFromTableWithZap2itID
         if [ $? = 0 ]; then 
 		((++SeriesConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
@@ -2347,18 +2361,20 @@ Do not run this command with sudo."
         else
         	((--SeriesConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted match on Standard Logic:"
-                GetSeriesIDWithStandardLogic
+                GetSeriesLineNumberFromTableWithStandardLogic
                 if [ $? = 0 ]; then
                 	ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  		else
+ 			RequiresDoover=1
   			((--SeriesConfidenceRating))
                 	ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted Title match on Fuzzy Logic:"
-                	GetSeriesIDWithFuzzyLogic
+                	GetSeriesLineNumberFromTableWithFuzzyLogic
  			if [ $? = 0 ]; then
                 		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  			else
   				((--SeriesConfidenceRating))
                 		ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable"
+ 				mythicalEpiShow=1
  			fi
  		fi
         fi
@@ -2366,15 +2382,14 @@ Do not run this command with sudo."
 #if we have a series line number then translate that into a series id
     	if [ "$serieslinenumber" != "" ] && [ $serieslinenumber -gt 0 ]; then
 		setSeriesIDandNewShowNameBasedOnSeriesLineNumber
- 		echo "FOUND:$NewShowName ID#:$SeriesID WITH CONFIDENCE:$SeriesConfidenceRating" $|tee -a "$mythicalLibrarian"/output.log
+ 		echo "FOUND:$NewShowName ID#:$SeriesID WITH CONFIDENCE:$SeriesConfidenceRating"|tee -a "$mythicalLibrarian"/output.log
             else
                 echo "WARNING: SERIESID COULD NOT BE DETERMINED"|tee -a "$mythicalLibrarian"/output.log
-#DEBUG check if it has a MV/EP/SH, put in doover que if needed, set as showing if ep
         fi
  fi
 
 
- #If it's not a recognized episode, then we need to assign the name
+ #If it's not a recognized episode, then we need to assign the name mythicalLibrarian will 
  test -z "$ShowName" && ShowName=$InputTitle
  test -z "$NewShowName" && NewShowName=$ShowName
 
@@ -2387,9 +2402,10 @@ Do not run this command with sudo."
 #If database is out of date, download new database
         determineIfDatabaseIsUpToDate
         if [ "$?" != "0" ]; then
- 		downloadInfoAboutMatchedTitle
+ 		downloadInfoAboutMatchedTitleAndCreateTxtFileTables
  		if [ "$?" != "0" ]; then
  			echo "WARNING: COULD NOT DOWNLOAD UP-TO-DATE INFORMATION!"|tee -a "$mythicalLibrarian"/output.log
+ 			RequiresDoover=1
                 fi
         fi
 
@@ -2408,12 +2424,14 @@ Do not run this command with sudo."
  		if [ "$?" = "0" ]; then
   		 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  		else
+ 			RequiresDoover=1
  			((--EpisodeConfidenceRating))
  			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Fuzzy logic:" 
  			getAbsoluteEpisodeNumberWithFuzzyLogic
  			if [ "$?" = "0" ]; then
  				ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  		 	else
+ 				mythicalEpiShow=1
  				((--EpisodeConfidenceRating))
  			 	ConfidenceReasoning="$ConfidenceReasoning Failed;" 
  			fi
@@ -2437,7 +2455,7 @@ Do not run this command with sudo."
 				fuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic."
+                                ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
                         	(( ++ConfidenceRating ))
  			fi
 
@@ -2447,7 +2465,7 @@ Do not run this command with sudo."
 				fuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic."
+                                ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
                         	(( ++ConfidenceRating ))
  			fi 		
 
@@ -2479,25 +2497,62 @@ Do not run this command with sudo."
  fi
 
 
+ 
 
- #If it's a movie, give it a name.
- test "$mythicalLibrarianProgramIDCheck" = "MV" && NewShowName="$InputTitle"
  
 
  #######SANITY CHECKS#####
+
+ 
+
+ #If it's a movie, give it a name.
+ if [ "$mythicalLibrarianProgramIDCheck" = "MV" ];then
+ 	NewShowName="$InputTitle"
+ 	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
+ fi
+ #If it's a showing, give it a name.
+ if [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
+ 	NewShowName="$InputTitle"
+ 	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a generic showing with no matchable data;"
+ fi
+
+ #if the confidence was low, then show requires a doover
+ if [ $ConfidenceRating -le -4 ]; then
+ 	RequiresDoover=1
+ fi
+
+
  #If file is a link then activate link mode so the original link is not screwed up.
  if [ -L "$InputPath" ]; then
  	 echo "WARNING: FILE IS A LINK FORCING SYMLINK LINK MODE"|tee -a "$mythicalLibrarian"/output.log 
  	 SYMLINK=LINK
- fi 
+ fi
  
+ #If user wants database data deleted, then we will do that if the match was a good confidence level
+ if [ "$SYMLINK" = "Disabled" ]; then
+ 	if [ $ConfidenceRating -gt -4 ]; then
+ 		RequiresDoover=0
+ 	fi
+ fi
+ 
+ 
+ #####INVALID FILE HANDLING####
+ #If file to be moved does not exist, then report
+ if [ ! -f "$InputPath" ] && [ "$InputPath" != "testfile.ext" ]; then
+ 	InvalidFileErrorMessage
+ 	if [ $Notify = Enabled ]; then
+ 	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
+ 	fi
+  	jobtype=InvalidFileNameSupplied
+ 	RunJob
+ fi
 
  ##TEST FILESYSTEM##
  #Get file size and free space
  test -f "./$InputPath" && MoveFileSize=`stat "$InputPath" --format=%s` |awk '{print $1}' || MoveFileSize=0
  MoveFileSize=$((MoveFileSize/1024))
- MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'`
- AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`
+ MoveDirFreeSpace=`df -P "$MoveDir"|sed -n 2p|awk '{print $4}'` || MoveDirFreeSpace=0
+ AlternateMoveDirFreeSpace=`df -P "$AlternateMoveDir"|sed -n 2p|awk '{print $4}'`|| AlternateMoveDirFreeSpace=0
  if [ "$Database" = "Enabled" ]; then
  	PrimaryMovieDirFreeSpace=`df -P "$PrimaryMovieDir"|sed -n 2p|awk '{print $4}'` || PrimaryMovieDirFreeSpace=0
  	AlternateMovieDirFreeSpace=`df -P "$AlternateMovieDir"|sed -n 2p|awk '{print $4}'`|| AlternateMovieDirFreeSpace=0
@@ -2526,6 +2581,8 @@ Do not run this command with sudo."
  checkPermissions "5000" "$WorkingDirFreeSpace" "$mythicalLibrarian"
  WorkingDirWritable=$TMoveDirWritable
  
+ #Report naming decisions
+ echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning"
  
  #####DEBUG MODE OUTPUT BLOCK#####
  if [ "$DEBUGMODE" = "Enabled" ]; then
@@ -2542,9 +2599,9 @@ Do not run this command with sudo."
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
+        echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning">> "$mythicalLibrarian"/output.log
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
 	echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
-        echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning"
 	 if [ "$Database" = "Enabled"	 ]; then
  		 echo "PRIMARYSHOWDIRWRITABLE:$PrimaryShowDirWritable-  FREE:$PrimaryShowDirFreeSpace""kB-""ALTERNATESHOWDIRWRITABLE:$AlternateShowDirWritable- FREE:$AlternateShowDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 		 echo "PRIMARYMOVIEDIRWRITABLE:$PrimaryMovieDirWritable- FREE:$PrimaryMovieDirFreeSpace""kB""- ALTERNATEMOVIEDIR:$AlternateMoveDirWritable- FREE:$AlternateMovieDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
@@ -2558,26 +2615,15 @@ Do not run this command with sudo."
  	echo "####################END OF DEBUG LOG#####################">>"$mythicalLibrarian"/output.log
   fi
  
- 
- #####INVALID FILE HANDLING####
- #If file to be moved does not exist, then report
- if [ ! -f "$InputPath" ] && [ "$InputPath" != "testfile.ext" ]; then
- 	InvalidFileErrorMessage
- 	writeJobToDooverQue
- 	if [ $Notify = Enabled ]; then
- 	sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Error" "Invalid File supplied" error
- 	fi
-  	jobtype=InvalidFileNameSupplied
- 	RunJob
- fi
+
  
 
  ######PRE-NAMING CHECKS#####
- if [ "$Exx" = "" ] && [ ProgramIDType="Series With Episode Data" ] && [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
- 	if [ "$ShowStopper" = "Enabled" ]; then 
-
-
- 		tvDbIsIncomplete
+ #if no episode data and it's not a movie or a test
+ if [ "$Exx" = "" ] &&  [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
+ #If user has determined that they do not want unrecognizable tv shows in their library
+	if [ "$ShowStopper" = "Enabled" ]; then 
+		tvDbIsIncomplete
  		writeJobToDooverQue
 		jobtype=NameCouldNotBeAssigned
  		runjob
@@ -2585,7 +2631,7 @@ Do not run this command with sudo."
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
  
- 		test "$GoForDoover" = "1" &&  mythicalEpiShow=1
+ 		mythicalEpiShow=1
  #change the show to a Generic type
 		NewShowName=$SafeShowName
  		DisplayEpiShowMessage 
