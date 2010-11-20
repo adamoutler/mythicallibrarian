@@ -1093,7 +1093,7 @@ GetSeriesIDWIthZap2itID(){
         test "$serieslinenumber" = "" && serieslinenumber="0" 
    
  #Get the seriesid based on the showname
-        if [ $serieslinenumber -ge 1 ]; then
+        if [ $serieslinenumber -gt 0 ]; then
 
  		return 0
  	fi
@@ -1214,13 +1214,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
              	fi
         done < "$mythicalLibrarian/working.xml"
 
-}
+ }
 
- #####DOWNLOAD AND PARSE INFORMATION FROM THETVDB#####
- #DownlaodAndParse will download a TVDB SeriesID and parse it into a textual database if the current database is out of date.
-
-
- 
  DoTestFileExit (){
 	test -d ./Episodes && if [ ! "$(ls -A ./Episodes)" ]; then rmdir ./Episodes ; fi
  	test -d ./Movies && if [ ! "$(ls -A ./Movies)" ]; then rmdir ./Movies ; fi
@@ -1561,7 +1556,7 @@ AlternateMoveDir=$AlternateMoveDir
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
 
  DoMaintenance() {
-
+        echo "PERFORMING MAINTENANCE ROUTINE...
  #check for interrupted undo jobs
         test -f "$mythicalLibrarian/undo.lock" && test !-f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
 
@@ -2348,7 +2343,7 @@ Do not run this command with sudo."
         if [ $? = 0 ]; then 
 		((++SeriesConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
- 		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName ID:$SeriesID"| tee -a "$mythicalLibrarian"/output.log
+ 		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName"| tee -a "$mythicalLibrarian"/output.log
         else
         	((--SeriesConfidenceRating))
                 ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted match on Standard Logic:"
@@ -2644,7 +2639,7 @@ Do not run this command with sudo."
  		((++mythicalLibrarianCounter))
  	 
  #If file does not exist, then it is a valid target
- 		if [ ! -f "$MoveDir/$ShowFileName-$mythicalLibrarianCounter.$OriginalExt" ]; then 
+ 		if [ ! -e "$MoveDir/$ShowFileName-$mythicalLibrarianCounter.$OriginalExt" ]; then 
  			NameCheck="1"
  			ShowFileName=`echo "$ShowFileName"-"$mythicalLibrarianCounter"`
  			echo "FILE NAME EXISTS.  FILE WILL BE KNOWN AS: $ShowFileName"
@@ -2734,7 +2729,7 @@ Do not run this command with sudo."
  #####LINK MODE HANDLING#####
  #If symlink is in LINK mode then create symlink
  elif [ "$SYMLINK" = "LINK" ]; then
- 	echo "CREATING LINK IN LINK MODE"
+ 	echo "CREATING LINK IN LINK MODE WITH CONFIDENCE:$ConfidenceRating"
  
  	ln -s "$InputPath" "$MoveDir/$ShowFileName.$OriginalExt"     
 
