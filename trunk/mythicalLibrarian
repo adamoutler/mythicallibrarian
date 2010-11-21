@@ -1150,8 +1150,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  getAbsoluteEpisodeNumberWithFuzzyLogic(){
 
  	AbsolouteEpisodeNumber=""
- 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1|sed 's/:.*//' ^`
- 	if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
+ 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
+ 	if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsolouteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
