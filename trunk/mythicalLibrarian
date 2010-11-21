@@ -2509,15 +2509,14 @@ Do not run this command with sudo."
  #######SANITY CHECKS#####
 
  if [ "$mythicalLibrarianProgramIDCheck" = "EP" ] && [ "$Exx" = "E" ]; then
-   	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
-
+   	ConfidenceReasoning="$ConfidenceReasoning Guide Data did not match showing;"
+ 
  #If it's a movie, give it a name.
- if [ "$mythicalLibrarianProgramIDCheck" = "MV" ];then
+ elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ];then
  	NewShowName="$InputTitle"
  	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
- fi
  #If it's a showing, give it a name.
- if [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
+ elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
  	NewShowName="$InputTitle"
  	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a generic showing with no matchable data;"
  fi
