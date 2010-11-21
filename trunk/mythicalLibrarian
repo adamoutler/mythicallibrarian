@@ -2493,7 +2493,7 @@ Do not run this command with sudo."
  	echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
  
  #if series id is not obtained send failure message
- elif [ -z "$SeriesID" ]; then
+ elif [ -z "$SeriesID" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
         ConfidenceReasoning=$ConfidenceReasoning+"Failed; "
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
 	if [ "$Database" = "Enabled" ]; then
@@ -2648,8 +2648,8 @@ Do not run this command with sudo."
 		jobtype=NameCouldNotBeAssigned
  		runjob
 
- 	elif [ "$mythicalLibrarianProgramIDCheck" != "SH" ];then
- 		mythicalEpiShow=1
+ 	elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
+
 		NewShowName=$SafeShowName
  		DisplayShowWarning
  	else
