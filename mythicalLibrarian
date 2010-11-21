@@ -1615,8 +1615,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  			 fi
  	 	done < "$mythicalLibrarian/cleanup"
 		rm -f "$mythicalLibrarian/cleanup"
- 		chown -R $SUDO_USER "$mythicalLibrarian"
- 		chgrp -R $SUDO_USER "$mythicalLibrarian"
 	fi
  	test ! -d "$mythicalLibrarian/mythicalSetup" && mkdir "$mythicalLibrarian/mythicalSetup"
 }
