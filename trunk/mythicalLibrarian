@@ -1133,7 +1133,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  ######STANDARD LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithStandardLogic(){
         AbsolouteEpisodeNumber=""
+
  	AbsolouteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
+
          if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
@@ -1368,7 +1370,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #Command line, no database Episodes: Determine where File will fit
  	FailSafeState=0
  	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" && MoveDir="$AlternateMoveDir"
- 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" ] && [ "$AlternateMoveDirWritable" != "1" && FailSafeState=1
+ 	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "" -a "$AlternateMoveDirWritable" != "1" && FailSafeState=1
 
  #Episode handling: Determine where File will fit
  	test "$MoveDirWritable" != "1" -a "$mythicalLibrarianProgramIDCheck" = "EP" && MoveDir="$AlternateMoveDir"
