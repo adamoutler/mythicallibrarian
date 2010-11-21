@@ -1403,7 +1403,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #Make the Season folder if it is applicable and does not exist
  		if [ "$SeasonNumber" != "" ]; then
  			MoveDir="$MoveDir/Season $SeasonNumber" 
-			if [ ! -d "$MoveDir" ];then
+			if [ ! -d "$MoveDir" ]; then
  			 	mkdir "$MoveDir" 
  				chmod 775 "$MoveDir"
 				echo "$MoveDir">>"$mythicalLibrarian"/dir.tracking
@@ -1412,7 +1412,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  
   	fi
  #Error message if folder was not created
- 	if [ ! -d "$MoveDir" ];then
+ 	if [ ! -d "$MoveDir" ]; then
  		echo "COULD NOT CREATE $MoveDir/$NewShowName">>"$mythicalLibrarian"/output.log
  		echo "##########################################################">>"$mythicalLibrarian"/output.log
  		echo "#############FAILSAFE MODE HAS BEEN ACTIVATED#############">>"$mythicalLibrarian"/output.log
@@ -1509,7 +1509,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #Test if the Category is in the categoricIgnore file
  	if [ -f "$mythicalLibrarian/categoricIgnore" ]; then
   		ignoreTest=`grep "$ShowCategory" "$mythicalLibrarian/categoricIgnore"`
- 		if [ "$ShowCategory" = "$ignoreTest" ];then
+ 		if [ "$ShowCategory" = "$ignoreTest" ]; then
  			JobType=categoricIgnore
  			runJob
  		fi
@@ -1523,10 +1523,10 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  ShowTranslations () {
  	if [ -f "$mythicalLibrarian"/showtranslations ] && [ "$ShowName" != "" ]; then 
  		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"| sed s/"$ShowName = "/""/g `		 
- 		if [ "$showtranslation" != "" ];then 
+ 		if [ "$showtranslation" != "" ]; then 
  			ShowName=$showtranslation
  			echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
- 		elif [ "$showtranslation" = "" ];then
+ 		elif [ "$showtranslation" = "" ]; then
  			showtranslation="Inactive"
  		fi
  	fi
@@ -1715,7 +1715,7 @@ Do not run this command with sudo."
 	test `which agrep`>/dev/null && echo "package 'agrep' or 'tre-agrep' is installed" || checkd="agrep "
 	test `which notify-send`>/dev/null && echo "package 'libnotify-bin' is installed"  || checke="libnotify-bin "	
        
-	if [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]  ;then
+	if [ `which agrep`>/dev/null ] && [ `which curl`>/dev/null ]  ; then
  		packagecheck="***PASSED***"
  		echo "Installed packages check ***PASSED***"
  	else
@@ -2521,11 +2521,11 @@ Do not run this command with sudo."
    	ConfidenceReasoning="$ConfidenceReasoning Guide Data did not match showing;"
  
  #If it's a movie, give it a name.
- elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ];then
+ elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
  	NewShowName="$InputTitle"
  	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a movie;"
  #If it's a showing, give it a name.
- elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
+ elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
  	NewShowName="$InputTitle"
  	ConfidenceReasoning="$ConfidenceReasoning Guide Data reported this is a generic showing with no matchable data;"
  fi
@@ -2648,7 +2648,7 @@ Do not run this command with sudo."
 		jobtype=NameCouldNotBeAssigned
  		runjob
 
- 	elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ];then
+ 	elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
 
 		NewShowName=$SafeShowName
  		DisplayShowWarning
@@ -2744,7 +2744,7 @@ Do not run this command with sudo."
  
  #Check and report if file was moved
  	if [ -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
- 		if [ -s "$MoveDir/$ShowFileName.$OriginalExt" ];then
+ 		if [ -s "$MoveDir/$ShowFileName.$OriginalExt" ]; then
  
  #Create Commercial skip data with file
  			if [ "$CommercialMarkup" = "Created" ]; then
