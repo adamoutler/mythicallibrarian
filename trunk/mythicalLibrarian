@@ -2648,6 +2648,10 @@ Do not run this command with sudo."
 		jobtype=NameCouldNotBeAssigned
  		runjob
 
+ 	elif [ "$mythicalLibrarianProgramIDCheck" != "SH" ];then
+ 		mythicalEpiShow=1
+		NewShowName=$SafeShowName
+ 		DisplayShowWarning
  	else
 
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
