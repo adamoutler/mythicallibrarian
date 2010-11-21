@@ -2421,7 +2421,7 @@ Do not run this command with sudo."
  	ConfidenceReasoning="$ConfidenceReasoning Attemped match on OriginalAirDate:"
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
-	if [ "$OriginalAirDate" != "" ] 
+	if [ "$OriginalAirDate" != "" ]; then 
  		getAbsoluteEpisodeNumberWithOriginalAirdate
  	   	if [ "$?" != "1" ]; then
         		((++EpisodeConfidenceRating))
