@@ -647,8 +647,8 @@
  #This function provides logging for move mode
  performLoggingForMoveMode () {
  #Create undo and doover file if not present
-  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"">>"$mythicalLibrarian/undo.sh" && chmod 666 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 666 "$mythicalLibrarian/doover.sh"
 
 
  	test "$SYMLINK" != "Disabled" && echo  "test -L \"$InputPath\" && rm -f \"$InputPath\" && echo removed \"$InputPath\"">>"$mythicalLibrarian/undo.sh"	
@@ -668,8 +668,8 @@
 
 
  #Create undo and doover file if not present
- 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 773 "$mythicalLibrarian/undo.sh"
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 773 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 666 "$mythicalLibrarian/undo.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 666 "$mythicalLibrarian/doover.sh"
         
  	test "$RequiresDoover" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
  	test "$RequiresDoover" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
@@ -1543,8 +1543,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #Check and make doover.sh and undo.sh if it does not exist
 
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>"$mythicalLibrarian/doover.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
-	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>"$mythicalLibrarian/undo.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>"$mythicalLibrarian/doover.sh" && chmod 666 "$mythicalLibrarian/doover.sh"
+	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>"$mythicalLibrarian/undo.sh" && chmod 666 "$mythicalLibrarian/doover.sh"
 
  	if [ "$CommercialMarkupCleanup" = "Enabled" ] && [ -f "$mythicalLibrarian/created.tracking" ]; then
  		mythicalLibrarianCounter=0
