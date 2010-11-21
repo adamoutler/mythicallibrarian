@@ -1539,7 +1539,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  DoMaintenance() {
         echo "PERFORMING MAINTENANCE ROUTINE..."
  #check for interrupted undo jobs
-        test -f "$mythicalLibrarian/undo.lock" && test !-f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
+        test -f "$mythicalLibrarian/undo.lock" && test ! -f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
 
  #Check and make doover.sh and undo.sh if it does not exist
 
