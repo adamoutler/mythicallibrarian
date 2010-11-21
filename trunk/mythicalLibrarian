@@ -1543,8 +1543,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #Check and make doover.sh and undo.sh if it does not exist
 
- 	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>$mythicalLibrarian/doover.sh
-	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>$mythicalLibrarian/undo.sh
+ 	test ! -f "$mythicalLibrarian/doover.sh" && echo 'rm -f "'$mythicalLibrarian'"/doover.sh'>"$mythicalLibrarian/doover.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
+	test ! -f "$mythicalLibrarian/undo.sh" && echo 'rm -f "'$mythicalLibrarian'"/undo.sh'>"$mythicalLibrarian/undo.sh" && chmod 777 "$mythicalLibrarian/doover.sh"
+
  	if [ "$CommercialMarkupCleanup" = "Enabled" ] && [ -f "$mythicalLibrarian/created.tracking" ]; then
  		mythicalLibrarianCounter=0
  		echo "PERFORMING MAINTENANCE ROUTINE">>"$mythicalLibrarian"/output.log
@@ -1625,7 +1626,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  mythicalScan () {
  	DoMythTVPermissionsCheck
  	checkext=$InputTitle
-	if [ "$UID" = "0" -o "$USER" = "root"]; then
+	if [ "$UID" = "0" -o "$USER" = "root" ]; then
 	 	echo "mythicalLibrarian has detected that you are (or were previously)
 running as a priviliged user.  This may lead to permission
 contamination of normally unprivliged files.
