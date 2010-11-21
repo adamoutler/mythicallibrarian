@@ -2421,11 +2421,17 @@ Do not run this command with sudo."
  	ConfidenceReasoning="$ConfidenceReasoning Attemped match on OriginalAirDate:"
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
-	test "$OriginalAirDate" != "" && getAbsoluteEpisodeNumberWithOriginalAirdate
-        if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
- 		((++EpisodeConfidenceRating))
-                ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
-        else
+	if [ "$OriginalAirDate" != "" ] 
+ 		getAbsoluteEpisodeNumberWithOriginalAirdate
+ 	   	if [ "$?" != "1" ]; then
+        		((++EpisodeConfidenceRating))
+                	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+ 			GotEpisodeNumber=1
+		else 
+ 			GotEpisodeNumber=0
+  		fi
+        fi
+        if [ "$GotEpisodeNumber" != "1"]; then
  		((--EpisodeConfidenceRating))
  		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
  		getAbsoluteEpisodeNumberWithStandardLogic
