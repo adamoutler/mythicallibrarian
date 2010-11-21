@@ -2431,7 +2431,7 @@ Do not run this command with sudo."
  			GotEpisodeNumber=0
   		fi
         fi
-        if [ "$GotEpisodeNumber" != "1"]; then
+ 	if [ "$GotEpisodeNumber" != "1" ]; then
  		((--EpisodeConfidenceRating))
  		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
  		getAbsoluteEpisodeNumberWithStandardLogic
