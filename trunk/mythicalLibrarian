@@ -998,6 +998,11 @@ determineIfDatabaseIsUpToDate(){
  #####GET EPISODE INFORMATION#####
  downloadInfoAboutMatchedTitleAndCreateTxtFileTables () {
  
+
+#DEBUG This needs to be downloaded to a separate file and then if the file contains valid information, 
+# then we will parse it.  This way we don't clobber old downloads. with bogus information about
+# a file which does not exist.   Old information is better then no information.
+
  #Download information from server
  		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
  
@@ -2498,8 +2503,16 @@ Do not run this command with sudo."
  			getAbsoluteEpisodeNumberWithStandardLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				StandardLogicDoesNotJiveMessage
-                                ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with line $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
+                                ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
+
+#DEBUG For shows which are way off, we need some sort of doover mechanisim.   
+#CONFIDENCE:2 LOGIC PATH:  Attempted Match On Zap2itID: Sucessful; Attemped match on OriginalAirDate: Sucessful;  
+#Standard Logic came up with line 76. This does not match 85; Fuzzy Logic test came up with line 76. This does not match 85;
+#JOB: mythicalLibrarian '/home/mythtv/Videos/1035_20101109001500.mpg' 'Aqua Teen Hunger Force' 'Couple Skate'
+#TARGET SET:/home/mythtv/Videos/Episodes/Aqua Teen Hunger Force/Season 6/Aqua Teen Hunger Force S06E03 (She Creature).mpg
+
+
 				updateRunningFuzzyLogicErrorCount
                                 ConfidenceReasoning="$ConfidenceReasoning Verified Standard logic matches;"
                         	(( ++ConfidenceRating ))
@@ -2510,7 +2523,7 @@ Do not run this command with sudo."
  #Verify with Fuzzy
  			getAbsoluteEpisodeNumberWithFuzzyLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
-                                ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with line $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
+                                ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
