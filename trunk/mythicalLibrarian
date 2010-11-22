@@ -827,6 +827,9 @@
  #disqualify invalid movie airdates
  	test ! -z "$MovieAirDate" && test $MovieAirDate -lt 1900 && MovieAirDate=$null 
 
+ 	test $OriginalAirDate = "None" && $OriginalAirDate=""
+ 	test $OriginalAirDate = "none" && $OriginalAirDate=""
+
  #Get rating from Stars
   	rating=`printf "%0.f" $Stars`
   	test $rating != "" && let rating=$rating*2
@@ -930,17 +933,17 @@
 setSxxAndExxFromAbsoluteEpisodeNumber() {
 #if line match is obtained, then gather new episode name, Sxx and Exx
 
-	EpisodeSubtitle=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt`
+	EpisodeSubtitle=`sed -n $AbsoluteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt`
 
 #gather series and episode names from files created earlier.
-	Exx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".E.txt`
-	Sxx=`sed -n $AbsolouteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt`
+	Exx=`sed -n $AbsoluteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".E.txt`
+	Sxx=`sed -n $AbsoluteEpisodeNumber'p' "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt`
 	test $Sxx != "" && SeasonNumber=$Sxx
 
 #Single digit episode and show names are not allowed Ex and Sx replaced with Exx Sxx
 	test $Exx -lt 10  && Exx="E0$Exx" || Exx="E$Exx"
 	test $Sxx -lt 10  && Sxx="S0$Sxx" || Sxx="S$Sxx"
-	echo "EPISODE:$EpisodeSubtitle EPISODE NUMBER:$AbsolouteEpisodeNumber $Sxx$Exx WITH CONFIDENCE: $EpisodeConfidenceRating"
+	echo "EPISODE:$EpisodeSubtitle EPISODE NUMBER:$AbsoluteEpisodeNumber $Sxx$Exx WITH CONFIDENCE: $EpisodeConfidenceRating"
  }
 
 
@@ -1116,14 +1119,14 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #####AIRDATE MATCH#####
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
- 	AbsolouteEpisodeNumber=""
- 	AbsolouteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
+ 	AbsoluteEpisodeNumber=""
+ 	AbsoluteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Account for original series airdate
  	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
- 		(( --AbsolouteEpisodeNumber ))
+ 		(( --AbsoluteEpisodeNumber ))
  #Account for original show airdate = first air date
- 		test "$AbsolouteEpisodeNumber" = "0" && ((++AbsolouteEpisodeNumber))
- 		echo "ABSOLOUTE Exx NR:$AbsolouteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
+ 		test "$AbsoluteEpisodeNumber" = "0" && ((++AbsoluteEpisodeNumber))
+ 		echo "Absolute Exx NR:$AbsoluteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
  	return 1
@@ -1131,9 +1134,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  
  ######STANDARD LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithStandardLogic(){
-        AbsolouteEpisodeNumber=""
+        AbsoluteEpisodeNumber=""
 
- 	AbsolouteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
+ 	AbsoluteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
 
          if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
@@ -1148,10 +1151,10 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  ######FUZZY LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithFuzzyLogic(){
 
- 	AbsolouteEpisodeNumber=""
- 	AbsolouteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
- 	if [ "$AbsolouteEpisodeNumber" != "" ] && [ $AbsolouteEpisodeNumber -gt 0 ]; then
- 		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsolouteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+ 	AbsoluteEpisodeNumber=""
+ 	AbsoluteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
+ 	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
+ 		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
  return 1
@@ -2457,15 +2460,15 @@ Do not run this command with sudo."
         let ConfidenceRating=EpisodeConfidenceRating+SeriesConfidenceRating
 
 
-	if [ "$AbsolouteEpisodeNumber" != "" ]; then
+	if [ "$AbsoluteEpisodeNumber" != "" ]; then
  #####VERIFICATION OF CONFIDENCE RATING#####
  #backup AbsoluteEpisodeNumber for tests
-		AbsolouteEpisodeNumberBackup=$AbsolouteEpisodeNumber
+		AbsoluteEpisodeNumberBackup=$AbsoluteEpisodeNumber
  		if  [ "$InputSubtitle" != "" ] && [ "$OriginalAirDate" != "" ]; then
  
  #Verify with fuzzy logic 
  			getAbsoluteEpisodeNumberWithStandardLogic
-			if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ]; then
+			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				fuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
@@ -2475,7 +2478,7 @@ Do not run this command with sudo."
 
  #Verify with Standard Logic
  			getAbsoluteEpisodeNumberWithFuzzyLogic
-			if [ "$AbsolouteEpisodeNumber" != "$AbsolouteEpisodeNumberBackup" ]; then
+			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				fuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
@@ -2485,7 +2488,7 @@ Do not run this command with sudo."
 
 		fi
  #Restore AbsoluteEpisodeNumber after testing
-		AbsolouteEpisodeNumber=$AbsolouteEpisodeNumberBackup
+		AbsoluteEpisodeNumber=$AbsoluteEpisodeNumberBackup
 	fi
 
  #Statistical Fuzzy Logic monitoring
@@ -2504,7 +2507,7 @@ Do not run this command with sudo."
 
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
- if [ "$AbsolouteEpisodeNumber" !=  "" ]; then
+ if [ "$AbsoluteEpisodeNumber" !=  "" ]; then
         setSxxAndExxFromAbsoluteEpisodeNumber
  else
         ConfidenceReasoning="$ConfidenceReasoning Could not set Sxx and Exx, Failed; "
@@ -2611,7 +2614,7 @@ Do not run this command with sudo."
  	echo "INPUT SHOW NAME:$InputTitle- LOCAL SHOW NAME TRANSLATION:${showtranslation}- ShowName:$ShowName">>"$mythicalLibrarian"/output.log
  	echo "DATABASE UPDATED:$DatabaseWasUpdated- TVDB LAST UPDATED:$LastUpdated- CURRENT:$TvDbTime-">>"$mythicalLibrarian"/output.log
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
- 	echo "INPUT EPISODE NAME:$InputSubtitle- ABSOLOUTE EPISODE NUMBER:$AbsolouteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
+ 	echo "INPUT EPISODE NAME:$InputSubtitle- Absolute EPISODE NUMBER:$AbsoluteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
         echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning">> "$mythicalLibrarian"/output.log
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
