@@ -1158,7 +1158,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	AbsoluteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
 
          if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
- 		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
  return 1
@@ -1173,7 +1172,6 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	AbsoluteEpisodeNumber=""
  	AbsoluteEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
  	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
- 		echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
  		return 0
  	fi
  return 1
@@ -2464,29 +2462,27 @@ Do not run this command with sudo."
                 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  			GotEpisodeNumber=1
 		else 
- 			GotEpisodeNumber=0
-  		fi
-        fi
- 	if [ "$GotEpisodeNumber" != "1" ]; then
- 		((--EpisodeConfidenceRating))
- 		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
- 		getAbsoluteEpisodeNumberWithStandardLogic
- 		if [ "$?" = "0" ]; then
-  		 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
- 		else
- 			RequiresDoover=1
- 			((--EpisodeConfidenceRating))
- 			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Fuzzy logic:" 
- 			getAbsoluteEpisodeNumberWithFuzzyLogic
- 			if [ "$?" = "0" ]; then
- 				ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
- 		 	else
- 				mythicalEpiShow=1
- 				((--EpisodeConfidenceRating))
- 			 	ConfidenceReasoning="$ConfidenceReasoning Failed;" 
- 			fi
- 		fi
-
+	 		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+	 		((--EpisodeConfidenceRating))
+	 		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
+	 		getAbsoluteEpisodeNumberWithStandardLogic
+	 		if [ "$?" = "0" ]; then
+	  		 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+	 		else
+				echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+	 			RequiresDoover=1
+	 			((--EpisodeConfidenceRating))
+	 			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Fuzzy logic:" 
+	 			getAbsoluteEpisodeNumberWithFuzzyLogic
+	 			if [ "$?" = "0" ]; then
+	 				ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+		 		 	else
+	 				mythicalEpiShow=1
+	 				((--EpisodeConfidenceRating))
+	 			 	ConfidenceReasoning="$ConfidenceReasoning Failed;" 
+	 			fi
+	 		fi
+		fi	
  	fi
         
         #update confidence total
