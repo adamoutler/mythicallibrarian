@@ -2456,33 +2456,33 @@ Do not run this command with sudo."
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
 	getAbsoluteEpisodeNumberWithOriginalAirdate
- 	   	if [ "$?" = "0" ]; then
-        		((++EpisodeConfidenceRating))
-                	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
- 			GotEpisodeNumber=1
-		else 
-	 		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
-	 		((--EpisodeConfidenceRating))
-	 		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
-	 		getAbsoluteEpisodeNumberWithStandardLogic
-	 		if [ "$?" = "0" ]; then
-	  		 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
-	 		else
-				echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
-	 			RequiresDoover=1
+ 	if [ "$?" = "0" ]; then
+        	((++EpisodeConfidenceRating))
+               	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+ 		GotEpisodeNumber=1
+	else 
+		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+		((--EpisodeConfidenceRating))
+		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Standard logic:"     	
+		getAbsoluteEpisodeNumberWithStandardLogic
+		if [ "$?" = "0" ]; then
+		 	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+		else
+			echo "AIRDATE/SANDARD LOGIC FAILED. FUZZY LOGIC ABSOLUTE: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
+			RequiresDoover=1
+			((--EpisodeConfidenceRating))
+			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Fuzzy logic:" 
+			getAbsoluteEpisodeNumberWithFuzzyLogic
+			if [ "$?" = "0" ]; then
+				ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+		 	else
+				mythicalEpiShow=1
 	 			((--EpisodeConfidenceRating))
-	 			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted SubTitle match on Fuzzy logic:" 
-	 			getAbsoluteEpisodeNumberWithFuzzyLogic
-	 			if [ "$?" = "0" ]; then
-	 				ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
-		 		 	else
-	 				mythicalEpiShow=1
-	 				((--EpisodeConfidenceRating))
-	 			 	ConfidenceReasoning="$ConfidenceReasoning Failed;" 
-	 			fi
+	 		 	ConfidenceReasoning="$ConfidenceReasoning Failed;" 
 	 		fi
-		fi	
- 	fi
+	 	fi
+	fi	
+ 	
         
         #update confidence total
         let ConfidenceRating=EpisodeConfidenceRating+SeriesConfidenceRating
