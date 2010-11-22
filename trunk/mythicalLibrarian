@@ -1119,6 +1119,26 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  #####AIRDATE MATCH#####
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
+
+
+#DEBUG  On shows like My Nam,e Is Earl, Monkeys Take a Bath, 
+# (/home/mythtv/Videos/1030_20100909230000.mpg)  
+# There were two shows which use the same original airdate 
+# These shows should be fuzzy'd and title matched to determine
+# the proper episode to match
+#Season 4
+#Episode Number Episode Name 	Originally Aired 	Image
+#1	        The Magic Hour	        2008-09-25	
+#2	        Monkeys Take A Bath	2008-09-25
+#Currently this will match S4E2 and declare a improper match.
+#
+#Same issue with The Office, The Delivery, Part 1
+#Season 6
+#Special	Webisodes: The Mentor	2010-03-04	 
+#16	The Delivery (1)	2010-03-04	
+#17	The Delivery (2)	2010-03-04
+
+
  	AbsoluteEpisodeNumber=""
  	AbsoluteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
  #Account for original series airdate
@@ -1274,8 +1294,22 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  }
 
 
- fuzzyLogicDoesNotJiveMessage(){
+ FuzzyLogicDoesNotJiveMessage(){
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%Testing Fuzzy Logic results%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+  	echo "%%%%%%%%%%%%%%%%% GUIDE DATA AND TVDB DATA DO NOT MATCH %%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%% Possible causes: small variations in episode name %%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad guide data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb airdate %%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb episode name %%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%% bad tvdb zap2it id %%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+ 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
+	echo -e "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%% \n CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
+        DEBUGMODE=Enabled
+ }
+ StandardLogicDoesNotJiveMessage(){
+ 	echo "%%%%%%%%%%%%%%%%%%%%Testing Standard Logic results%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
   	echo "%%%%%%%%%%%%%%%%% GUIDE DATA AND TVDB DATA DO NOT MATCH %%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%% Possible causes: small variations in episode name %%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -2468,7 +2502,7 @@ Do not run this command with sudo."
  #Verify with fuzzy logic 
  			getAbsoluteEpisodeNumberWithStandardLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
-				fuzzyLogicDoesNotJiveMessage
+				StandardLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
                                 ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
@@ -2478,7 +2512,7 @@ Do not run this command with sudo."
  #Verify with Standard Logic
  			getAbsoluteEpisodeNumberWithFuzzyLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
-				fuzzyLogicDoesNotJiveMessage
+				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
                                 ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
