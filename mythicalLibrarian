@@ -2501,7 +2501,7 @@ Do not run this command with sudo."
                                 ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with line $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified line $AbsoluteEpisodeNumber with Standard logic matches;"
+                                ConfidenceReasoning="$ConfidenceReasoning Verified Standard logic matches;"
                         	(( ++ConfidenceRating ))
  			fi
 
@@ -2514,7 +2514,7 @@ Do not run this command with sudo."
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
+                                ConfidenceReasoning="$ConfidenceReasoning Verified Fuzzy logic;"
                         	(( ++ConfidenceRating ))
  			fi 		
 
