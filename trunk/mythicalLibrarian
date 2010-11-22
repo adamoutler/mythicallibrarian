@@ -2495,19 +2495,23 @@ Do not run this command with sudo."
 		AbsoluteEpisodeNumberBackup=$AbsoluteEpisodeNumber
  		if  [ "$InputSubtitle" != "" ] && [ "$OriginalAirDate" != "" ]; then
  
- #Verify with fuzzy logic 
+ #Verify with Standard logic 
  			getAbsoluteEpisodeNumberWithStandardLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				StandardLogicDoesNotJiveMessage
+                                ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with line $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
+                                ConfidenceReasoning="$ConfidenceReasoning Verified line $AbsoluteEpisodeNumber with Standard logic matches;"
                         	(( ++ConfidenceRating ))
  			fi
 
- #Verify with Standard Logic
+ #Reset for fuzzy test
+			AbsoluteEpisodeNumber=$AbsoluteEpisodeNumberBackup
+ #Verify with Fuzzy
  			getAbsoluteEpisodeNumberWithFuzzyLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
+                                ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with line $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
