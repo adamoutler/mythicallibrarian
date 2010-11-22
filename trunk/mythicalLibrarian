@@ -2503,7 +2503,8 @@ Do not run this command with sudo."
  			getAbsoluteEpisodeNumberWithStandardLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				StandardLogicDoesNotJiveMessage
-                                ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
+                                test "$AbsoluteEpisodeNumber" = "" && AbsoluteEpisodeNumber="Nothing"
+ 				ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
 
 #DEBUG For shows which are way off, we need some sort of doover mechanisim.   
@@ -2523,6 +2524,7 @@ Do not run this command with sudo."
  #Verify with Fuzzy
  			getAbsoluteEpisodeNumberWithFuzzyLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
+ 				test "$AbsoluteEpisodeNumber" = "" && AbsoluteEpisodeNumber="Nothing"
                                 ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
