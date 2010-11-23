@@ -1108,7 +1108,7 @@ ResolveMultipleAirdateMatches(){
  	ConfidenceReasoning="$ConfidenceReasoning Conflict; Multiple Airdates Detected- Parsed results; Attempted to resolve confilct with Standard Logic:"
         test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" 
  	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"  && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt" 
- 	test -f rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt && "
+ 	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  #Create a list of line numbers which match original airdate
  	grep -n "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|sed 's/:.*//'>>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
  #Loop through list and create instance matching files
