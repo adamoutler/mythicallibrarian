@@ -1100,6 +1100,51 @@ GetSeriesLineNumberFromTableWithZap2itID(){
  }
 
 
+##### RESOLUTION OF MULTIPLE AIRDATE MATCHES #####
+#ResolveMultipleAirdateMatches is used in the event of muliple matches on the same airdate
+#It resolves a conflict by matching the matched airdate by title.
+ResolveMultipleAirdateMatches(){
+ #Cleanup from last instance match if required
+        test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" 
+ 	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"  && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt" 
+ 	test -f rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt && "
+ #Create a list of line numbers which match original airdate
+ 	grep -n "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|sed 's/:.*//'>>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
+ #Loop through list and create instance matching files
+ 	while read line
+ 	do
+ 		((--line)) #account for original show airdate
+ 		test $line = 0 && ((++line)) #account for original showdate is the same as first aired
+ 		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
+ 	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
+ 	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
+ #get instance line number
+ 	IntermediateEpisodeNumber=`grep -ni "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
+ #translate instance line number to actual line number
+ 	AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
+ 	if [ "$AbsoluteEpisodeNumber" != "" ]; then
+ 		((++EpisodeConfidenceRating))
+ 		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+ 		return 0
+ 		else
+ 		ConfidenceReasoning="$ConfidenceReasoning Failed; Attempted to resolve conflict with Fuzzy Logic:"
+ #get instance line number
+ 		IntermediateEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
+ #translate instance line number to actual line number
+ 		AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
+ 		if [ "$AbsoluteEpisodeNumber" != "" ]; then
+ 				ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+ 			return 0
+ 		else
+ 			ConfidenceReasoning="$ConfidenceReasoning Failed;"
+ 			return 1
+ 		fi
+ 	fi
+  	return 1
+ }
+
+
+
 #####CREATE SHOW FOLDER#####
 makeShowDirIfNeeded(){
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
@@ -1126,37 +1171,22 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
 
 
-#DEBUG  On shows like My Nam,e Is Earl, Monkeys Take a Bath, 
-# (/home/mythtv/Videos/1030_20100909230000.mpg)  
-# There were two shows which use the same original airdate 
-# These shows should be fuzzy'd and title matched to determine
-# the proper episode to match
-#Season 4
-#Episode Number Episode Name 	Originally Aired 	Image
-#1	        The Magic Hour	        2008-09-25	
-#2	        Monkeys Take A Bath	2008-09-25
-#Currently this will match S4E2 and declare a improper match.
-#
-#Same issue with The Office, The Delivery, Part 1
-#Season 6
-#Special	Webisodes: The Mentor	2010-03-04	 
-#16	The Delivery (1)	2010-03-04	
-#17	The Delivery (2)	2010-03-04
+	AbsoluteEpisodeNumber=""
+	test "$OriginalAirDate" != "" && AbsoluteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|grep -m1 ^|sed 's/:.*//'`
+#Account for original series airdate
+	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
+		(( --AbsoluteEpisodeNumber ))
+#Account for original show airdate = first air date
+		test "$AbsoluteEpisodeNumber" = "0" && ((++AbsoluteEpisodeNumber))
+ 		NumberOriginalAirdates=`grep "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|wc -l`
+ 		test $NumberOriginalAirdates -gt 1 && return 1
+		echo "Absolute Exx NR:$AbsoluteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
+		return 0
+	fi
+	return 2
+}
 
 
- 	AbsoluteEpisodeNumber=""
- 	test "$OriginalAirDate" != "" && AbsoluteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian""/""$NewShowName""/""$NewShowName"".FAired.txt"|grep -m1 ^|sed 's/:.*//'`
- #Account for original series airdate
- 	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
- 		(( --AbsoluteEpisodeNumber ))
- #Account for original show airdate = first air date
- 		test "$AbsoluteEpisodeNumber" = "0" && ((++AbsoluteEpisodeNumber))
- 		echo "Absolute Exx NR:$AbsoluteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
- 		return 0
- 	fi
- 	return 1
- }
- 
  ######STANDARD LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithStandardLogic(){
         AbsoluteEpisodeNumber=""
@@ -2461,7 +2491,10 @@ Do not run this command with sudo."
  #If info was pulled from database, then plug name into NewShowName	
         AbsoluteEpisodeNumber=""
 	getAbsoluteEpisodeNumberWithOriginalAirdate
- 	if [ "$?" = "0" ]; then
+	AirdateExitStatus=$?
+ 	test "$AirdateExitStatus" = "1" && test "$EpisodeSubtitle" != "" && ResolveMultipleAirdateMatches
+ 	test "$?" = "0" && AirdateExitStatus=0
+ 	if [ "$AirdateExitStatus" = "0" ]; then
         	((++EpisodeConfidenceRating))
                	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  		GotEpisodeNumber=1
