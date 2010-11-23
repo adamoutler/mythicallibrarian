@@ -2548,7 +2548,7 @@ Do not run this command with sudo."
 
 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified Standard logic matches;"
+                                ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
                         	(( ++ConfidenceRating ))
  			fi
 
@@ -2562,7 +2562,7 @@ Do not run this command with sudo."
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified Fuzzy logic;"
+                                ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
                         	(( ++ConfidenceRating ))
  			fi 		
 
