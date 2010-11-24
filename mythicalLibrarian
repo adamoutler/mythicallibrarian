@@ -915,7 +915,7 @@
  DeleteRelevantDatabaseFilesAndPictures () {
  
  #Make sure we got input arguments and file is valid
- 	if [ -s "$InputPath" ]; then
+ 	if [ ! -e "$InputPath" ]; then
  	        echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"|tee -a "$mythicalLibrarian"/output.log
