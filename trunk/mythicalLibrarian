@@ -1271,7 +1271,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
-
+#DEBUG This might not work
  if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ "$InputTitle" != "--BypassPermissionsCheck" ]; then
  	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
@@ -2450,7 +2450,7 @@ Do not run this command with sudo."
                 		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  			else
   				((--SeriesConfidenceRating))
-                		ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable"
+                		ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable;"
  				mythicalEpiShow=1
  			fi
  		fi
@@ -2602,7 +2602,10 @@ Do not run this command with sudo."
 
  if [ "$mythicalLibrarianProgramIDCheck" = "EP" ] && [ "$Exx" = "E" ]; then
    	ConfidenceReasoning="$ConfidenceReasoning Guide Data did not match showing;"
- 
+
+#DEBUG come up with a way to have a variable like DataWasNotObtainable to check and make it a SH later
+
+
  #If it's a movie, give it a name.
  elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
  	NewShowName="$InputTitle"
@@ -2717,26 +2720,27 @@ Do not run this command with sudo."
 
  ######PRE-NAMING CHECKS#####
  #if no episode data and it's not a movie or a test
- if [ "$Exx" = "" ] &&  [ "$mythicalLibrarianProgramIDCheck" != "MV" ] && [ "$InputPath" != "testfile.ext" ] ; then
+ if [ "$Exx" = "" ] && [ "$InputPath" != "testfile.ext" ] ; then
 
  	if [ "$ChanID" = "" ] && [ "$InputPath" ]; then
                 echo "This episode could not be matched based on supplied Title and SubTitle."
  		jobType="NameCouldNotBeAssigned"
  	        runjob
-
- #If user has determined that they do not want unrecognizable tv shows in their library
+ 	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
+#Ensures the doover value was not set for the movie and use safe show name
+  		RequiresDoover=0
+		NewShowName=$SafeShowName
+#If user has determined that they do not want unrecognizable tv shows in their library
 	elif [ "$ShowStopper" = "Enabled" ]; then 
 		tvDbIsIncomplete
  		writeJobToDooverQue
 		jobtype=NameCouldNotBeAssigned
  		runjob
-
  	elif [ "$mythicalLibrarianProgramIDCheck" = "SH" ]; then
-
+#Ensures the doover value was not set for the show and use safe show name
 		NewShowName=$SafeShowName
  		DisplayShowWarning
  	else
-
  #This marks Episodes as shows.  AKA EpiShows.  Episodes for which no information cannot be obtained currently.
  		mythicalEpiShow=1
  #change the show to a Generic type
@@ -2826,8 +2830,8 @@ Do not run this command with sudo."
  	mv "$InputPath" "$MoveDir/$ShowFileName.$OriginalExt"
  
  #Check and report if file was moved
- 	if [ -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
- 		if [ -s "$MoveDir/$ShowFileName.$OriginalExt" ]; then
+ 	if [ -e "$MoveDir/$ShowFileName.$OriginalExt" ]; then
+ 		if [ -f "$MoveDir/$ShowFileName.$OriginalExt" ]; then
  
  #Create Commercial skip data with file
  			if [ "$CommercialMarkup" = "Created" ]; then
@@ -2845,7 +2849,12 @@ Do not run this command with sudo."
 
  
  #If symlink=disabled, remove database entries
-  			test "$RequiresDoover" != "1" && test "$SYMLINK" = "Disabled" && chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" && DeleteRelevantDatabaseFilesAndPictures 
+ 			if [  "$SYMLINK" = "Disabled" ]; then
+ 				if [ "$RequiresDoover" != "1" ]
+ 					chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" 
+ 					DeleteRelevantDatabaseFilesAndPictures 
+ 				fi
+ 			fi 
  
  #Send notification of completion and exit
  			test $Notify = "Enabled" && sudo -u "$NotifyUserName" /usr/local/bin/librarian-notify-send "mythicalLibrarian Sucess" "$ShowFileName moved to $MoveDir" info
@@ -2858,7 +2867,7 @@ Do not run this command with sudo."
  			performLoggingForMoveMode
  			dailyreport 
  			generaterss 
- 	 	        test "$SYMLINK" = "DISABLED" && setGroupPermissions
+ 	 	        test "$SYMLINK" = "Disabled" && setGroupPermissions
   			jobtype=MoveModeSuccessful		
  			RunJob
  
@@ -2908,7 +2917,7 @@ Do not run this command with sudo."
  		performLoggingForLinkMode
  		dailyreport
  		generaterss
- 	        test "$SYMLINK" = "DISABLED" && setGroupPermissions
+ 	        test "$SYMLINK" = "Disabled" && setGroupPermissions
    		jobtype=LinkModeSuccessful		
  		RunJob
  
