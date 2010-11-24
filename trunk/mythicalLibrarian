@@ -1114,8 +1114,8 @@ ResolveMultipleAirdateMatches(){
  #Loop through list and create instance matching files
  	while read line
  	do
- 		((--line)) #account for original show airdate
- 		test $line = 0 && ((++line)) #account for original showdate is the same as first aired
+ 		#DEBUG Why is this throwing it off?((--line)) #account for original show airdate
+ 		
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
