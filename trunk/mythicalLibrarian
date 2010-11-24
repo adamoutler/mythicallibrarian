@@ -2850,7 +2850,7 @@ Do not run this command with sudo."
  
  #If symlink=disabled, remove database entries
  			if [  "$SYMLINK" = "Disabled" ]; then
- 				if [ "$RequiresDoover" != "1" ]
+ 				if [ "$RequiresDoover" != "1" ]; then 
  					chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" 
  					DeleteRelevantDatabaseFilesAndPictures 
  				fi
