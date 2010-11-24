@@ -1120,7 +1120,7 @@ ResolveMultipleAirdateMatches(){
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
 #get instance line number
-	IntermediateEpisodeNumber=`grep -n "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
+	IntermediateEpisodeNumber=`grep -ni "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
 #translate instance line number to actual line number
 	test "$IntermediateEpisodeNumber" != "" && AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
 	if [ "$AbsoluteEpisodeNumber" != "" ]; then
