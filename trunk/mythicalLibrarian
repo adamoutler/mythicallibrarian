@@ -1106,7 +1106,7 @@ GetSeriesLineNumberFromTableWithZap2itID(){
 ResolveMultipleAirdateMatches(){
  #Cleanup from last instance match if required
  	ConfidenceReasoning="$ConfidenceReasoning Conflict; Multiple Airdates Detected- Parsed results; Attempted to resolve confilct with Standard Logic:"
-        test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" 
+ 	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt" 
  	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"  && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt" 
  	test -f "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt" && rm "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  #Create a list of line numbers which match original airdate
@@ -1119,30 +1119,29 @@ ResolveMultipleAirdateMatches(){
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
- #get instance line number
- 	IntermediateEpisodeNumber=`grep -ni "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
- #translate instance line number to actual line number
- 	AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
- 	if [ "$AbsoluteEpisodeNumber" != "" ]; then
- 		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
- 		return 0
- 		else
- 		ConfidenceReasoning="$ConfidenceReasoning Failed; Attempted to resolve conflict with Fuzzy Logic:"
- #get instance line number
- 		IntermediateEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
- #translate instance line number to actual line number
- 		AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
- 		if [ "$AbsoluteEpisodeNumber" != "" ]; then
- 				ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
- 			return 0
- 		else
- 			ConfidenceReasoning="$ConfidenceReasoning Failed;"
- 			return 1
- 		fi
- 	fi
-  	return 1
- }
-
+#get instance line number
+	IntermediateEpisodeNumber=`grep -n "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
+#translate instance line number to actual line number
+	test "$IntermediateEpisodeNumber" != "" && AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
+	if [ "$AbsoluteEpisodeNumber" != "" ]; then
+		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+		return 0
+		else
+		ConfidenceReasoning="$ConfidenceReasoning Failed; Attempted to resolve conflict with Fuzzy Logic:"
+#get instance line number
+		IntermediateEpisodeNumber=`agrep -Byn "${EpisodeSubtitle:0:29}" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
+#translate instance line number to actual line number
+		test "$IntermediateEpisodeNumber" != "" && AbsoluteEpisodeNumber= AbsoluteEpisodeNumber=`sed -n $IntermediateEpisodeNumber'p' "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"`
+		if [ "$AbsoluteEpisodeNumber" != "" ]; then
+			ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+			return 0
+		else
+			ConfidenceReasoning="$ConfidenceReasoning Failed;"
+			return 1
+		fi
+	fi
+	return 1
+}
 
 
 #####CREATE SHOW FOLDER#####
