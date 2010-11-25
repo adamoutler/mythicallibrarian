@@ -1008,14 +1008,18 @@ determineIfDatabaseIsUpToDate(){
 
 #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
 		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
-			Ename=" "
-			actualEname=" "
-			FAired=" "
-			SeasonNr=" "
-			EpisodeNr=" "
+			Ename=""
+			actualEname=""
+			FAired=""
+			SeasonNr=""
+			EpisodeNr=""
+ 			totalLines=`wc -l "$mythicalLibrarian/$NewShowName/$NewShowName.xml"`
+ 			lineNumber=0
  			echo "Parsing Downloaded information: $NewShowName.xml"
 	 		while read line
 			do
+ 			(( ++linenumber ))
+ 			echo -ne "$lineNumber of $totalLines\r"
  			case $line in 
  					\</Episode\>)
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
