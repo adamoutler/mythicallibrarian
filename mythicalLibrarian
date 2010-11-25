@@ -1029,7 +1029,6 @@ determineIfDatabaseIsUpToDate(){
 						FAired=""
 						SeasonNr=""
 						EpisodeNr=""
- echo 'WOEIROIEJHRPOIAHNJFLK:ZL:CXJ:LAZKXC'
 				 	;;
 #Get actual show name
 			 		\<EpisodeName\>*)
