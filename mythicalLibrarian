@@ -1004,20 +1004,20 @@ determineIfDatabaseIsUpToDate(){
 # a file which does not exist.   Old information is better then no information.
 
 #Download information from server
-		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>|<Episode>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
+		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
 
 #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
 		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
-			Ename=""
-			actualEname=""
-			FAired=""
-			SeasonNr=""
-			EpisodeNr=""
+			Ename=" "
+			actualEname=" "
+			FAired=" "
+			SeasonNr=" "
+			EpisodeNr=" "
  			echo "Parsing Downloaded information: $NewShowName.xml"
 	 		while read line
 			do
- 				case $line in 
- 					\ \ \<EpisodeName>*)
+ 			case $line in 
+ 					\</Episode\>)
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
  						Ename=`echo "$actualEname" |sed 's/;.*//'`
 						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
@@ -1029,21 +1029,22 @@ determineIfDatabaseIsUpToDate(){
 						FAired=""
 						SeasonNr=""
 						EpisodeNr=""
+ echo 'WOEIROIEJHRPOIAHNJFLK:ZL:CXJ:LAZKXC'
 				 	;;
 #Get actual show name
-			 		\ \ \</EpisodeName\>*)
+			 		\<EpisodeName\>*)
  						actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'`
  					;;
 #Get OriginalAirDate
-					\ \ \</FirstAired\>*)
+					\<FirstAired\>*)
  						FAired=`echo "$line" | sed s/"<FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g`
  					;;
 #Get Season number
-				 	\ \ \</SeasonNumber\>*)
+				 	\<SeasonNumber\>*)
  						SeasonNr=`echo "$line" |sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g`
  					;;
 #Get Episode number
-					\ \ \</EpisodeNumber\>*)
+					\<EpisodeNumber\>*)
  						EpisodeNr=`echo "$line" |sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g`
  					;;
 				esac
