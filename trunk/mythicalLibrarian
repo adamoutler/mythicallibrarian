@@ -1018,8 +1018,8 @@ determineIfDatabaseIsUpToDate(){
  			echo "Parsing Downloaded information: $NewShowName.xml"
 	 		while read line
 			do
- 			(( ++linenumber ))
- 			echo -ne "$lineNumber of $totalLines\r"
+ 			(( ++lineNumber ))
+ 			echo -ne "${lineNumber} ${totalLines}\r"
  			case $line in 
  					\</Episode\>)
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
