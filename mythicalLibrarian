@@ -997,92 +997,82 @@ determineIfDatabaseIsUpToDate(){
  
  #####GET EPISODE INFORMATION#####
  downloadInfoAboutMatchedTitleAndCreateTxtFileTables () {
- 
 
-#DEBUG This needs to be downloaded to a separate file and then if the file contains valid information, 
+
+#DEBUG This needs to be downloaded to a separate file and then if the file contains valid information,
 # then we will parse it.  This way we don't clobber old downloads. with bogus information about
 # a file which does not exist.   Old information is better then no information.
 
- #Download information from server
- 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
- 
- #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
- 		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
- 			Ename=""
- 			actualEname=""
- 			FAired=""
- 			SeasonNr="" 
- 			EpisodeNr=""
-	 		while read line 
- 			do
- 				if [ "$line" = "</Episode>" ]; then
-					echo "$Ename">> "$mythicalLibrarian/$NewShowName/$NewShowName".Ename.txt
-					echo "$actualEname">>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt 	
-					echo "$FAired">>"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
-					echo $SeasonNr>>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
-					echo "$EpisodeNr">>"$mythicalLibrarian/$NewShowName/$NewShowName".E.txt 
- 					Ename=""
- 					actualEname=""
- 					FAired=""
- 					SeasonNr="" 
- 					EpisodeNr=""
- 			 	else 
- #Get actual show name
- 					grep "<EpisodeName>" && actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'` 
- #Get Fuzzy logic show nameas
- 	 				grep "<EpisodeName>" && Ename=`echo $line| sed s/"<EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g |sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
- #Get OriginalAirDate
- 					grep "<FirstAired>" && FAired=`echo $line | sed s/"<FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g`
- #Get Season number
- 				 	grep "<SeasonNumber>"&&SeasonNr=`sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g`
- #Get Episode number
- 					grep "<EpisodeNumber>"&& EpisodeNr=`sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g`
-				fi
- 			done< "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
+#Download information from server
+		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
 
- 			chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt 
+#create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
+		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
+			Ename=""
+			actualEname=""
+			FAired=""
+			SeasonNr=""
+			EpisodeNr=""
+ 			echo "Parsing Downloaded information: $NewShowName.xml"
+	 		while read line
+			do
+ 				case $line in 
+ 					*\</Episode\>)
+						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
+ 						Ename=`echo "$actualEname" |sed 's/;.*//'`
+						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
+						echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"
+						echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"
+						echo "$EpisodeNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.E.txt"
+						Ename=""
+						actualEname=""
+						FAired=""
+						SeasonNr=""
+						EpisodeNr=""
+				 	;;
+#Get actual show name
+			 		*\</EpisodeName\>)
+ 						actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'`
+ 					;;
+#Get OriginalAirDate
+					*\</FirstAired\>)
+ 						FAired=`echo "$line" | sed s/"<FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g`
+ 					;;
+#Get Season number
+				 	*\</SeasonNumber\>)
+ 						SeasonNr=`echo "$line" |sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g`
+ 					;;
+#Get Episode number
+					*\</EpisodeNumber\>)
+ 						EpisodeNr=`echo "$line" |sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g`
+ 					;;
+				esac
+			done < "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
+
+			chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
-			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt 
+			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
 			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
 			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".E.txt
- 		 	
- 
- 
- 		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
- 			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
- 		fi
- 	 
-                test -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" && GotNewInformation=1 && rm -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
- #check if files were created and generate message
- 		if [ "$GotNewInformation" = "1" ]; then
-                        return 0
- 	 		echo $CurrentTime>"$mythicalLibrarian/$NewShowName/lastupdated.time" && chmod 666 $CurrentTime>"$mythicalLibrarian/$NewShowName/lastupdated.time"
- 			echo "LOCAL DATABASE UPDATED:$mythicalLibrarian/$NewShowName">>"$mythicalLibrarian"/output.log
- 		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" ]; then
- 			echo "*** PERMISSION ERROR $mythicalLibrarian/$NewShowName/">>"$mythicalLibrarian"/output.log
-                        return 1
- 		fi
-
- 	return 1
- }
+		 	GotNewInformation=1
 
 
-#####MATCH ZAP2ITID TO TVDB#####
-GetSeriesLineNumberFromTableWithZap2itID(){
-        Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
-        serieslinenumber=0
-#loop through all show names received by TheTvDb and match Zap2it ID.
-	while read line
-	do
-                (( ++ serieslinenumber ))
-		echo "TESTING FOR ZAP2ITID MATCH:$line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
-                Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
-		if [ "$Zap2ItTest" = "$Zap2ItCheck" ] && [ "$Zap2ItCheck" != "" ]; then
-                        return 0                     
-			break
+		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
+			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
 		fi
-	done < "$mythicalLibrarian"/zap2it.txt
-        return 1
+	
+#test -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" && GotNewInformation=1 && rm -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
+#check if files were created and generate message
+		if [ "$GotNewInformation" = "1" ]; then
+return 0
+	 		echo $CurrentTime>"$mythicalLibrarian/$NewShowName/lastupdated.time" && chmod 666 $CurrentTime>"$mythicalLibrarian/$NewShowName/lastupdated.time"
+			echo "LOCAL DATABASE UPDATED:$mythicalLibrarian/$NewShowName">>"$mythicalLibrarian"/output.log
+		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" ]; then
+			echo "*** PERMISSION ERROR $mythicalLibrarian/$NewShowName/">>"$mythicalLibrarian"/output.log
+return 1
+		fi
+
+	return 1
 }
 
 
@@ -1135,8 +1125,8 @@ ResolveMultipleAirdateMatches(){
  #Loop through list and create instance matching files
  	while read line
  	do
- 		((--line)) #account for original show airdate
- 		test $line = 0 && ((++line)) #account for original showdate is the same as first aired
+ 		#DEBUG Why is this throwing it off?((--line)) #account for original show airdate
+ 		
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
