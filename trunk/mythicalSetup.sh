@@ -157,7 +157,7 @@ if [ "$DownloadML" = "Stable" ]; then
  		if [ $startwrite = 2 ]; then
 			parsing="$parsing""."
 			test "$parsing" = "Stand-by Parsing mythicalLibrarian......." && parsing="Stand-by Parsing mythicalLibrarian"
-			echo -n "$parsing \r"
+			echo -ne "$parsing \r"
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
@@ -193,7 +193,7 @@ if [ "$DownloadML" = "Latest" ]; then
  		if [ $startwrite = 2 ]; then
 			parsing="$parsing""."
 			test "$parsing" = "Stand-by Parsing mythicalLibrarian......." && parsing="Stand-by Parsing mythicalLibrarian"
-			echo -n "$parsing \r"
+			echo -ne "$parsing \r"
  			echo -e "$line" >> ./librarian
  		fi
   	done <./mythicalLibrarian.sh
