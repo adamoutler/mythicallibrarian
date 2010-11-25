@@ -1013,15 +1013,15 @@ determineIfDatabaseIsUpToDate(){
 			FAired=""
 			SeasonNr=""
 			EpisodeNr=""
- 			totalLines=`wc -l "$mythicalLibrarian/$NewShowName/$NewShowName.xml"| awk '{print $1'}`
- 			lineNumber=0
+ 			recordNumber
  			echo "Parsing Downloaded information: $NewShowName.xml "
 	 		while read line
 			do
- 			(( ++lineNumber ))
- 			echo -n "Parsing $lineNumber of $totalLines\r"
+
  			case $line in 
- 					\</Episode\>)
+ 					\</Episode\>) 
+ 						(( ++recordNumber ))
+ 						echo -n "Record Number:$recordNumber\r"
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
  						Ename=`echo "$actualEname" |sed 's/;.*//'`
 						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
