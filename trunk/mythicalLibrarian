@@ -1008,23 +1008,44 @@ determineIfDatabaseIsUpToDate(){
  
  #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
  		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then 
- #Get Zap2it ID
-			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<zap2it_id>"| sed s/"  <zap2it_id>"/""/g|sed s/"<\/zap2it_id>"/""/g| tr -d MVSHEP | sed 's/0*//'>"$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt" && chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName.zap2it.txt"
-
- #Get Fuzzy logic show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"  <EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g |sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |sed 's/;.*//'|tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt && chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
-
+ 			Ename=""
+ 			actualEname=""
+ 			FAired=""
+ 			SeasonNr="" 
+ 			EpisodeNr=""
+	 		while read line 
+ 			do
+ 				if [ "$line" = "</Episode>" ]; then
+					echo "$Ename">> "$mythicalLibrarian/$NewShowName/$NewShowName".Ename.txt
+					echo "$actualEname">>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt 	
+					echo "$FAired">>"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
+					echo $SeasonNr>>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
+					echo "$EpisodeNr">>"$mythicalLibrarian/$NewShowName/$NewShowName".E.txt 
+ 					Ename=""
+ 					actualEname=""
+ 					FAired=""
+ 					SeasonNr="" 
+ 					EpisodeNr=""
+ 			 	else 
  #Get actual show name
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<EpisodeName>"| sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt && chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt 
-
+ 					grep "<EpisodeName>" && actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'` 
+ #Get Fuzzy logic show nameas
+ 	 				grep "<EpisodeName>" && Ename=`echo $line| sed s/"<EpisodeName>"/""/g|sed s/"<\/EpisodeName>"/""/g |sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
  #Get OriginalAirDate
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.xml" | grep "<FirstAired>"| sed s/"  <FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g>"$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt && chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt 
-
+ 					grep "<FirstAired>" && FAired=`echo $line | sed s/"<FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g`
  #Get Season number
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<SeasonNumber>"| sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g>"$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt && chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
- 
+ 				 	grep "<SeasonNumber>"&&SeasonNr=`sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g`
  #Get Episode number
- 			cat "$mythicalLibrarian/$NewShowName/$NewShowName".xml | grep "<EpisodeNumber>"| sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g>"$mythicalLibrarian/$NewShowName/$NewShowName".E.txt && chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".E.txt
+ 					grep "<EpisodeNumber>"&& EpisodeNr=`sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g`
+				fi
+ 			done< "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
+
+ 			chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt 
+			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
+			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt 
+			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
+			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".E.txt
+ 		 	
  
  
  		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
@@ -1114,8 +1135,8 @@ ResolveMultipleAirdateMatches(){
  #Loop through list and create instance matching files
  	while read line
  	do
- 		#DEBUG Why is this throwing it off?((--line)) #account for original show airdate
- 		
+ 		((--line)) #account for original show airdate
+ 		test $line = 0 && ((++line)) #account for original showdate is the same as first aired
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
