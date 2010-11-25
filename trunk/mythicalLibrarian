@@ -1017,7 +1017,7 @@ determineIfDatabaseIsUpToDate(){
 	 		while read line
 			do
  				case $line in 
- 					*\</Episode\>)
+ 					\ \ \<EpisodeName>*)
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
  						Ename=`echo "$actualEname" |sed 's/;.*//'`
 						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
@@ -1031,19 +1031,19 @@ determineIfDatabaseIsUpToDate(){
 						EpisodeNr=""
 				 	;;
 #Get actual show name
-			 		*\</EpisodeName\>)
+			 		\ \ \</EpisodeName\>*)
  						actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'`
  					;;
 #Get OriginalAirDate
-					*\</FirstAired\>)
+					\ \ \</FirstAired\>*)
  						FAired=`echo "$line" | sed s/"<FirstAired>"/""/g| sed s/"<\/FirstAired>"/""/g| sed s/"\/"/""/g`
  					;;
 #Get Season number
-				 	*\</SeasonNumber\>)
+				 	\ \ \</SeasonNumber\>*)
  						SeasonNr=`echo "$line" |sed s/"<SeasonNumber>"/""/g| sed s/"<\/SeasonNumber>"/""/g| sed s/" "/""/g`
  					;;
 #Get Episode number
-					*\</EpisodeNumber\>)
+					\ \ \</EpisodeNumber\>*)
  						EpisodeNr=`echo "$line" |sed s/"<EpisodeNumber>"/""/g| sed s/"<\/EpisodeNumber>"/""/g| sed s/" "/""/g`
  					;;
 				esac
