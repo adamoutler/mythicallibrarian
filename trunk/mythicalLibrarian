@@ -1014,6 +1014,12 @@ determineIfDatabaseIsUpToDate(){
 			SeasonNr=""
 			EpisodeNr=""
  			recordNumber=0
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.fifo.txt"
+ 			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.fifo.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.fifo.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.S.fifo.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.E.fifo.txt"
+			
  			echo "Parsing Downloaded information: $NewShowName.xml "
 	 		while read line
 			do
@@ -1022,12 +1028,12 @@ determineIfDatabaseIsUpToDate(){
  					\</Episode\>) 
  						(( ++recordNumber ))
  						echo -ne "Record Number:$recordNumber ${actualEname:0:20} \r"
-						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
+						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.fifo.txt"&
  						Ename=`echo "$actualEname" |sed 's/;.*//'`
-						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
-						echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"
-						echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"
-						echo "$EpisodeNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.E.txt"
+						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.fifo.txt"&
+						echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.fifo.txt"&
+						echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.fifo.txt"&
+						echo "$EpisodeNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.E.fifo.txt"&
 						Ename=""
 						actualEname=""
 						FAired=""
@@ -1052,6 +1058,16 @@ determineIfDatabaseIsUpToDate(){
  					;;
 				esac
 			done < "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
+ 			cat "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.fifo.txt" >>"$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
+ 			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.fifo.txt" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.fifo.txt" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.S.fifo.txt" "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"
+			mkfifo "$mythicalLibrarian/$NewShowName/$NewShowName.E.fifo.txt" "$mythicalLibrarian/$NewShowName/$NewShowName.E.txt"
+			rm "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.fifo.txt"
+ 			rm "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.fifo.txt"
+			rm "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.fifo.txt"
+			rm "$mythicalLibrarian/$NewShowName/$NewShowName.S.fifo.txt"
+			rm "$mythicalLibrarian/$NewShowName/$NewShowName.E.fifo.txt"
 
 			chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
