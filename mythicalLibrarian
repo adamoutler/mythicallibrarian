@@ -1021,7 +1021,7 @@ determineIfDatabaseIsUpToDate(){
  			case $line in 
  					\</Episode\>) 
  						(( ++recordNumber ))
- 						echo -ne "Record Number:$recordNumber ${Ename:0:10} \r"
+ 						echo -ne "Record Number:$recordNumber ${actualEname:0:10} \r"
 						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
  						Ename=`echo "$actualEname" |sed 's/;.*//'`
 						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
