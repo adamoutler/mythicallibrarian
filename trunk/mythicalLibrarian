@@ -1185,9 +1185,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 	test "$OriginalAirDate" != "" && AbsoluteEpisodeNumber=`grep -n "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|grep -m1 ^|sed 's/:.*//'`
 #Account for original series airdate
 	if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
-		(( --AbsoluteEpisodeNumber ))
 #Account for original show airdate = first air date
-		test "$AbsoluteEpisodeNumber" = "0" && ((++AbsoluteEpisodeNumber))
  		NumberOriginalAirdates=`grep "$OriginalAirDate" "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"|wc -l`
  		test $NumberOriginalAirdates -gt 1 && return 1
 		echo "Absolute Exx NR:$AbsoluteEpisodeNumber BASED ON AIRDATE:$OriginalAirDate"| tee -a "$mythicalLibrarian"/output.log
