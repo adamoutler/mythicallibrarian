@@ -1036,7 +1036,7 @@ determineIfDatabaseIsUpToDate(){
 				 	;;
 #Get actual show name
 			 		\<EpisodeName\>*)
- 						actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"  <EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'`
+ 						actualEname=`echo "$line" | sed s/"&amp;"/"and"/g| sed s/"<EpisodeName>"/""/g| sed s/"<\/EpisodeName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g |tr -d '|\?*<":>+[]/'`
  					;;
 #Get OriginalAirDate
 					\<FirstAired\>*)
