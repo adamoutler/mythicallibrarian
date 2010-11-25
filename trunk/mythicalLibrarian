@@ -1076,6 +1076,24 @@ return 1
 }
 
 
+#####MATCH ZAP2ITID TO TVDB#####
+GetSeriesLineNumberFromTableWithZap2itID(){
+        Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
+        serieslinenumber=0
+#loop through all show names received by TheTvDb and match Zap2it ID.
+	while read line
+	do
+                (( ++ serieslinenumber ))
+		echo "TESTING FOR ZAP2ITID MATCH:$line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
+                Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
+		if [ "$Zap2ItTest" = "$Zap2ItCheck" ] && [ "$Zap2ItCheck" != "" ]; then
+                        return 0                     
+			break
+		fi
+	done < "$mythicalLibrarian"/zap2it.txt
+        return 1
+}
+
 
  #####FUZZY LOGIC RECOGNITION OF SERIES#####
  #This function provides fuzzy logic matching of a show name and returns a seriesid
@@ -1176,6 +1194,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
          #test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
          #test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
 }
+
+
+
 
  #####AIRDATE MATCH#####
  getAbsoluteEpisodeNumberWithOriginalAirdate(){
