@@ -1019,40 +1019,39 @@ determineIfDatabaseIsUpToDate(){
 	 		while read line
 			do
 
- 			case $line in 
- 					\</Episode\>) 
- 						(( ++recordNumber ))
- 						echo -ne "Record Number:$recordNumber ${actualEname:0:20} \r" 1>&2 
-						echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"&
- 						Ename=`echo "$actualEname" |sed 's/;.*//'`
-						echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"&
-						echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"&
-						echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"&
-						echo "$EpisodeNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.E..txt"&
-						Ename=""
-						actualEname=""
-						FAired=""
-						SeasonNr=""
-						EpisodeNr=""
-				 	;;
-#Get actual show name
-			 		\<EpisodeName\>*)
- 						actualEname=`echo "$line" | sed -e 's/\&amp\;/\&/' -e 's/\<EpisodeName\>//' -e 's/\<\/EpisodeName\>//' -e 's/\&quot\;/\"/' -e 's/\&amp\;/\&/' -e 's/\&ndash\;/\-/' -e 's/\&lt\;/\</' -e 's/\&gt\;/\>/' |tr -d '|\?\*\<\"\:\>\+\\\[\]\/'`
-echo $line| sed -e 's/Episode//'
- 					;;
+ 				if [[ $line == \<\/Episode\> ]]; then
+ 					(( ++recordNumber ))
+ 					echo -ne "Building Record:$recordNumber ${actualEname:0:20}            \r" 1>&2 
+					echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"&
+ 					Ename=`echo "$actualEname" |sed 's/;.*//'`
+					echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"&
+					echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"&
+					echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"&
+					echo "$EpisodeNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.E.txt"&
+					Ename=""
+					actualEname=""
+					FAired=""
+					SeasonNr=""
+					EpisodeNr=""
+			 	
+#Get actual show name	
+		 		elif [[ $line == \<EpisodeName\>* ]]; then
+ 					actualEname=`echo "$line" | sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/' |tr -d '|\?\*\<\"\:\>\+\\\[\]\/'`
+
+ 				
 #Get OriginalAirDate
-					\<FirstAired\>*)
- 						FAired=`echo "$line" | sed -e 's/\<FirstAired\>//' -e 's/\<\/FirstAired\>//'`
- 					;;
+				elif [[ $line == \<FirstAired\>* ]]; then
+ 					FAired=`echo "$line" | sed -e s/'<FirstAired>'//g -e s/'<\/FirstAired>'//g`
+ 				
 #Get Season number
-				 	\<SeasonNumber\>*)
- 						SeasonNr=`echo "$line" |sed -e 's/\<SeasonNumber\>//' -e 's/\<\/SeasonNumber\>//' -e 's/\ //'`
- 					;;
+			 	elif [[ $line == \<SeasonNumber\>* ]]; then
+ 					SeasonNr=`echo "$line" |sed -e s/'<SeasonNumber>'// -e s/'<\/SeasonNumber>'//`
+ 				
 #Get Episode number
-					\<EpisodeNumber\>*)
- 						EpisodeNr=`echo "$line" |sed -e 's/\<EpisodeNumber\>//' -e 's/\<\/EpisodeNumber\>//' -e 's/\ //'`
- 					;;
-				esac
+				elif [[ $line == \<EpisodeNumber\>* ]]; then
+ 					EpisodeNr=`echo "$line" |sed -e 's/<EpisodeNumber>//' -e 's/<\/EpisodeNumber>//'`
+ 				
+				fi
 			done < "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
 
 
