@@ -2845,7 +2845,7 @@ Do not run this command with sudo."
  fi
 
  #If this is a test file, then exit now.
- test "$InputPath" = "testfile.ext" && test "$Exx" = "0" && echo 'FUZZY FAILURE' && exit 1
+ test "$InputPath" = "testfile.ext" && test "$Exx" != "E07" && echo 'FUZZY FAILURE' && exit 1
  test "$InputPath" = "testfile.ext" && DoTestFileExit
 
  #If the user is not mythtv and the settings are set for mythtv only, then exit, display a clear status message.
