@@ -356,7 +356,7 @@
  #########BEGIN FUNCTIONS HERE#########
  TraditionalNamingConventions () {
  #Format Episodes showname=show name Sxx=season number Exx=episode number EpisodeSubtitle=episode name
- 	if [ "$Exx" != "" ]; then
+ 	if [ "$Exx" != "" ] && [ "$Exx" != "E" ]; then
  		 ShowFileName=`echo "$NewShowName $Sxx$Exx ($EpisodeSubtitle)"`
  	
  #Format Movies
@@ -376,6 +376,7 @@
  		MoveDir="$PrimaryShowDir"
 	  	ShowFileName=`echo "$ShowName S0E0 ($EpisodeSubtitle Recorded $datehour on $ChanID)"`
  		RequiresNFO=1 
+ 		test "$mythicalLibrarianProgramIDCheck" = "EP" && RequiresDoover=1
 	 
  	fi
  }
@@ -2623,7 +2624,7 @@ Do not run this command with sudo."
 
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
- if [ "$AbsoluteEpisodeNumber" !=  "" ]; then
+ if [ "$AbsoluteEpisodeNumber" != "" ]; then
         setSxxAndExxFromAbsoluteEpisodeNumber
  else
         ConfidenceReasoning="$ConfidenceReasoning Could not set Sxx and Exx, Failed; "
@@ -2636,9 +2637,10 @@ Do not run this command with sudo."
 
  #######SANITY CHECKS#####
 
- if [ "$mythicalLibrarianProgramIDCheck" = "EP" ] && [ "$Exx" = "E" ]; then
+ if [ "$mythicalLibrarianProgramIDCheck" = "EP" ] && [ "$Exx" = "E" -o "$Exx" = "" ]; then
    	ConfidenceReasoning="$ConfidenceReasoning Guide Data did not match showing;"
-
+ 	MythicalEpishow=1
+ 	RequiresDoover=1
 #DEBUG come up with a way to have a variable like DataWasNotObtainable to check and make it a SH later
 
 
@@ -2802,6 +2804,7 @@ Do not run this command with sudo."
  	test "$NewShowName" = "" && NewShowName=$ShowName
  	CategoricNamingConventions
  	RequiresNFO=1
+
  fi
  
  #####MAKE THE FOLDER#####
