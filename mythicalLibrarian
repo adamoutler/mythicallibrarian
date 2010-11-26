@@ -983,13 +983,20 @@ determineIfDatabaseIsUpToDate(){
  
  #if episode information is out of date or not created
  	if [ $CurrentTime -gt $NextUpdate ]; then
- 		echo "DATABASE IS OUT OF DATE. NEXT UPDATE $NextUpdate Current $CurrentTime"	
- 		return 1
-       
+#DEBUG: Commented code is for experimental overall speedup of tvdb download
+ 		#curl -s -m"$Timeout" " http://www.thetvdb.com/api/Updates.php?type=all&time=$LastUpdated" >> "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
+ 		#grep "$SeriesID" "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
+ 		#if [ "$?" != 0 ]; then 
+ 			echo "DATABASE IS OUT OF DATE. NEXT UPDATE $NextUpdate Current $CurrentTime"	
+ 			return 1
+ 		#else
+ 			#return 0
+ 		#fi    
  #Send report to the log if database was not updated.
  	elif [ $CurrentTime -le $NextUpdate ]; then
+
  		echo "DATABASE IS MAINTAINED. TIME IS:$CurrentTime NEXT UPDATE IS:$NextUpdate"
- 		return 0
+ 		return 
  	fi
 
  #some other condition was present. update anyways.
