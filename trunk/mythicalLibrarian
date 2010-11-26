@@ -1033,7 +1033,7 @@ determineIfDatabaseIsUpToDate(){
 
  				if [[ $line == \<\/Episode\> ]]; then
  					(( ++recordNumber ))
- 					echo -ne "Building Record:$recordNumber ${actualEname:0:20}	    \r" 1>&2 
+ 					echo -ne "Building Record:$recordNumber ${actualEname:0:20}           \r" 1>&2 
 					echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"&
  					Ename=`echo "$actualEname" |sed 's/;.*//'`
 					echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"&
@@ -1927,7 +1927,7 @@ Do not run this command with sudo."
 	WorkingDirWritable=$TMoveDirWritable
 
  	echo "USER SETTING     |FLAG|Folder name"
-	echo "MoveDir	       |$MoveDirWritable   |$MoveDir "
+	echo "MoveDir	         |$MoveDirWritable   |$MoveDir "
 	echo "AlternateMoveDir |$AlternateMoveDirWritable   |$AlternateMoveDir"
 	echo "PrimaryMovieDir  |$PrimaryMovieDirWritable   |$PrimaryMovieDir"
 	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
