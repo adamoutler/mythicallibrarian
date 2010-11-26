@@ -1,5 +1,5 @@
 #! /bin/bash
- 
+			 
 
 # ***** WELCOME! Scroll further down to set the user settings. *****
 
@@ -101,11 +101,11 @@
  # accuracy to 100%. The format of showtranslations is as follows:
  #Filename: /home/mythtv/.mythicalLibrarian/showtranslations
  ##############################################################
- #My Guide Show Title = www.TheTvDb.com Show Title            #
- #Battlestar Gallactica = Battlestar Gallactica (2003)        #
- #The Office = The Office (US)                                # 
- #Millionaire = Who Wants To Be A Millionaire                 #
- #Aqua teen Hungerforce = Aqua Teen Hunger Force              #
+ #My Guide Show Title = www.TheTvDb.com Show Title	    #
+ #Battlestar Gallactica = Battlestar Gallactica (2003)	#
+ #The Office = The Office (US)				# 
+ #Millionaire = Who Wants To Be A Millionaire		 #
+ #Aqua teen Hungerforce = Aqua Teen Hunger Force	      #
  ##############################################################
  
  #######################USER SETTINGS##########################
@@ -364,11 +364,11 @@
  		Exx="Movie"
  		MoveDir="$PrimaryMovieDir"
   		if [ "$MovieAirDate" != "" ]; then
-                	ShowFileName="$NewShowName ($MovieAirDate)"
-                else
-                        ShowFileName="$NewShowName"
-                fi
-                
+			ShowFileName="$NewShowName ($MovieAirDate)"
+		else
+			ShowFileName="$NewShowName"
+		fi
+		
 	
  #Format generic Shows
  	else
@@ -670,7 +670,7 @@
  #Create undo and doover file if not present
  	test ! -f "$mythicalLibrarian/undo.sh" && echo "rm -f \"$mythicalLibrarian/undo.sh\"" >> "$mythicalLibrarian/undo.sh" && chmod 666 "$mythicalLibrarian/undo.sh"
  	test ! -f "$mythicalLibrarian/doover.sh" && echo "rm -f \"$mythicalLibrarian/doover.sh\"">>"$mythicalLibrarian/doover.sh" && chmod 666 "$mythicalLibrarian/doover.sh"
-        
+	
  	test "$RequiresDoover" = "1" && echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/doover.sh"
  	test "$RequiresDoover" = "1" && echo "mythicalLibrarian \"$InputPath\" \"$InputTitle\" \"$InputSubtitle\"">>"$mythicalLibrarian/doover.sh"
  	echo "test -L \"$MoveDir/$ShowFileName.$OriginalExt\" && rm -f \"$MoveDir/$ShowFileName.$OriginalExt\"">>"$mythicalLibrarian/undo.sh"
@@ -704,12 +704,12 @@
  GetMythTVDatabase () {
  
  	if [ "$PythonBindings" != "True" ]; then
-                
+		
  #Obtain MythTV Database Information
  	 	echo "Accessing MythTV DataBase:"
  
  #get Title 
-                test "$InputTitle" = "" && InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"title"/""/g|sed -n "2p"`
+		test "$InputTitle" = "" && InputTitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select title from recorded where basename like '$InputFileBasename'; "|sed s/"title"/""/g|sed -n "2p"`
  
  #get Subtitle
 		test "$InputSubtitle" = "" && InputSubtitle=`mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; select subtitle from recorded where basename like '$InputFileBasename' ; "|sed s/"subtitle"/""/g|sed -n "2p"`
@@ -802,15 +802,15 @@
 	test "$InputTitle" = "" && InputTitle=$title
 	test "$InputSubtitle" = "" && InputSubtitle=$subtitle; 
  #redefine database var names into mythicalLibrarian var names
-        MovieAirDate=$airdate
-        OriginalAirDate=$originalairdate
-        ShowCategory=$category
-        Stars=$stars
-        Plot=$description
-        Zap2itSeriesID=$seriesid
-        ProgramID=$programid
-        ChanID=$chanid
-        ShowStartTime=$starttime
+	MovieAirDate=$airdate
+	OriginalAirDate=$originalairdate
+	ShowCategory=$category
+	Stars=$stars
+	Plot=$description
+	Zap2itSeriesID=$seriesid
+	ProgramID=$programid
+	ChanID=$chanid
+	ShowStartTime=$starttime
  
  #cleanup, remove the fifo named pipe
  	test -p "$mythicalLibrarian/mythicalDbOut" && rm -f "$mythicalLibrarian/mythicalDbOut" 
@@ -846,9 +846,9 @@
  	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
  
  #Check if database contains enough information to put into doover que
-        GoForDoover=0
-        test "${x:0:2}" = "EP" && echo woot
-        test "$EpisodeSubtitle" != "" && GoForDoover=1 
+	GoForDoover=0
+	test "${x:0:2}" = "EP" && echo woot
+	test "$EpisodeSubtitle" != "" && GoForDoover=1 
 
  #Get barebones zap2it series id.  
  	Zap2itSeriesID=`echo $ProgramID| tr -d MVSHEP | sed 's/0*//' | sed 's/.\{4\}$//' `
@@ -861,7 +861,7 @@
 
  #predefined naming conventions
 	 if [ "$ShowCategory" = "Sports event" -o "$ShowCategory" = "News" -o "$ShowCategory" = "Newsmagazine" ]; then
-         	NamingConvention=$ShowCategory
+	 	NamingConvention=$ShowCategory
  	 fi
  
  #If news, bypass Categoric naming convention 1
@@ -903,8 +903,8 @@
  	seasonyear=`echo "${ShowStartTime:0:4}"`
 
 	if [ "$ShowCategory" = "Sports event" -o "$ShowCategory" = "News" -o "$ShowCategory" = "Newsmagazine" ]; then
-        	NamingConvention=$ShowCategory
-        fi 
+		NamingConvention=$ShowCategory
+	fi 
  	test NamingConvention="News" && UseMethod2=1
   
  	return 0 
@@ -917,7 +917,7 @@
  
  #Make sure we got input arguments and file is valid
  	if [ ! -e "$InputPath" ]; then
- 	        echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
+ 		echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"|tee -a "$mythicalLibrarian"/output.log
  
@@ -953,31 +953,31 @@ setSxxAndExxFromAbsoluteEpisodeNumber() {
 determineIfDatabaseIsUpToDate(){
 
  #Get current server time
-        test -f "$mythicalLibrarian/$NewShowName/current.time" && rm -f "$mythicalLibrarian/$NewShowName/current.time"
+	test -f "$mythicalLibrarian/$NewShowName/current.time" && rm -f "$mythicalLibrarian/$NewShowName/current.time"
  	curl -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
 
  #Get the time from the file
  	test -f "$mythicalLibrarian/$NewShowName/current.time" && CurrentTime=`cat "$mythicalLibrarian/$NewShowName/current.time"|grep '<Time>'|sed s/"<Time>"/""/g|sed s/"<\/Time>"//g`
-        test "$CurrentTime" = "" && CurrentTime=99999999
-        rm -f "$mythicalLibrarian/$NewShowName/current.time"
-        
+	test "$CurrentTime" = "" && CurrentTime=99999999
+	rm -f "$mythicalLibrarian/$NewShowName/current.time"
+	
  #If file exist for last updated time, then get value 
  	if [ -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
  		LastUpdated=`cat "$mythicalLibrarian/$NewShowName/lastupdated.time"`
  
  #If no last updated time, then assign a never updated value and update now
   	elif [ ! -f "$mythicalLibrarian/$NewShowName/lastupdated.time" ]; then
-                return 1
+		return 1
  	fi	 
  
  #if time server is down, then just update
  	if [ "$CurrentTime" = "" -o "$CurrentTime" = "99999999" ]; then
  		echo "THETVDB TIME SERVER WAS DOWN"
  		return 1
-        fi
+	fi
 
  #Apply Database Update interval to last update time  LastUpdated = NextUpdated
-        NextUpdate=0
+	NextUpdate=0
  	let NextUpdate=$LastUpdated+$UpdateDatabase
  
  
@@ -1023,7 +1023,7 @@ determineIfDatabaseIsUpToDate(){
 
  				if [[ $line == \<\/Episode\> ]]; then
  					(( ++recordNumber ))
- 					echo -ne "Building Record:$recordNumber ${actualEname:0:20}            \r" 1>&2 
+ 					echo -ne "Building Record:$recordNumber ${actualEname:0:20}	    \r" 1>&2 
 					echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"&
  					Ename=`echo "$actualEname" |sed 's/;.*//'`
 					echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"&
@@ -1086,20 +1086,20 @@ return 1
 
 #####MATCH ZAP2ITID TO TVDB#####
 GetSeriesLineNumberFromTableWithZap2itID(){
-        Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
-        serieslinenumber=0
+	Zap2ItCheck=`echo $ProgramID | tr -d MVSHEP| sed 's/0*//'|sed 's/.\{4\}$//'`
+	serieslinenumber=0
 #loop through all show names received by TheTvDb and match Zap2it ID.
 	while read line
 	do
-                (( ++ serieslinenumber ))
+		(( ++ serieslinenumber ))
 		echo "TESTING FOR ZAP2ITID MATCH:$line `sed -n $serieslinenumber"p" $mythicalLibrarian/shn.txt`"
-                Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
+		Zap2ItTest=`echo $line | tr -d MVSHEP| sed 's/0*//'` 
 		if [ "$Zap2ItTest" = "$Zap2ItCheck" ] && [ "$Zap2ItCheck" != "" ]; then
-                        return 0                     
+			return 0		     
 			break
 		fi
 	done < "$mythicalLibrarian"/zap2it.txt
-        return 1
+	return 1
 }
 
 
@@ -1111,10 +1111,10 @@ GetSeriesLineNumberFromTableWithZap2itID(){
   	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
  
  #Correct for serieslinenumber = ""
-        test "$serieslinenumber" = "" && serieslinenumber="0" 
+	test "$serieslinenumber" = "" && serieslinenumber="0" 
    
  #Get the seriesid based on the showname
-        if [ $serieslinenumber -gt 0 ]; then
+	if [ $serieslinenumber -gt 0 ]; then
 
  		return 0
  	fi
@@ -1127,9 +1127,9 @@ GetSeriesLineNumberFromTableWithZap2itID(){
  	serieslinenumber=`grep -nix "$ShowName" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
 
  #Correct for serieslinenumber = ""
-        test "$serieslinenumber" = "" && serieslinenumber="0" 
+	test "$serieslinenumber" = "" && serieslinenumber="0" 
  #Get the seriesid based on the showname
-        if [ $serieslinenumber -ge 1 ]; then
+	if [ $serieslinenumber -ge 1 ]; then
 
  		return 0
  	fi
@@ -1185,7 +1185,7 @@ ResolveMultipleAirdateMatches(){
 makeShowDirIfNeeded(){
  if [ ! -d "$mythicalLibrarian/$NewShowName" ]; then
  	mkdir "$mythicalLibrarian"/"$NewShowName"
-        chmod 777 "$mythicalLibrarian"/"$NewShowName"
+	chmod 777 "$mythicalLibrarian"/"$NewShowName"
  	echo "Creating MythicalLibrarian Database Folder">>"$mythicalLibrarian"/output.log
  fi
 }
@@ -1196,11 +1196,11 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #Get the seriesid based on the showname
  	 SeriesID=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/sid.txt|grep -m1 ^`
  	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
-         
+	 
  #Cleanup files to prevent mismatch next time
-         #test -f "$mythicalLibrarian"/sid.txt && rm -f "$mythicalLibrarian"/sid.txt
-         #test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
-         #test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
+	 #test -f "$mythicalLibrarian"/sid.txt && rm -f "$mythicalLibrarian"/sid.txt
+	 #test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
+	 #test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
 }
 
 
@@ -1226,10 +1226,10 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  ######STANDARD LOGIC EPISODE MATCH#####
  getAbsoluteEpisodeNumberWithStandardLogic(){
-        AbsoluteEpisodeNumber=""
+	AbsoluteEpisodeNumber=""
  	AbsoluteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
 
-         if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
+	 if [ "$AbsoluteEpisodeNumber" != "" ] && [ $AbsoluteEpisodeNumber -gt 0 ]; then
  		return 0
  	fi
  return 1
@@ -1262,17 +1262,17 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	 
  
  #parse the XML for shows with Zap2ItIDs
-        test -f "$mythicalLibrarian/zap2it.txt" && rm -f "$mythicalLibrarian/zap2it.txt"
-        while read line
-        do 
-        	test "$line" = "<Series>" && NextShow=1
-        	test "$line" = "</Series>" && test "$NextShow" = "1" && echo "" >>"$mythicalLibrarian/zap2it.txt" && NextShow=0
+	test -f "$mythicalLibrarian/zap2it.txt" && rm -f "$mythicalLibrarian/zap2it.txt"
+	while read line
+	do 
+		test "$line" = "<Series>" && NextShow=1
+		test "$line" = "</Series>" && test "$NextShow" = "1" && echo "" >>"$mythicalLibrarian/zap2it.txt" && NextShow=0
 
-        	if [[ $line =~ '<zap2it_id>'* ]] ; then
-        		echo $line| sed s/"<zap2it_id>"/""/g | sed s/"<\/zap2it_id>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >>"$mythicalLibrarian/zap2it.txt"
+		if [[ $line =~ '<zap2it_id>'* ]] ; then
+			echo $line| sed s/"<zap2it_id>"/""/g | sed s/"<\/zap2it_id>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >>"$mythicalLibrarian/zap2it.txt"
 			NextShow=0
-             	fi
-        done < "$mythicalLibrarian/working.xml"
+	     	fi
+	done < "$mythicalLibrarian/working.xml"
 
  }
 
@@ -1288,7 +1288,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 	test ! -f "$mythicalLibrarian"/FuzzyLogicError.log && echo "0">"$mythicalLibrarian"/FuzzyLogicError.log
 	FuzzyLogicError="`cat "$mythicalLibrarian"/FuzzyLogicError.log`"
 	(( ++FuzzyLogicError ))
-        rm -f "$mythicalLibrarian"/FuzzyLogicError.log
+	rm -f "$mythicalLibrarian"/FuzzyLogicError.log
 	echo "$FuzzyLogicError">"$mythicalLibrarian"/FuzzyLogicError.log
  }
 
@@ -1376,7 +1376,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
 	echo -e "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%% \n CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
-        DEBUGMODE=Enabled
+	DEBUGMODE=Enabled
  }
  StandardLogicDoesNotJiveMessage(){
  	echo "%%%%%%%%%%%%%%%%%%%%Testing Standard Logic results%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
@@ -1390,7 +1390,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
  	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%">>"$mythicalLibrarian"/output.log
 	echo -e "%%%%%AIRDATE MATCH AND FUZZY LOGIC ARE IN DISAGREEMENT%%%%% \n CHECK $mythicalLibrarian""/output.log FOR MORE INFORMATION"
-        DEBUGMODE=Enabled
+	DEBUGMODE=Enabled
  }
 
 
@@ -1539,7 +1539,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  setTargetFolderAsInputPathFolder () {
  #Set originaldir name if none was supplied
   	 test "$originaldirname" = "./" && originaldirname=$(pwd)
-   	 test "$originaldirname" = "." && originaldirname=$(pwd)        
+   	 test "$originaldirname" = "." && originaldirname=$(pwd)	
   	 test "$originaldirname" = "" && originaldirname=$(pwd)
  #MoveDir is the folder which mythicalLibrarian will move the file.  No trailing / is accepted eg. "~/videos"
  	 MoveDir="$originaldirname/Episodes"
@@ -1618,7 +1618,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  			JobType=categoricIgnore
  			runJob
  		fi
-        fi
+	fi
  	return 0
 }
 
@@ -1642,9 +1642,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #####MAINTENANCE ROUTINE#####
  #DoMaintenance loops through all logged files and checks if their parent is there.  If no parent, then file is deleted.
  DoMaintenance() {
-        echo "PERFORMING MAINTENANCE ROUTINE..."
+	echo "PERFORMING MAINTENANCE ROUTINE..."
  #check for interrupted undo jobs
-        test -f "$mythicalLibrarian/undo.lock" && test ! -f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
+	test -f "$mythicalLibrarian/undo.lock" && test ! -f "$mythicalLibrarian/undo.sh" && mv "$mythicalLibrarian/undo.lock" "$mythicalLibrarian/undo.sh"
 
  #Check and make doover.sh and undo.sh if it does not exist
 
@@ -1736,11 +1736,11 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 running as a priviliged user.  This may lead to permission
 contamination of normally unprivliged files.
 Do not run this command with sudo."
-                read -p "Exit? yes/(no)" exitvalue
-                test "$exitvalue" = "y" && exit 1
-                test "$exitvalue" = "Y" && exit 1
-                test "$exitvalue" = "yes" && exit 1
-        fi
+		read -p "Exit? yes/(no)" exitvalue
+		test "$exitvalue" = "y" && exit 1
+		test "$exitvalue" = "Y" && exit 1
+		test "$exitvalue" = "yes" && exit 1
+	fi
 
 	if [ "$checkext" = "" ]; then
 	 	echo "Cannot process blank file extensions"
@@ -1843,18 +1843,18 @@ Do not run this command with sudo."
 	fi
 
 	if [ "$DatabaseType"="MythTVPythonBindings" ]; then
-        	read -n1 -p "Press any key to perform MythTV Database test..."
+		read -n1 -p "Press any key to perform MythTV Database test..."
  		echo ""
 		echo "Performing MythTV Python Bindings database test"
   		test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" = "0" && PythonBindingsCheck="OK"
-        	if [ "$PythonBindingsCheck" = "OK" ]; then
+		if [ "$PythonBindingsCheck" = "OK" ]; then
        	     		echo "MythTV Python Bindings are installed properly" 
 		else
-                        test "$((`python -c 'import MythDB.MythTV'`))" = "0" && echo "MythTV PythonBindings are installed properly"
+			test "$((`python -c 'import MythDB.MythTV'`))" = "0" && echo "MythTV PythonBindings are installed properly"
  			test "$((`python -c 'import MythDB.MythTV'`))" != "0" && "MythTV PythonBindings are not installed properly " && Python1=1
-                	test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
-        	fi
-        	test "$PythonBindingsCheck" = "OK" && DBTest="***PASSED***"
+			test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" != "0" && echo "there was a problem connecting to the database" && Python2=1
+		fi
+		test "$PythonBindingsCheck" = "OK" && DBTest="***PASSED***"
  		test "$PythonBindingsCheck" != "OK" && DBTest="***FAILED***" && packagecheck="***FAILED***"
  		echo "MythTV Database Test $DBTest"
  	fi
@@ -1868,7 +1868,7 @@ Do not run this command with sudo."
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
 		XBMCcomm=`curl -s --connect-timeout 3 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
-                test "$XBMCcomm" != "" && echo "TESTING:$XBMCcomm" || echo "COMMUNICATIONS NOT ESTABLISHED: $XBMCIP"
+		test "$XBMCcomm" != "" && echo "TESTING:$XBMCcomm" || echo "COMMUNICATIONS NOT ESTABLISHED: $XBMCIP"
  	done
  	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
@@ -1879,8 +1879,8 @@ Do not run this command with sudo."
 
  	if [ "$TargetPathIsInputPath" = "Enabled" ]; then
  		echo "TargetPathIsInputPath is selected. Testing with current folder"
- 	        setTargetFolderAsInputPathFolder
-        fi
+ 		setTargetFolderAsInputPathFolder
+	fi
 
  	MoveFileSize="10000"
  	MoveFileSize=$((MoveFileSize/1024))
@@ -1917,7 +1917,7 @@ Do not run this command with sudo."
 	WorkingDirWritable=$TMoveDirWritable
 
  	echo "USER SETTING     |FLAG|Folder name"
-	echo "MoveDir          |$MoveDirWritable   |$MoveDir "
+	echo "MoveDir	  |$MoveDirWritable   |$MoveDir "
 	echo "AlternateMoveDir |$AlternateMoveDirWritable   |$AlternateMoveDir"
 	echo "PrimaryMovieDir  |$PrimaryMovieDirWritable   |$PrimaryMovieDir"
 	echo "AlternateMovieDir|$AlternateMovieDirWritable   |$AlternateMovieDir"
@@ -1954,13 +1954,13 @@ Do not run this command with sudo."
  	fi
 	read -n1 -p "press any key to continue on to the final results..."	
  	echo ""
-	echo -e "  All tests complete            RESULTS"
+	echo -e "  All tests complete	    RESULTS"
  	test "$DatabaseType"="MythTVPythonBindings" && echo -e "  MythTV Database Test:      $DBTest"
-	echo -e "  Installed Packages:        $packagecheck $checkc$checkd$checke"
- 	echo -e "  Notifications Test:        $notifytest"
+	echo -e "  Installed Packages:	$packagecheck $checkc$checkd$checke"
+ 	echo -e "  Notifications Test:	$notifytest"
 	echo -e "  XBMC Communications:       $XBMCcomm"
-	echo -e "  File System Checks:        $folderchecks"
- 	echo -e "  mythicalTesting:           $mythicaltest"
+	echo -e "  File System Checks:	$folderchecks"
+ 	echo -e "  mythicalTesting:	   $mythicaltest"
  	echo -e "  Overall mythicalReadiness: $overallchecks"
  	echo -e "-----End of diagnostics-----"
 
@@ -1970,8 +1970,8 @@ Do not run this command with sudo."
  		echo -e " When interfacing MythTV/0.24, mythicalLibrarian uses MythTV's Python"
  		echo -e " Bindings.  These must be configured and working for proper access"
  		echo -e " to data required by mythicalLibrarian.   "
-                test "$Python1" = "1" && echo -e " Missing packages:  apt-get install libmyth-python"
-                test "$Python2" = "1" && echo -e " Could not connect to the database.  Specify a username and password"
+		test "$Python1" = "1" && echo -e " Missing packages:  apt-get install libmyth-python"
+		test "$Python2" = "1" && echo -e " Could not connect to the database.  Specify a username and password"
  #TODO add more information on how to install
 	fi	
 
@@ -1992,10 +1992,10 @@ Do not run this command with sudo."
  		echo -e " The folder belongs to a different group then the user named $SUDO_USER"
  		if [ "$Database" = "Enabled" ] && [ "$DatabaseType" = "MythTV" ] && [ "$SUDO_USER" != "mythtv" ]; then
  			echo -e "  corrective action: sudo adduser mythtv $SUDO_USER"
- 			echo -e "                     sudo adduser $SUDO_USER mythtv"
+ 			echo -e "		     sudo adduser $SUDO_USER mythtv"
  		else
  			echo -e "  corrective action: sudo adduser RecordingManagerUser $SUDO_USER"
- 			echo -e "                     sudo adduser $SUDO_USER RecordingManagerUser"
+ 			echo -e "		     sudo adduser $SUDO_USER RecordingManagerUser"
  		fi
 		echo -e " The folder does not exist"
 		echo -e "  corrective action: mkdir /Name/of/My_failed_folder"
@@ -2022,7 +2022,7 @@ Do not run this command with sudo."
  #This function provides an easy way to redo failed jobs.
  executeDoOver () {
  	if [ "$(id -u)" = "0" ]; then
-               test "$SUDO_USER" = "root" && SUDO_USER=`whoami`
+	       test "$SUDO_USER" = "root" && SUDO_USER=`whoami`
  	       RunSudo=1
   	fi
  	test "$SUDO_USER" = "" && SUDO_USER=`whoami`
@@ -2030,13 +2030,13 @@ Do not run this command with sudo."
 	echo " In this mode of operation, mythicalLibrarian will rerun"
  	echo " mythicalLibrarain against all files which failed on the"
  	echo " last run of mythicalLibrarian.  It is important that this"
-        echo " process does not get interupted or data loss may occour."
+	echo " process does not get interupted or data loss may occour."
  	test "$DoOverBypass" != "1" && read -n1 -p "  Press 'y' to continue or 'n' to exit..... y/(n):>" yesorno 
  	test "$DoOverBypass" = "1" && yesorno=y
 
  	if [ "$yesorno" = "y" ] && [ -f "$mythicalLibrarian/doover.sh" ]; then
 
-        #preserve permissions
+	#preserve permissions
  		chmod +x "$mythicalLibrarian/doover.sh"
  		test "$RunSudo" = "1" &&sudo -u $SUDO_USER cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old" || cat "$mythicalLibrarian/doover.sh" >> "$mythicalLibrarian/doover.sh.old"
  		test "$RunSudo" = "1" &&sudo -u $SUDO_USER "$mythicalLibrarian/doover.sh" || "$mythicalLibrarian/doover.sh"
@@ -2167,11 +2167,11 @@ Do not run this command with sudo."
 	echo " ShowTranslations can be applied by creating a file called:"
  	echo " ~/.mythicalLibrarian/showTranslations"
  	echo " ##############################################################"
- 	echo " #My Guide Show Title = www.TheTvDb.com Show Title            #"
-	echo " #Battlestar Gallactica = Battlestar Gallactica (2003)        #"
-	echo " #The Office = The Office (US)                                #"
-	echo " #Millionaire = Who Wants To Be A Millionaire                 #"
-	echo " #Aqua teen Hungerforce = Aqua Teen Hunger Force              #"
+ 	echo " #My Guide Show Title = www.TheTvDb.com Show Title	    #"
+	echo " #Battlestar Gallactica = Battlestar Gallactica (2003)	#"
+	echo " #The Office = The Office (US)				#"
+	echo " #Millionaire = Who Wants To Be A Millionaire		 #"
+	echo " #Aqua teen Hungerforce = Aqua Teen Hunger Force	      #"
 	echo " ##############################################################"
  	echo ""
  	echo "======titleIgnore======"
@@ -2179,11 +2179,11 @@ Do not run this command with sudo."
  	echo " titleIgnore can be applied by creating a file called:"
  	echo " ~.mythicalLibrarian/titleIgnore"
  	echo " ##############################################################"
- 	echo " #Show to ignore                                              #"
-	echo " #Battlestar Gallactica                                       #"
-	echo " #The Office                                                  #"
-	echo " #Millionaire                                                 #"
-	echo " #Aqua teen Hungerforce                                       #"
+ 	echo " #Show to ignore					      #"
+	echo " #Battlestar Gallactica				       #"
+	echo " #The Office						  #"
+	echo " #Millionaire						 #"
+	echo " #Aqua teen Hungerforce				       #"
 	echo " ##############################################################"
  	echo ""
  	echo "======categoricIgnore======"
@@ -2192,11 +2192,11 @@ Do not run this command with sudo."
  	echo " categoricIgnore can be applied by creating a file called:"
  	echo " ~.mythicalLibrarian/categoricIgnore"
  	echo " ##############################################################"
- 	echo " #Category to ignore                                          #"
-	echo " #Sports                                                      #"
-	echo " #Sports Talk                                                 #"
-	echo " #College Sports                                              #"
-	echo " #Comedy                                                      #"
+ 	echo " #Category to ignore					  #"
+	echo " #Sports						      #"
+	echo " #Sports Talk						 #"
+	echo " #College Sports					      #"
+	echo " #Comedy						      #"
 	echo " ##############################################################"
  	echo ""
   	echo "======globalSettings====="
@@ -2209,18 +2209,18 @@ Do not run this command with sudo."
   	echo " globalSettings can be applied by creating a file called:"
   	echo " /etc/mythicalLibrarian/globalSettings"
  	echo " ##############################################################"
- 	echo " #SYMLINK=Disabled                                            #"
-  	echo " #AlternateMoveDir=/media/usbDrive                            #"
- 	echo " #NotifyUserName=adam                                         #"
- 	echo " #XBMCIPs=( user:password@192.168.1.110:8080 )                #"
- 	echo " #Database=Disabled                                           #"               
+ 	echo " #SYMLINK=Disabled					    #"
+  	echo " #AlternateMoveDir=/media/usbDrive			    #"
+ 	echo " #NotifyUserName=adam					 #"
+ 	echo " #XBMCIPs=( user:password@192.168.1.110:8080 )		#"
+ 	echo " #Database=Disabled					   #"	       
 	echo " ##############################################################"
 	echo "Done."
  }
 
 
  improveConfidence(){
-        echo -e "About Confidence ratings:"
+	echo -e "About Confidence ratings:"
   	echo -e ""
   	echo -e " Confidence Ratings are used by mythicalLibrarian."
   	echo -e " These ratings serve as a guide to the probability of a"
@@ -2464,42 +2464,42 @@ Do not run this command with sudo."
  	echo "SEARCHING: www.TheTvDb.com SHOW NAME: $ShowName EPISODE: $EpisodeSubtitle"|tee -a "$mythicalLibrarian"/output.log
  	echo "DATE:$MovieAirDate $OriginalAirDate FILE NAME: $InputPath">>"$mythicalLibrarian"/output.log
 
-        #Query thetvdb on show title, then return a list of Zap2itID, ShowName and seriesid.
-        searchTheTvDbAndReturnTxtFileTables  
-        ConfidenceReasoning="$ConfidenceReasoning Attempted Match On Zap2itID:"
-        GetSeriesLineNumberFromTableWithZap2itID
-        if [ $? = 0 ]; then 
+	#Query thetvdb on show title, then return a list of Zap2itID, ShowName and seriesid.
+	searchTheTvDbAndReturnTxtFileTables  
+	ConfidenceReasoning="$ConfidenceReasoning Attempted Match On Zap2itID:"
+	GetSeriesLineNumberFromTableWithZap2itID
+	if [ $? = 0 ]; then 
 		((++SeriesConfidenceRating))
-                ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  		echo "MATCH FOUND BASED ON Zap2itID:$NewShowName"| tee -a "$mythicalLibrarian"/output.log
-        else
-        	((--SeriesConfidenceRating))
-                ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted match on Standard Logic:"
-                GetSeriesLineNumberFromTableWithStandardLogic
-                if [ $? = 0 ]; then
-                	ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+	else
+		((--SeriesConfidenceRating))
+		ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted match on Standard Logic:"
+		GetSeriesLineNumberFromTableWithStandardLogic
+		if [ $? = 0 ]; then
+			ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  		else
  			RequiresDoover=1
   			((--SeriesConfidenceRating))
-                	ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted Title match on Fuzzy Logic:"
-                	GetSeriesLineNumberFromTableWithFuzzyLogic
+			ConfidenceReasoning="$ConfidenceReasoning Failed; Attemted Title match on Fuzzy Logic:"
+			GetSeriesLineNumberFromTableWithFuzzyLogic
  			if [ $? = 0 ]; then
-                		ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
+				ConfidenceReasoning="$ConfidenceReasoning Sucessful;"
  			else
   				((--SeriesConfidenceRating))
-                		ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable;"
+				ConfidenceReasoning="$ConfidenceReasoning Failed; Information not obtainable;"
  				mythicalEpiShow=1
  			fi
  		fi
-        fi
+	fi
 
 #if we have a series line number then translate that into a series id
     	if [ "$serieslinenumber" != "" ] && [ $serieslinenumber -gt 0 ]; then
 		setSeriesIDandNewShowNameBasedOnSeriesLineNumber
  		echo "FOUND:$NewShowName ID#:$SeriesID WITH CONFIDENCE:$SeriesConfidenceRating"|tee -a "$mythicalLibrarian"/output.log
-            else
-                echo "WARNING: SERIESID COULD NOT BE DETERMINED"|tee -a "$mythicalLibrarian"/output.log
-        fi
+	    else
+		echo "WARNING: SERIESID COULD NOT BE DETERMINED"|tee -a "$mythicalLibrarian"/output.log
+	fi
  fi
 
 
@@ -2511,29 +2511,29 @@ Do not run this command with sudo."
 
  #####PROCESS EPISODE INFORMATION##### 	
  if [ "$SeriesID" != "" ] ; then
-        makeShowDirIfNeeded
+	makeShowDirIfNeeded
 
 #If database is out of date, download new database
-        determineIfDatabaseIsUpToDate
-        if [ "$?" != "0" ]; then
+	determineIfDatabaseIsUpToDate
+	if [ "$?" != "0" ]; then
  		downloadInfoAboutMatchedTitleAndCreateTxtFileTables
  		if [ "$?" != "0" ]; then
  			echo "WARNING: COULD NOT DOWNLOAD UP-TO-DATE INFORMATION!"|tee -a "$mythicalLibrarian"/output.log
  			RequiresDoover=1
-                fi
-        fi
+		fi
+	fi
 
  #####GET ABSOLUTE EPISODE NUMBER#####
  	ConfidenceReasoning="$ConfidenceReasoning Attemped match on OriginalAirDate:"
  #If info was pulled from database, then plug name into NewShowName	
-        AbsoluteEpisodeNumber=""
+	AbsoluteEpisodeNumber=""
 	getAbsoluteEpisodeNumberWithOriginalAirdate
 	AirdateExitStatus=$?
  	test "$AirdateExitStatus" = "1" && test "$EpisodeSubtitle" != "" && ResolveMultipleAirdateMatches
  	test "$?" = "0" && AirdateExitStatus=0
  	if [ "$AirdateExitStatus" = "0" ]; then
-        	((++EpisodeConfidenceRating))
-               	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
+		((++EpisodeConfidenceRating))
+	       	ConfidenceReasoning="$ConfidenceReasoning Sucessful; "
  		GotEpisodeNumber=1
 	else 
 		echo "AIRDATE FAILED. TITLE MATCH ON ABSOLUTE EPISODE NUMBER: $AbsoluteEpisodeNumber"| tee -a "$mythicalLibrarian"/output.log
@@ -2558,9 +2558,9 @@ Do not run this command with sudo."
 	 	fi
 	fi	
  	
-        
-        #update confidence total
-        let ConfidenceRating=EpisodeConfidenceRating+SeriesConfidenceRating
+	
+	#update confidence total
+	let ConfidenceRating=EpisodeConfidenceRating+SeriesConfidenceRating
 
 
 	if [ "$AbsoluteEpisodeNumber" != "" ]; then
@@ -2573,7 +2573,7 @@ Do not run this command with sudo."
  			getAbsoluteEpisodeNumberWithStandardLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
 				StandardLogicDoesNotJiveMessage
-                                test "$AbsoluteEpisodeNumber" = "" && AbsoluteEpisodeNumber="Nothing"
+				test "$AbsoluteEpisodeNumber" = "" && AbsoluteEpisodeNumber="Nothing"
  				ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
 
@@ -2585,8 +2585,8 @@ Do not run this command with sudo."
 
 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
-                        	(( ++ConfidenceRating ))
+				ConfidenceReasoning="$ConfidenceReasoning Verified with Standard logic;"
+				(( ++ConfidenceRating ))
  			fi
 
  #Reset for fuzzy test
@@ -2595,12 +2595,12 @@ Do not run this command with sudo."
  			getAbsoluteEpisodeNumberWithFuzzyLogic
 			if [ "$AbsoluteEpisodeNumber" != "$AbsoluteEpisodeNumberBackup" ]; then
  				test "$AbsoluteEpisodeNumber" = "" && AbsoluteEpisodeNumber="Nothing"
-                                ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
+				ConfidenceReasoning="$ConfidenceReasoning Fuzzy Logic test came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
 				FuzzyLogicDoesNotJiveMessage
  	 		else 
 				updateRunningFuzzyLogicErrorCount
-                                ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
-                        	(( ++ConfidenceRating ))
+				ConfidenceReasoning="$ConfidenceReasoning Verified with Fuzzy logic;"
+				(( ++ConfidenceRating ))
  			fi 		
 
 		fi
@@ -2609,12 +2609,12 @@ Do not run this command with sudo."
 	fi
 
  #Statistical Fuzzy Logic monitoring
-        updateRunningTotalMatchesCount
+	updateRunningTotalMatchesCount
  	echo "TOTAL MATCHES:$FuzzyLogicMatches TOTAL VERIFIED FUZZY ERRORS:`test -f "$mythicalLibrarian"/FuzzyLogicError.log && cat "$mythicalLibrarian"/FuzzyLogicError.log || echo "0"`"
  
  #if series id is not obtained send failure message
  elif [ -z "$SeriesID" ] && [ "$mythicalLibrarianProgramIDCheck" != "SH" ] && [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
-        ConfidenceReasoning=$ConfidenceReasoning+"Failed; "
+	ConfidenceReasoning=$ConfidenceReasoning+"Failed; "
  	echo "SERIES ID WAS NOT FOUND. THETVDB MAY BE DOWN. TRY USING A showTranslations">>"$mythicalLibrarian"/output.log
 	if [ "$Database" = "Enabled" ]; then
  		echo "DB ENTIRES- RECSTART:$ShowStartTime- MOVIE:$MovieAirDate- ORIGAIRDATE:$OriginalAirDate- CHID:$ChanID- CAT:$ShowCategory-">>"$mythicalLibrarian"/output.log
@@ -2625,9 +2625,9 @@ Do not run this command with sudo."
 
  #Set EXX and SXX by matching Absolute Episode Number across mythicalLibrarian's database
  if [ "$AbsoluteEpisodeNumber" != "" ]; then
-        setSxxAndExxFromAbsoluteEpisodeNumber
+	setSxxAndExxFromAbsoluteEpisodeNumber
  else
-        ConfidenceReasoning="$ConfidenceReasoning Could not set Sxx and Exx, Failed; "
+	ConfidenceReasoning="$ConfidenceReasoning Could not set Sxx and Exx, Failed; "
  fi
 
 
@@ -2737,7 +2737,7 @@ Do not run this command with sudo."
  	echo "RESOLVED SERIES ID:$SeriesID- RESOVED SHOW NAME:$NewShowName-">>"$mythicalLibrarian"/output.log
  	echo "INPUT EPISODE NAME:$InputSubtitle- Absolute EPISODE NUMBER:$AbsoluteEpisodeNumber- RESOLVED EPISODE NAME:$EpisodeSubtitle-">>"$mythicalLibrarian"/output.log
  	echo "SEASON:$Sxx- EPISODE:$Exx- SYMLINK MODE:$SYMLINK- FILESIZE: $MoveFileSize""kB-">>"$mythicalLibrarian"/output.log 
-        echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning">> "$mythicalLibrarian"/output.log
+	echo "CONFIDENCE:$ConfidenceRating LOGIC PATH: $ConfidenceReasoning">> "$mythicalLibrarian"/output.log
  	echo "CREATE AND DELETE FLAGS: ORIGINALDIR:$OriginalDirWritable- FREE:$OriginaldirFreeSpace""kB- WORKINGDIR:$WorkingDirWritable FREE:$WorkingDirFreeSpace""kB""-">>"$mythicalLibrarian"/output.log
 	echo "MOVEDIRWRITABLE:$MoveDirWritable- FREE:$MoveDirFreeSpace""kB- ALTERNATEMOVEDIR:$AlternateMoveDirWritable- FREE:$AlternateMoveDirFreeSpace""kB-">>"$mythicalLibrarian"/output.log
 	 if [ "$Database" = "Enabled"	 ]; then
@@ -2748,7 +2748,7 @@ Do not run this command with sudo."
  		echo " PROGRAMID:$ProgramID- CHANNEL ID:$ChanID- CATEGORY:$ShowCategory- GOFORDOOVER:$GoForDoover-">>"$mythicalLibrarian"/output.log
  		echo " EXTRAPOLATED DATA DETERMINED THIS RECORDING AS A:$ProgramIDType- STARS:$Stars RATING:$rating">> "$mythicalLibrarian"/output.log
  		echo " ZAP2IT SERIES ID:$Zap2itSeriesID- MATCHED TVDB SERIES ID:$MatchedSeriesID-" >>"$mythicalLibrarian"/output.log
-                echo PLOT: "$Plot" >>"$mythicalLibrarian"/output.log
+		echo PLOT: "$Plot" >>"$mythicalLibrarian"/output.log
  	fi
  	echo "####################END OF DEBUG LOG#####################">>"$mythicalLibrarian"/output.log
   fi
@@ -2761,9 +2761,9 @@ Do not run this command with sudo."
  if [ "$Exx" = "" ] && [ "$InputPath" != "testfile.ext" ] ; then
 
  	if [ "$ChanID" = "" ] && [ "$InputPath" ]; then
-                echo "This episode could not be matched based on supplied Title and SubTitle."
+		echo "This episode could not be matched based on supplied Title and SubTitle."
  		jobType="NameCouldNotBeAssigned"
- 	        runjob
+ 		runjob
  	elif [ "$mythicalLibrarianProgramIDCheck" = "MV" ]; then
 #Ensures the doover value was not set for the movie and use safe show name
   		RequiresDoover=0
@@ -2906,7 +2906,7 @@ Do not run this command with sudo."
  			performLoggingForMoveMode
  			dailyreport 
  			generaterss 
- 	 	        test "$SYMLINK" = "Disabled" && setGroupPermissions
+ 	 		test "$SYMLINK" = "Disabled" && setGroupPermissions
   			jobtype=MoveModeSuccessful		
  			RunJob
  
@@ -2956,7 +2956,7 @@ Do not run this command with sudo."
  		performLoggingForLinkMode
  		dailyreport
  		generaterss
- 	        test "$SYMLINK" = "Disabled" && setGroupPermissions
+ 		test "$SYMLINK" = "Disabled" && setGroupPermissions
    		jobtype=LinkModeSuccessful		
  		RunJob
  
