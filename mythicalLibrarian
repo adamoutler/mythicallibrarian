@@ -1015,6 +1015,9 @@ determineIfDatabaseIsUpToDate(){
  		echo -ne "Downloading Series: $SeriesID \r" 1>&2 
 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
 
+#DEBUG do this here  sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/'    and remove it from the loop
+
+
 #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
 		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
 			Ename=""
