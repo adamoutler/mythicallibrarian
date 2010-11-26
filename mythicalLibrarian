@@ -1166,6 +1166,9 @@ ResolveMultipleAirdateMatches(){
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
+
+
+
 #get instance line number
 	IntermediateEpisodeNumber=`grep -ni "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"|grep -m1 ^|sed 's/:.*//'`
 #translate instance line number to actual line number
@@ -1208,9 +1211,9 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	 NewShowName=`sed -n $serieslinenumber'p' "$mythicalLibrarian"/shn.txt|grep -m1 ^|sed s/"&amp;"/"\&"/g`
 	 
  #Cleanup files to prevent mismatch next time
-	 #test -f "$mythicalLibrarian"/sid.txt && rm -f "$mythicalLibrarian"/sid.txt
-	 #test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
-	 #test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
+	 test -f "$mythicalLibrarian"/sid.txt && rm -f "$mythicalLibrarian"/sid.txt
+	 test -f "$mythicalLibrarian"/shn.txt && rm -f "$mythicalLibrarian"/shn.txt
+	 test -f "$mythicalLibrarian"/Zap2it.txt && rm -f "$mythicalLibrarian"/Zap2it.txt
 }
 
 
@@ -1235,6 +1238,11 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
 
  ######STANDARD LOGIC EPISODE MATCH#####
+
+##DEBUG we need some sort of regex to account for matche like
+##'The Office' 'The Delivery, Part 1'   -guide data
+##'The Office' 'The Delivery (1)'       -TvDb data
+
  getAbsoluteEpisodeNumberWithStandardLogic(){
 	AbsoluteEpisodeNumber=""
  	AbsoluteEpisodeNumber=`grep -nix "$EpisodeSubtitle" "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"|grep -m1 ^|sed 's/:.*//'`
