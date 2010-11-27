@@ -1675,7 +1675,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  		while read line
  		do
  			(( ++mythicalLibrarianCounter ))
- 			echo -ne "Verifying file record:$mythicalLibrarianCounter \r" 1>&2 
+ 			echo -ne "File record $mythicalLibrarianCounter: ${SupportFile:0:20}     \r" 1>&2 
  			SupportFile=`echo $line|cut -d"'" -f2`
  		 	MainFile=`echo $line|cut -d"'" -f4`
  			ls "$MainFile" > /dev/null 2>&1
@@ -1703,7 +1703,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  		while read line
  		do
  			(( ++mythicalLibrarianCounter ))
- 			echo -ne "Verifying folder record:$mythicalLibrarianCounter \r" 1>&2 
+ 			echo -ne "Folder record $mythicalLibrarianCounter: ${DirToCheckCheck:0:20}    \r" 1>&2 
  			DirToCheck=$line
  			if [ -d "$DirToCheck" ]; then
   				DirToCheckCheck=`ls "$line"|  sed s/"tvshow.nfo"/""/g |grep -m1 ^`
@@ -1733,7 +1733,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  		while read line
  		do
  			(( ++mythicalLibrarianCounter ))
- 			echo -ne "Clensing mythicalLibrarian Database:$mythicalLibrarianCounter \r" 1>&2 
+ 			echo -ne "Clensing Database:$mythicalLibrarianCounter ${folderToCheck:0:20}    \r" 1>&2 
  			folderToCheck="$mythicalLibrarian/$line"
  			 if [ -d "$folderToCheck" ]; then
  				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
