@@ -187,10 +187,14 @@ except:
 ##########################
 #For Diagnostics purposes
 if options['Diagnostic'] == 'True':
-     print "Connected to:", db.gethostname()
-     print "Db Identified as:",  db.ident
-     print "Diagnostics passed."
-     sys.exit(0)
+    try:
+        print "Connected to:", db.gethostname()
+        print "Db Identified as:",  db.ident
+        print "Diagnostics passed."
+        sys.exit(0)
+    except: 
+        print "Diagnostics failed."
+        sys.exit(1)
 
 
 #####################################

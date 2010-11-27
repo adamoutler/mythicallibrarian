@@ -273,5 +273,9 @@ finally:
     if f is not None:
         if f.fileno() != 1:
             f.close()
-    rec.delete(force=True)
+    try:
+        rec.delete(force=True)
+        print "Deleted."
+    except:
+        print "Failed to delete."
   
