@@ -917,13 +917,10 @@
  
  #Make sure we got input arguments and file is valid
  	if [ ! -e "$InputPath" ]; then
- 		echo "DEBUG--- ENTERED DELETE DATABASE SECTION">>"$mythicalLibrarian"/output.log
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"|tee -a "$mythicalLibrarian"/output.log
- 
-		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
- 
- #Remove thumbnails
+ 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
+  #Remove thumbnails
  		rm -f "$originaldirname/$FileBaseName".*	
  	fi 
  	return 0
@@ -1013,7 +1010,10 @@ determineIfDatabaseIsUpToDate(){
 
 #Download information from server
  		echo -ne "Downloading Series: $SeriesID \r" 1>&2 
-		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xml" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
+		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
+  		grepTest=""
+ 		grepTest=`grep "EpisodeName" "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest"`
+ 		test "$grepTest" != "" && mv "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
 
 #DEBUG do this here  sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/'    and remove it from the loop
 
