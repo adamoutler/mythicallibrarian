@@ -120,36 +120,22 @@ fi
 if [ ! -f "./librarian" ]; then
  	DownloadML=Stable
  	echo "Stable `date`">./lastupdated
- test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
- test -f ./bypassDownload && rm ./bypassDownload
 
- test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
- test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
-
-  if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
- 	clear
- 	echo "mythicalLibrarian was not updated."
- 	echo "Please re-run mythicalSetup."
-        echo "Done."
- 	exit 1
-  fi
-
-else
-
- test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
- test -f ./bypassDownload && rm ./bypassDownload
-
- test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
- test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
-
-  if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
- 	clear
- 	echo "mythicalLibrarian was not updated."
- 	echo "Please re-run mythicalSetup."
-        echo "Done."
- 	exit 1
-  fi
 fi
+
+test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
+test -f ./bypassDownload && rm ./bypassDownload
+test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
+test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
+
+  if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
+ 	clear
+ 	echo "mythicalLibrarian was not updated."
+ 	echo "Please re-run mythicalSetup."
+        echo "Done."
+ 	exit 1
+  fi
+
 clear
 if [ "$DownloadML" = "Stable" ]; then
  	touch ./bypassDownload
