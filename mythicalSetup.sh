@@ -212,7 +212,7 @@ test -f ./mythicalPrep && rm -f ./mythicalPrep
 echo "#! /bin/bash">./mythicalPrep
 echo " #######################USER SETTINGS##########################">>./mythicalPrep
 echo " ###Stand-alone mode values###">>./mythicalPrep
-DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian supports several interfaces.  Please select your version from the list." 16 40 10 "MythTV0.24" "Development/head" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "None"  "No guide data" 2>&1 >/dev/tty)
+DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythicalLibrarian supports several interfaces.  Please select your version from the list." 16 40 10 "MythTV0.24" "Stable" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "None"  "No guide data" 2>&1 >/dev/tty)
 test "$?" != "0" && echo "please select a version" && exit 1 
  case "$DatabaseAccess" in 
 	MythTV0.24)
