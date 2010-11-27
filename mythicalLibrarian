@@ -4,7 +4,7 @@
 # ***** WELCOME! Scroll further down to set the user settings. *****
 
  #mythicalLibrarian by Adam Outler
- #SUN 1APR2010 1044
+ #SAT 27NOV10 @ 12:35
  #email: outleradam@hotmail.com
  #Software the way it should be: Free and Open Source
  #Please contact me with any bug reports 
@@ -980,7 +980,7 @@ determineIfDatabaseIsUpToDate(){
  
  #if episode information is out of date or not created
  	if [ $CurrentTime -gt $NextUpdate ]; then
-#DEBUG: Commented code is for experimental overall speedup of tvdb download
+#TODO: Commented code is for experimental overall speedup of tvdb download
  		#curl -s -m"$Timeout" " http://www.thetvdb.com/api/Updates.php?type=all&time=$LastUpdated" >> "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		#grep "$SeriesID" "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		#if [ "$?" != 0 ]; then 
@@ -1002,12 +1002,6 @@ determineIfDatabaseIsUpToDate(){
  
  #####GET EPISODE INFORMATION#####
  downloadInfoAboutMatchedTitleAndCreateTxtFileTables () {
-
-
-#DEBUG This needs to be downloaded to a separate file and then if the file contains valid information,
-# then we will parse it.  This way we don't clobber old downloads. with bogus information about
-# a file which does not exist.   Old information is better then no information.
-
 #Download information from server
  		echo -ne "Downloading Series: $SeriesID \r" 1>&2 
 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
@@ -1015,7 +1009,7 @@ determineIfDatabaseIsUpToDate(){
  		grepTest=`grep "EpisodeName" "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest"`
  		test "$grepTest" != "" && mv "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
 
-#DEBUG do this here  sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/'    and remove it from the loop
+#TODO SPEED do this here  sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/'    and remove it from the loop
 
 
 #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
@@ -1116,10 +1110,7 @@ GetSeriesLineNumberFromTableWithZap2itID(){
  #####FUZZY LOGIC RECOGNITION OF SERIES#####
  #This function provides fuzzy logic matching of a show name and returns a seriesid
  GetSeriesLineNumberFromTableWithFuzzyLogic () {
-
-   #DEBUG- REMOVED THIS LINE showname=`echo "$ShowName"|sed s/"&amp;"/"\&"/g`
   	serieslinenumber=`agrep -Byn "${ShowName:0:27}" "$mythicalLibrarian/shn.txt"|sed 's/:.*//'|grep -m1 ^`
- 
  #Correct for serieslinenumber = ""
 	test "$serieslinenumber" = "" && serieslinenumber="0" 
    
@@ -1161,8 +1152,6 @@ ResolveMultipleAirdateMatches(){
  #Loop through list and create instance matching files
  	while read line
  	do
- 		#DEBUG Why is this throwing it off?((--line)) #account for original show airdate
- 		
  		echo "$line" >>"$mythicalLibrarian/$NewShowName/$NewShowName.InstanceLineNumbers.txt"
  	 	sed -n $line'p' "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt" >> "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceEnames.txt"
  	done < "$mythicalLibrarian/$NewShowName/$NewShowName.InstanceFAiredLineNumbers.txt"
@@ -1239,7 +1228,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  ######STANDARD LOGIC EPISODE MATCH#####
 
-##DEBUG we need some sort of regex to account for matche like
+##TODO we need some sort of regex to account for matche like
 ##'The Office' 'The Delivery, Part 1'   -guide data
 ##'The Office' 'The Delivery (1)'       -TvDb data
 
@@ -1326,7 +1315,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
 # if no bypass, and file is owned by mythtv, and username is not mythtv
 # and system is set to use mythtv database, and symlink is move 
-#DEBUG This might not work
+#TODO This might not work
  if [ "$InputOption" != "--BypassPermissionsCheck" ] || [ "$InputOption" = "" ] && [ "$InputSubtitle" = "" ] && [ "$InputTitle" != "--BypassPermissionsCheck" ]; then
  	if  [ "`ls -l \"$InputPath\"| awk '{ print $3 }'`" = "mythtv" ] && [ "$MyUserName" != "mythtv" ] && [ "$SYMLINK" = "MOVE" ]; then
   		UserName=$USER
@@ -2467,7 +2456,7 @@ Do not run this command with sudo."
 
 
   
-##DEBUG CHECK TO MAKE SURE WE CANT GET THIS FAR WITHOUT DATABASE INFORMATION OR A SUBTITLE
+##TODO CHECK TO MAKE SURE WE CANT GET THIS FAR WITHOUT DATABASE INFORMATION OR A SUBTITLE
  
  #####SEARCH FOR SHOW AND BUILD INFORMATION#####
  #setup defaults for searching
@@ -2599,7 +2588,7 @@ Do not run this command with sudo."
  				ConfidenceReasoning="$ConfidenceReasoning Standard Logic came up with Episode Number $AbsoluteEpisodeNumber. This does not match $AbsoluteEpisodeNumberBackup;"
  	 		else 
 
-#DEBUG For shows which are way off, we need some sort of doover mechanisim.   
+#TODO For shows which are way off, we need some sort of doover mechanisim.   
 #CONFIDENCE:2 LOGIC PATH:  Attempted Match On Zap2itID: Sucessful; Attemped match on OriginalAirDate: Sucessful;  
 #Standard Logic came up with line 76. This does not match 85; Fuzzy Logic test came up with line 76. This does not match 85;
 #JOB: mythicalLibrarian '/home/mythtv/Videos/1035_20101109001500.mpg' 'Aqua Teen Hunger Force' 'Couple Skate'
@@ -2663,7 +2652,7 @@ Do not run this command with sudo."
    	ConfidenceReasoning="$ConfidenceReasoning Guide Data did not match showing;"
  	MythicalEpishow=1
  	RequiresDoover=1
-#DEBUG come up with a way to have a variable like DataWasNotObtainable to check and make it a SH later
+#TODO come up with a way to have a variable like DataWasNotObtainable to check and make it a SH later
 
 
  #If it's a movie, give it a name.

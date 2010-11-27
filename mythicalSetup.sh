@@ -120,32 +120,47 @@ fi
 if [ ! -f "./librarian" ]; then
  	DownloadML=Stable
  	echo "Stable `date`">./lastupdated
-else
+ test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
+ test -f ./bypassDownload && rm ./bypassDownload
 
-test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
-test -f ./bypassDownload && rm ./bypassDownload
+ test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
+ test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
 
-test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
-test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
-
-if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
+  if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
  	clear
  	echo "mythicalLibrarian was not updated."
  	echo "Please re-run mythicalSetup."
         echo "Done."
  	exit 1
-fi
+  fi
+
+else
+
+ test -f ./bypassDownload && bypassDownload=1 || bypassDownload=0
+ test -f ./bypassDownload && rm ./bypassDownload
+
+ test -f ./lastupdated && lastupdated="`cat ./lastupdated`" || lastupdated=invalidbuild
+ test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetup!" --menu "Welcome to mythicalLibrarian's mythicalSetup.\n\nPlease select the version, Latest(SVN), Stable to be downloaded, or choose Build to continue with previously downloaded version." 13 70 10 "Latest" "Download and switch to SVN $svnrev" "Stable" "Download and switch to last stable version"  "Build"  "using: $lastupdated" 2>&1 >/dev/tty)
+
+  if [ "$?" = "1" ] && [ $bypassDownload = 0 ] ; then
+ 	clear
+ 	echo "mythicalLibrarian was not updated."
+ 	echo "Please re-run mythicalSetup."
+        echo "Done."
+ 	exit 1
+  fi
 fi
 clear
 if [ "$DownloadML" = "Stable" ]; then
  	touch ./bypassDownload
- 	echo "Stable "`date`>"./lastupdated"
+  	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
+	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
- 	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
- 	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g|sed s/\ /\\ /g>"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
- 	rm ./mythicalLibrarian.sh
         curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
  	chmod 755 /usr/local/bin/MythDataGrabber
+ 	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
+ 	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g|sed s/\ /"\\ "/g  >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
+ 	rm ./mythicalLibrarian.sh
 	mv ./mythicalLibrarian1 ./mythicalLibrarian.sh
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
@@ -166,7 +181,7 @@ if [ "$DownloadML" = "Stable" ]; then
 	echo "Parsing mythicalLibrarian completed!"
  	echo "Removing old and downloading new version of mythicalSetup..."
  	test -f ./mythicalSetup.sh && rm -f ./mythicalSetup.sh
- 	curl "http://mythicallibrarian.googlecode.com/files/mythicalSetup.sh">"./mythicalSetup.sh"
+ 	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalSetup.sh">"./mythicalSetup.sh"
  	chmod +x "./mythicalSetup.sh"
  	./mythicalSetup.sh
 	exit 0
