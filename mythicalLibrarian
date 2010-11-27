@@ -1675,6 +1675,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  		while read line
  		do
  			(( ++mythicalLibrarianCounter ))
+ 			echo -ne "Verifying file record:$mythicalLibrarianCounter \r"
  			SupportFile=`echo $line|cut -d"'" -f2`
  		 	MainFile=`echo $line|cut -d"'" -f4`
  			ls "$MainFile" > /dev/null 2>&1
@@ -1698,8 +1699,11 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  
  #Check if folders are empty and remove dir if needed and it was created by mythicalLibrarian
  	if [ "$DirTracking" = "Enabled" ] && [ -f "$mythicalLibrarian/dir.tracking" ]; then
+ 
  		while read line
  		do
+ 			(( ++mythicalLibrarianCounter ))
+ 			echo -ne "Verifying folder record:$mythicalLibrarianCounter \r"
  			DirToCheck=$line
  			if [ -d "$DirToCheck" ]; then
   				DirToCheckCheck=`ls "$line"|  sed s/"tvshow.nfo"/""/g |grep -m1 ^`
@@ -1728,6 +1732,8 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
  		while read line
  		do
+ 			(( ++mythicalLibrarianCounter ))
+ 			echo -ne "Clensing mythicalLibrarian Database:$mythicalLibrarianCounter \r"
  			folderToCheck="$mythicalLibrarian/$line"
  			 if [ -d "$folderToCheck" ]; then
  				if [ "$folderToCheck" != "$mythicalLibrarian/Daily Report" ]; then
