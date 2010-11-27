@@ -151,7 +151,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
- 	echo -e 'mythicalVersion="'"`cat ./lastupdated`"'"'>>./librarian
+ 	echo -e "mythicalVersion=Stable - Downloaded `date`">>./librarian
 	while read line
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
