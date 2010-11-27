@@ -139,8 +139,6 @@ test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetu
 clear
 if [ "$DownloadML" = "Stable" ]; then
  	touch ./bypassDownload
-  	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
-	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
         curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
  	chmod 755 /usr/local/bin/MythDataGrabber
@@ -151,7 +149,7 @@ if [ "$DownloadML" = "Stable" ]; then
  	parsing="Stand-by Parsing mythicalLibrarian"
   	startwrite=0
 	test -f ./librarian && rm -f ./librarian
- 	echo -e "mythicalVersion=Stable - Downloaded `date`">>./librarian
+ 	echo -e "mythicalVersion=\"Stable - Downloaded `date`\"">>./librarian
 	while read line
  	do
 		test "$line" = "########################## USER JOBS############################" && let startwrite=$startwrite+1
