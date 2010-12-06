@@ -1028,8 +1028,8 @@ determineIfDatabaseIsUpToDate(){
  				if [[ $line == \<\/Episode\> ]]; then
  					(( ++recordNumber ))
  					echo -ne "Building Record:$recordNumber ${actualEname:0:20}           \r" 1>&2 
-					echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"&
- 					Ename=`echo "$actualEname" |sed 's/;.*//'`
+					echo "$actualEname" >> "$mythicalLibrarian/$NewShowName/$NewShowName.actualEname.txt"
+ 					
 					echo "$Ename" >> "$mythicalLibrarian/$NewShowName/$NewShowName.Ename.txt"
 					echo "$FAired" >> "$mythicalLibrarian/$NewShowName/$NewShowName.FAired.txt"
 					echo "$SeasonNr" >> "$mythicalLibrarian/$NewShowName/$NewShowName.S.txt"
@@ -1042,26 +1042,48 @@ determineIfDatabaseIsUpToDate(){
 			 	
 #Get actual show name	
 		 		elif [[ $line == \<EpisodeName\>* ]]; then
- 					actualEname=`echo "$line" | sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/' |tr -d '|\?\*\<\"\:\>\+\\\[\]\/'`
-
+  					line=${line/<\/EpisodeName>/}
+  					line=${line/<EpisodeName>/}
+ 					line=${line/&lt;}
+ 					line=${line/&gt;/} 
+  					line=${line/&quot;/} 
+ 					line=${line/&amp;/&}
+ 					line=${line/\|/}
+ 					line=${line/\?/}
+ 					line=${line/\*/}
+ 					line=${line/\:/}
+ 					line=${line/\+/}
+ 					line=${line/\\/}
+ 					line=${line/\//}
+ 					line=${line/\[/}
+ 					line=${line/\]/}
+ 					line=${line/\'/}
+ 					line=${line/\"/}
+ 					actualEname=${line/&ndash;/-}
+					Ename=${actualEname/;*/}
  				
 #Get OriginalAirDate
 				elif [[ $line == \<FirstAired\>* ]]; then
- 					FAired=`echo "$line" | sed -e s/'<FirstAired>'//g -e s/'<\/FirstAired>'//g`
+ 					line=${line/<\/FirstAired>/}
+ 					line=${line/<FirstAired>/}
+ 					FAired=$line
  				
 #Get Season number
 			 	elif [[ $line == \<SeasonNumber\>* ]]; then
- 					SeasonNr=`echo "$line" |sed -e s/'<SeasonNumber>'// -e s/'<\/SeasonNumber>'//`
- 				
+ 					line=${line/<\/SeasonNumber>/}
+ 					line=${line/<SeasonNumber>/}
+ 					SeasonNr=$line
+
 #Get Episode number
 				elif [[ $line == \<EpisodeNumber\>* ]]; then
- 					EpisodeNr=`echo "$line" |sed -e 's/<EpisodeNumber>//' -e 's/<\/EpisodeNumber>//'`
- 				
-				fi
+ 					line=${line/<\/EpisodeNumber>/}
+ 					line=${line/<EpisodeNumber>/}
+ 				 	EpisodeNr=$line
+ 				fi
 			done < "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
 
 
-			chmod 777 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
+			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".actualEname.txt
 			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".Ename.txt
 			chmod 666 "$mythicalLibrarian/$NewShowName/$NewShowName".FAired.txt
 			chmod 666 "$mythicalLibrarian"/"$NewShowName"/"$NewShowName".S.txt
@@ -1260,12 +1282,14 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  #####SEARCH THETVDB AND CREATE DATA FILES#####
  searchTheTvDbAndReturnTxtFileTables(){
 
+#TODO Instance searching rather then global.  Need to create an instance varible based on time and chanid.
+
  #Search TheTvDb and return an XML file with results
  	curl -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
  
  #Separate the XML into textual DBs conatining SeriesID, ShowName and Zap2it IDs
- 	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed s/"<seriesid>"/""/g|sed s/"<\/seriesid>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g | sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/sid.txt"
- 	cat "$mythicalLibrarian/working.xml" | grep "<SeriesName>"| sed s/"<SeriesName>"/""/g | sed s/"<\/SeriesName>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >"$mythicalLibrarian/shn.txt"
+ 	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed -e s/"<seriesid>"/""/ -e s/"<\/seriesid>"/""/ -e s/'&quot;'/'"'/ -e s/"&amp;"/"\&"/ -e s/'&ndash;'/'-'/ -e s/"&lt;"/"<"/ -e s/"&gt;"/">"/ >"$mythicalLibrarian/sid.txt"
+ 	cat "$mythicalLibrarian/working.xml" | grep "<SeriesName>"| sed -e s/"<SeriesName>"// -e s/"<\/SeriesName>"// -e s/'&quot;'/'"'/ -e s/"&amp;"/"\&"/ -e s/'&ndash;'/'-'/ -e s/"&lt;"/"<"/ -e s/"&gt;"/">"/ >"$mythicalLibrarian/shn.txt"
  	 
  
  #parse the XML for shows with Zap2ItIDs
@@ -1276,7 +1300,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 		test "$line" = "</Series>" && test "$NextShow" = "1" && echo "" >>"$mythicalLibrarian/zap2it.txt" && NextShow=0
 
 		if [[ $line =~ '<zap2it_id>'* ]] ; then
-			echo $line| sed s/"<zap2it_id>"/""/g | sed s/"<\/zap2it_id>"/""/g | sed s/'&quot;'/'"'/g | sed s/"&amp;"/"\&"/g | sed s/'&ndash;'/'-'/g |  sed s/"&lt;"/"<"/g | sed s/"&gt;"/">"/g >>"$mythicalLibrarian/zap2it.txt"
+			echo $line| sed -e s/"<zap2it_id>"/""/ -e s/"<\/zap2it_id>"/""/ -e s/'&quot;'/'"'/ -e s/"&amp;"/"\&"/ -e s/'&ndash;'/'-'/ -e s/"&lt;"/"<"/ -e s/"&gt;"/">"/ >>"$mythicalLibrarian/zap2it.txt"
 			NextShow=0
 	     	fi
 	done < "$mythicalLibrarian/working.xml"
