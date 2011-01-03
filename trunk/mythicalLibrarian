@@ -980,7 +980,7 @@ determineIfDatabaseIsUpToDate(){
  
  #if episode information is out of date or not created
  	if [ $CurrentTime -gt $NextUpdate ]; then
-#TODO: Commented code is for experimental overall speedup of tvdb download
+
  		curl -s -m"$Timeout" " http://www.thetvdb.com/api/Updates.php?type=all&time=$LastUpdated" >> "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		grep "$SeriesID" "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		if [ "$?" != 0 ]; then 
@@ -1005,12 +1005,11 @@ determineIfDatabaseIsUpToDate(){
 #Download information from server
  		echo -ne "Downloading Series: $SeriesID \r" 1>&2 
 		curl -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
+
+#Validate that the show has a EpisodeName tag and is a valid download before clobering our old download.
   		grepTest=""
  		grepTest=`grep "EpisodeName" "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest"`
  		test "$grepTest" != "" && mv "$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
-
-#TODO SPEED do this here  sed -e s/'<\/EpisodeName>'// -e s/'<EpisodeName>'// -e s/'\&amp\;'/'\&'/ -e s/'\&quot\;'/'\"'/ -e s/'\&amp\;'/'\&'/ -e s/'\&ndash\;'/'-'/ -e s/'\&lt\;'/'\<'/ -e 's/'\&gt\;'/'\>'/'    and remove it from the loop
-
 
 #create a folder/file "database" Strip XML tags.  Series, Exx and Sxx are separated into different files
 		if [ -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
@@ -1044,19 +1043,19 @@ determineIfDatabaseIsUpToDate(){
 		 		elif [[ $line == \<EpisodeName\>* ]]; then
   					line=${line/<\/EpisodeName>/}
   					line=${line/<EpisodeName>/}
- 					line=${line/&lt;}
+ 					line=${line/&lt;/}
  					line=${line/&gt;/} 
   					line=${line/&quot;/} 
  					line=${line/&amp;/&}
- 					line=${line/\|/}
+ 					line=${line/|/}
  					line=${line/\?/}
  					line=${line/\*/}
- 					line=${line/\:/}
- 					line=${line/\+/}
+ 					line=${line/:/}
+ 					line=${line/+/}
  					line=${line/\\/}
  					line=${line/\//}
- 					line=${line/\[/}
- 					line=${line/\]/}
+ 					line=${line/[/}
+ 					line=${line/]/}
  					line=${line/\'/}
  					line=${line/\"/}
  					actualEname=${line/&ndash;/-}
@@ -1094,8 +1093,6 @@ determineIfDatabaseIsUpToDate(){
 		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
 			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
 		fi
-	
-#test -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" && GotNewInformation=1 && rm -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml"
 #check if files were created and generate message
 		if [ "$GotNewInformation" = "1" ]; then
 return 0
