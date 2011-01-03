@@ -2921,10 +2921,14 @@ Do not run this command with sudo."
  
  #If symlink=disabled, remove database entries
  			if [  "$SYMLINK" = "Disabled" ]; then
+				chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" 
  				if [ "$RequiresDoover" != "1" ]; then 
- 					chmod 775 "$MoveDir/$ShowFileName.$OriginalExt" 
  					DeleteRelevantDatabaseFilesAndPictures 
- 				fi
+ 				else
+                                        echo CREATING SYMLINK IN SYMLINK=DISABLED MODE
+ 				        ln -s  "$MoveDir/$ShowFileName.$OriginalExt" "$InputPath"
+ 				        test ! -L "$InputPath" && echo "ERROR CREATING SYMLINK: FILESYSTEM MAY NOT SUPPORT SYMLINKS"|tee -a "$mythicalLibrarian"/output.log 
+                                fi
  			fi 
  
  #Send notification of completion and exit
