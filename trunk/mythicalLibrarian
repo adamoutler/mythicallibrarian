@@ -1880,7 +1880,8 @@ Do not run this command with sudo."
 		read -n1 -p "Press any key to perform MythTV Database test..."
  		echo ""
 		echo "Performing MythTV Python Bindings database test"
-  		test "$((`/usr/local/bin/MythDataGrabber --Diagnostic=True>/dev/tty`))" = "0" && PythonBindingsCheck="OK"
+  		/usr/local/bin/MythDataGrabber --Diagnostic=True>
+                test $? = "0" && PythonBindingsCheck="OK"
 		if [ "$PythonBindingsCheck" = "OK" ]; then
        	     		echo "MythTV Python Bindings are installed properly" 
 		else
