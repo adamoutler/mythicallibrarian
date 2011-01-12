@@ -376,7 +376,7 @@ echo " ###Database Settings###">>./mythicalPrep
  		test -f "/home/mythtv/.mythtv/mysql.txt" && DBPin1=`grep "DBPin=" "/home/mythtv/.mythtv/mysql.txt" |  sed s/"DBPin="/""/g`
   		test "$DBPin1" = "" && DBPin1=0
  		test ! -f "./DBPin" && echo "$DBPin1">./DBPin 
-	    	dialog --inputbox "Enter your MYSQL password. Default=$DBPin1" 9 40 "$DBPin1" 2>./DBPin
+	    	dialog --inputbox "Enter your MythTV DB Pin. Default=$DBPin1" 9 40 "$DBPin1" 2>./DBPin
  		DBPin=`cat ./DBPin`
  		test "$DBPin" = "" && MySQLpass="$DBPin1"
  		echo "$DBPin">./DBPin
