@@ -136,11 +136,15 @@ test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetu
  	exit 1
   fi
 
+
+test ! -f "/usr/local/bin/MythDataGrabber" && curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
 clear
+
+
 if [ "$DownloadML" = "Stable" ]; then
  	touch ./bypassDownload
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
-        curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
+        
  	chmod 755 /usr/local/bin/MythDataGrabber
  	curl "http://mythicallibrarian.googlecode.com/files/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g|sed s/\ /"\\ "/g  >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
@@ -176,7 +180,7 @@ if [ "$DownloadML" = "Latest" ]; then
   	svnrev=`curl -s  mythicallibrarian.googlecode.com/svn/trunk/| grep -m1 Revision |  sed s/"<html><head><title>mythicallibrarian - "/""/g| sed s/": \/trunk<\/title><\/head>"/""/g`
 	echo "$svnrev "`date`>"./lastupdated"
  	test -f ./mythicalLibrarian.sh && rm -f mythicalLibrarian.sh
-        curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
+
  	chmod 755 /usr/local/bin/MythDataGrabber
  	curl "http://mythicallibrarian.googlecode.com/svn/trunk/mythicalLibrarian">"./mythicalLibrarian.sh"
  	cat "./mythicalLibrarian.sh"| sed s/'	'/'\\t'/g |sed s/'\\'/'\\\\'/g|sed s/\ /"\\ "/g  >"./mythicalLibrarian1" #sed s/"\\"/"\\\\"/g |
