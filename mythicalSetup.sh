@@ -213,7 +213,7 @@ echo "#! /bin/bash">./mythicalPrep
 echo " #######################USER SETTINGS##########################">>./mythicalPrep
 echo " ###Stand-alone mode values###">>./mythicalPrep
 
-DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythtv version reports:\n `mythbackend --version|grep Library`\n Please select your version from the list." 16 46 10 "MythTV0.24" "Stable" "MythTV0.23" "Stable"  "MythTV0.22"  "Stable" "MythTV0.21"  "Stable" "MythTV0.20" "Untested" "MythTV0.25" "Under Development"  "None"  "No guide data" 2>&1 >/dev/tty)
+DatabaseAccess=$(dialog --title "mythicalInterface" --menu "mythtv version reports:\n `mythbackend --version|grep Library`\n Please select your version from the list." 16 46 10 "MythTV0.24" "Stable/python" "MythTV0.23" "Stable/mysql"  "MythTV0.22"  "Stable/mysql" "MythTV0.21"  "Stable/mysql" "MythTV0.20" "Untested/mysql" "MythTV0.25" "Development/Python"  "None"  "No guide data" 2>&1 >/dev/tty)
 test "$?" != "0" && echo "please select a version" && exit 1 
  case "$DatabaseAccess" in 
 	MythTV0.25)
