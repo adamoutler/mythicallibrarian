@@ -1880,6 +1880,11 @@ Do not run this command with sudo."
 		read -n1 -p "Press any key to perform MythTV Database test..."
  		echo ""
 		echo "Performing MythTV Python Bindings database test"
+                if which python2.6; then
+  			echo "Python2.6 installed"
+ 		else
+  			echo "MISSING packange python2.6"
+ 		fi
   		/usr/local/bin/MythDataGrabber --Diagnostic=True
                 test $? = "0" && PythonBindingsCheck="OK"
 		if [ "$PythonBindingsCheck" = "OK" ]; then
