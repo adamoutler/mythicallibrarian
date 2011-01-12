@@ -1876,7 +1876,7 @@ Do not run this command with sudo."
  		notifytest="   N/A"
 	fi
 
-	if [ "$DatabaseType"="MythTVPythonBindings" ]; then
+	if [ "$DatabaseType" = "MythTVPythonBindings" ]; then
 		read -n1 -p "Press any key to perform MythTV Database test..."
  		echo ""
 		echo "Performing MythTV Python Bindings database test"
