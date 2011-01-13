@@ -1,4 +1,4 @@
-#! /usr/bin/python2.6
+#! /usr/env python
 # requires libmyth-python python-lxml
 import sys, os
 
