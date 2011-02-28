@@ -191,11 +191,14 @@ if options['Diagnostic'] == 'True':
         print "Connected to:", db.gethostname()
         print "Db Identified as:",  db.ident
         print "Diagnostics passed."
-        sys.exit()
+
+
     except: 
         print "Diagnostics failed."
         sys.exit(1)
-       
+  
+    finally:
+        sys.exit()    
   
 
 #####################################
