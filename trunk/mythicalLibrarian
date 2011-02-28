@@ -1890,7 +1890,7 @@ Do not run this command with sudo."
 		if [ "$PythonBindingsCheck" = "OK" ]; then
        	     		echo "MythTV Python Bindings are installed properly" 
 		else
- 			python -c 'import MythDB.MythTV'; 
+ 			python -c 'from MythTV import MythDB'; 
                         test $? != "0" "MythTV PythonBindings are not installed properly 
    Debian Users:  apt-get install libmyth-python python-lxml " && Python1=1
 			if [ Python1 != 1 ]; then
