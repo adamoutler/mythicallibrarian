@@ -137,7 +137,7 @@ test $bypassDownload = 0 && DownloadML=$(dialog --title "Welcome to mythicalSetu
   fi
 
 
-test ! -f "/usr/local/bin/MythDataGrabber" && curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
+curl "http://mythicallibrarian.googlecode.com/svn/trunk/pythonBindings/MythDataGrabber" > "/usr/local/bin/MythDataGrabber"
 clear
 
 
