@@ -837,6 +837,7 @@ else
  echo "User specified folders are to be used for placement of recordings."
 fi
 test "$mythtv" = "1" && echo -e "Check the mythicalLibrarian checkbox when setting up recordings."
+test "$SUDO_USER" != "mythtv" && echo "NOTICE: To avoid permission problems, switch to user 'mythtv'"
 echo "For more information, type 'mythicalLibrarian --help'"
 echo "Done."
 
