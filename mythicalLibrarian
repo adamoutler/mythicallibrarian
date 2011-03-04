@@ -844,7 +844,10 @@
 	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
 	test "$mythicalLibrarianProgramIDCheck" = "EP" && ProgramIDType="Series With Episode Data"
  	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
- 
+
+ #account for .0123's in EITonly data type 
+        ProgramID=`echo $ProgramID|cut -f1 -d"."`
+
  #Check if database contains enough information to put into doover que
 	GoForDoover=0
 	test "${x:0:2}" = "EP" && echo woot
@@ -897,7 +900,9 @@
 	test "$mythicalLibrarianProgramIDCheck" = "MV" && ProgramIDType="Movie"
  	test "$mythicalLibrarianProgramIDCheck" = "SP" && ProgramIDType="Sports Programming" && mythicalLibrarianProgramIDCheck=SH
  
- 
+ #account for .0123's in EITonly data type 
+        ProgramID=`echo $ProgramID|cut -f1 -d"."`
+
  	
  	datehour=`echo "$ShowStartTime"|tr ":" "."|tr " " "@"`
  	seasonyear=`echo "${ShowStartTime:0:4}"`
