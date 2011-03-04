@@ -15,7 +15,7 @@ sudo python setup.py install
 
 echo 
 echo "Now testing python bindings installation"  
-python -c "import MythDB.MythTV"
+python -c "from MythTV import MythDB"
 if [ "$?" = "0" ]; then
   echo "Python Bindings are sucessfully installed"
 else
