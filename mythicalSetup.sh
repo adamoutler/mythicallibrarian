@@ -837,7 +837,17 @@ else
  echo "User specified folders are to be used for placement of recordings."
 fi
 test "$mythtv" = "1" && echo -e "Check the mythicalLibrarian checkbox when setting up recordings."
-test "$SUDO_USER" != "mythtv" && echo "NOTICE: To avoid permission problems, switch to user 'mythtv'"
+test "$SUDO_USER" != "mythtv" && "$passed" = "0" && echo "
+**********************************************************
+* What do I do next?                                     *
+* -To avoid permission problems, switch to user 'mythtv' *
+* -run mythicalLibrarian /path_to/recordings.mpg         *
+*   on a single file to verify proper operation          *
+* -run mythicalLibriarian --scan mpg /path_to_files      *
+*   to scan your entire library into XBMC                *
+* -put a checkmark in the mythicalLibrarian user job     *
+*   on mythtv so it runs automatically                   *
+**********************************************************"
 echo "For more information, type 'mythicalLibrarian --help'"
 echo "Done."
 
