@@ -956,7 +956,7 @@ determineIfDatabaseIsUpToDate(){
 
  #Get current server time
 	test -f "$mythicalLibrarian/$NewShowName/current.time" && rm -f "$mythicalLibrarian/$NewShowName/current.time"
- 	curl -L  -s -m"$Timeout" "http://cache.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
+ 	curl -L  -s -m"$Timeout" "http://www.thetvdb.com/api/Updates.php?type=none">"$mythicalLibrarian/$NewShowName/current.time"
 
  #Get the time from the file
  	test -f "$mythicalLibrarian/$NewShowName/current.time" && CurrentTime=`cat "$mythicalLibrarian/$NewShowName/current.time"|grep '<Time>'|sed s/"<Time>"/""/g|sed s/"<\/Time>"//g`
@@ -986,7 +986,7 @@ determineIfDatabaseIsUpToDate(){
  #if episode information is out of date or not created
  	if [ $CurrentTime -gt $NextUpdate ]; then
 
- 		curl -L -s -m"$Timeout" " http://cache.thetvdb.com/api/Updates.php?type=all&time=$LastUpdated" >> "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
+ 		curl -L -s -m"$Timeout" " http://www.thetvdb.com/api/Updates.php?type=all&time=$LastUpdated" >> "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		grep "$SeriesID" "$mythicalLibrarian/$NewShowName/UpdatesList.txt"
  		if [ "$?" != 0 ]; then 
  			echo "DATABASE IS OUT OF DATE. NEXT UPDATE $NextUpdate Current $CurrentTime"	
@@ -1009,7 +1009,7 @@ determineIfDatabaseIsUpToDate(){
  downloadInfoAboutMatchedTitleAndCreateTxtFileTables () {
 #Download information from server
  		echo -ne "Downloading Series: $SeriesID \r" 1>&2 
-		curl -L -s -m"$Timeout" "http://cache.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
+		curl -L -s -m"$Timeout" "http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml"| grep -vE "(</id>|</Combined_episodenumber>|</Combined_season>|</DVD_chapter>|</DVD_discid>|</DVD_episodenumber>|</DVD_season>|</Director>|</EpImgFlag>|</GuestStars>|</IMDB_ID>|</Language>|</Overview>|</ProductionCode>|</RatingCount>|</filename>|</seasonid>|</Writer>|</Rating>|</lastupdated>|</seriesid>|</absolute_number>)">"$mythicalLibrarian/$NewShowName/$NewShowName.xmlTest" && echo "$CurrentTime" > "$mythicalLibrarian/$NewShowName/lastupdated.time"
 
 #Validate that the show has a EpisodeName tag and is a valid download before clobering our old download.
   		grepTest=""
@@ -1096,7 +1096,7 @@ determineIfDatabaseIsUpToDate(){
 
 
 		elif [ ! -f "$mythicalLibrarian/$NewShowName/$NewShowName.xml" ]; then
-			echo "COULD NOT DOWNLOAD:cache.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
+			echo "COULD NOT DOWNLOAD:www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml">>"$mythicalLibrarian"/output.log
 		fi
 #check if files were created and generate message
 		if [ "$GotNewInformation" = "1" ]; then
@@ -1287,7 +1287,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 #TODO Instance searching rather then global.  Need to create an instance varible based on time and chanid.
 
  #Search TheTvDb and return an XML file with results
- 	curl -L -s -m"$Timeout" cache.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
+ 	curl -L -s -m"$Timeout" www.thetvdb.com/api/GetSeries.php?seriesname=$tvdbshowname>"$mythicalLibrarian/working.xml"
  
  #Separate the XML into textual DBs conatining SeriesID, ShowName and Zap2it IDs
  	cat "$mythicalLibrarian/working.xml" | grep "<seriesid>"|sed -e s/"<seriesid>"/""/ -e s/"<\/seriesid>"/""/ -e s/'&quot;'/'"'/ -e s/"&amp;"/"\&"/ -e s/'&ndash;'/'-'/ -e s/"&lt;"/"<"/ -e s/"&gt;"/">"/ >"$mythicalLibrarian/sid.txt"
@@ -1601,7 +1601,7 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
  	test -f "$MoveDir/tvshow.nfo" && rm -f "$MoveDir/tvshow.nfo"
  	echo -e "<tvshow>">>"$MoveDir"/tvshow.nfo
  	echo -e "\t<title>$NewShowName</title>">>"$MoveDir/tvshow.nfo"
- 	test "$SeriesID" != "" && echo -e "\t<episodeguide>http://cache.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
+ 	test "$SeriesID" != "" && echo -e "\t<episodeguide>http://www.thetvdb.com/api/$APIkey/series/$SeriesID/all/$Language.xml</episodeguide>">>"$MoveDir/tvshow.nfo" ||  echo -e "\t<episodeguide></episodeguide>">>"$MoveDir/$ShowFileName.nfo"
  	echo -e "</tvshow>">>"$MoveDir/tvshow.nfo"
  	return 0 
  } 
