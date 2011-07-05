@@ -2465,7 +2465,7 @@ Do not run this command with sudo."
 
  #split on semicolon, there will only be one episode looked up.  Remove nonfilesystem compliant chars.
  EpisodeSubtitle=`echo $InputSubtitle|sed 's/;.*//'|tr -d '!|\?*<":>+[]/'`
- ExtensionPrep="`basename $InputPath`"
+ ExtensionPrep="`basename "$InputPath"`"
  OriginalExt=`echo "${ExtensionPrep#*.}"`
  originaldirname=`dirname "$InputPath"`
  FileBaseName=${InputPath##*/}  
