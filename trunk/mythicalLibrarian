@@ -2361,7 +2361,7 @@ Do not run this command with sudo."
 
  #####COMMAND LINE SWITCHES#####
  #check for command line switches
- case $InputPath in 
+ case "$InputPath" in 
 
 	--scan|-s)
  		mythicalScan		
@@ -2421,7 +2421,7 @@ Do not run this command with sudo."
  echo "$mythicalVersion on $mythicalPlatform">>"$mythicalLibrarian"/output.log
  echo "$mythicalVersion" 
 
- InputFileBasename=`basename $InputPath`
+ InputFileBasename=`basename "$InputPath"`
 
  ####INSERT PYTHON BINDINGS GENERATION HERE
  #If not specified, grab Title and subtitle from database using basename for reference
@@ -2465,10 +2465,10 @@ Do not run this command with sudo."
 
  #split on semicolon, there will only be one episode looked up.  Remove nonfilesystem compliant chars.
  EpisodeSubtitle=`echo $InputSubtitle|sed 's/;.*//'|tr -d '!|\?*<":>+[]/'`
- ExtensionPrep="`basename "$InputPath"`"
+ ExtensionPrep=`basename "$InputPath"`
  OriginalExt=`echo "${ExtensionPrep#*.}"`
  originaldirname=`dirname "$InputPath"`
- FileBaseName=${InputPath##*/}  
+ FileBaseName=${InputPath##*/}
  FileName="$InputPath"
 
  #Check for show Title translations relating to the show in question.
