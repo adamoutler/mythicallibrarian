@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash 
 mythicalLibrarian=~/.mythicalLibrarian/
 test ! -d "$mythicalLibrarian" && mkdir $mythicalLibrarian
 
