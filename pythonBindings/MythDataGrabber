@@ -223,7 +223,9 @@ except:
 def writeData():
     # loop through Recorded items
     for x in rec.items():
-        f.write('%s = "%s"\n' % x)
+        #filter out unicode strings:
+        if (type(x[1]) == str): f.write('%s = "%s"\n' % (x[0],x[1].encode('utf-8')))
+        else: f.write('%s = "%s"\n' % x)
 
     # loop through comm-start points
     for i,data in enumerate(markupstart):
