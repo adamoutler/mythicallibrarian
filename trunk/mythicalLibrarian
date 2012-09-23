@@ -94,12 +94,12 @@
  #Show Name Translation
  # The user may elect to create a file in the mythicalLibrarian/ working folder which will then translate any recorded
  # show name into the desired show name.  This is useful for adding a year to distinguish between a new series
- # and an older series and/or typos in your guide data.  By default it should be called "showtranslations" and
- # it will be in your home/username/mythicalLibrarian folder.  showtranslations is not needed by most users and the file 
+ # and an older series and/or typos in your guide data.  By default it should be called "showTranslations" and
+ # it will be in your home/username/mythicalLibrarian folder.  showTranslations is not needed by most users and the file 
  # should only be created if it is needed. Under most circumstances, the integrated fuzzy logic will be 
- # sufficient to translate the guide name to the TvDb name, however showtranslations is available to improve 
- # accuracy to 100%. The format of showtranslations is as follows:
- #Filename: /home/mythtv/.mythicalLibrarian/showtranslations
+ # sufficient to translate the guide name to the TvDb name, however showTranslations is available to improve 
+ # accuracy to 100%. The format of showTranslations is as follows:
+ #Filename: /home/mythtv/.mythicalLibrarian/showTranslations
  ##############################################################
  #My Guide Show Title = www.TheTvDb.com Show Title	    #
  #Battlestar Gallactica = Battlestar Gallactica (2003)	#
@@ -332,7 +332,7 @@
  #$ProgramIDType= Generic episode with no data, Movie, or Series With Episode Data
  #$Zap2itSeriesID= Zap2it ID with SH, MV or EP stripped
  #$MyUserName = name of user running mythicalLibrarian
- #$SafeShowName = title of show after showtranslations formatted for filesystem use
+ #$SafeShowName = title of show after showTranslations formatted for filesystem use
 
  ####EPISODES AND GENERIC SHOWS####
  #$OriginalAirDate = original air date  Generic programming will be the first episode ever, for episodes it will be the first aired date
@@ -1657,10 +1657,10 @@ setSeriesIDandNewShowNameBasedOnSeriesLineNumber(){
 
 
  #####SHOW TRANSLATIONS HANDLING#####
- #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showtranslations file
- ShowTranslations () {
- 	if [ -f "$mythicalLibrarian"/showtranslations ] && [ "$ShowName" != "" ]; then 
- 		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showtranslations"| sed s/"$ShowName = "/""/g `		 
+ #Get show translations if the /mythicalLibrarian/showtranslation file exists.  the show title will be replaced by the one in the user created showTranslations file
+ showTranslations () {
+ 	if [ -f "$mythicalLibrarian"/showTranslations ] && [ "$ShowName" != "" ]; then 
+ 		showtranslation=`grep "$ShowName = " "$mythicalLibrarian/showTranslations"| sed s/"$ShowName = "/""/g `		 
  		if [ "$showtranslation" != "" ]; then 
  			ShowName=$showtranslation
  			echo "USER TRANSLATION: $InputTitle = $ShowName">>"$mythicalLibrarian"/output.log
@@ -2211,7 +2211,7 @@ Do not run this command with sudo."
 	echo " ======showTranslations====="
 	echo " If you are having problems with incorrect guide data such"
 	echo " as improper titling, use showTranslations."
-	echo " ShowTranslations can be applied by creating a file called:"
+	echo " showTranslations can be applied by creating a file called:"
  	echo " ~/.mythicalLibrarian/showTranslations"
  	echo " ##############################################################"
  	echo " #My Guide Show Title = www.TheTvDb.com Show Title	    #"
@@ -2277,7 +2277,7 @@ Do not run this command with sudo."
   	echo -e "How can I improve my Confidence Rating?"
   	echo -e " 1. mythicalLibrarian --special provides information on how"
   	echo -e "    to improve Episode matching confidence by using a "
-  	echo -e "    ShowTranslations file to compensate for bad guide data."
+  	echo -e "    showTranslations file to compensate for bad guide data."
   	echo -e " 2. Add your favorite show's Zap2it ID to TheTvDb.com."
   	echo -e " 3. Add your favorite show's OriginalAirdate to TheTvDb.com."
   	echo -e " 4. Add your favorite show's proper Title to TheTvDb.com"
@@ -2472,7 +2472,7 @@ Do not run this command with sudo."
  FileName="$InputPath"
 
  #Check for show Title translations relating to the show in question.
- ShowTranslations
+ showTranslations
  #Do not process files in files categoricIgnore or titleIgnore, just exit
  ignoreList
  SafeShowName=`echo "$ShowName"|sed 's/;.*//'|tr -d '|\?*<":>+[]/'`
