@@ -1922,9 +1922,7 @@ Do not run this command with sudo."
  	done
     #Return should look something like this: {id:1,jsonrpc:2.0,result:OK}
     #Use slicing magic to get "OK" from it
-    XBMCcomm=${XBMCcomm:${#XBMCcomm}-4:2}
-    echo $XBMCcomm
- 	test echo ${XBMCcomm:${#XBMCcomm}-4:2} = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
+ 	test ${XBMCcomm:${#XBMCcomm}-4:2} = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
  	read -n1 -p "Press any key to test file system permissions..."
  	echo ""
