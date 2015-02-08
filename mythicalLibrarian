@@ -519,8 +519,8 @@
        		for XBMCIP in ${XBMCIPs[@]}
        		do
 			echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
-  			test "$XBMCNotify" = "Enabled" && curl -L -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%2Cadding%20show%2​0$tvdbshowname%20to%20library))" > /dev/null 2>&1
-  			test "$XBMCUpdate" = "Enabled" && curl -L -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(UpdateLibrary(video))" > /dev/null 2>&1
+  			test "$XBMCNotify" = "Enabled" && curl -L -s -m3 --connect-timeout 5 --data-binary '{"id":1,"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"MythicalLibrarian","message":"Adding to Library: $tvdbshowname":"Gotcha"}}' -H 'content-type: application/json;' "http://"$XBMCIP"/jsonrpc" > /dev/null 2>&1
+  			test "$XBMCUpdate" = "Enabled" && curl -L -s -m3 --connect-timeout 5 --data-binary '{ "jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "mybash"}' -H 'content-type: application/json;' "http://"$XBMCIP"/jsonrp" > /dev/null 2>&1
   			test "$XBMCClean" = "Enabled" && curl -L -s -m3 --connect-timeout 5 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(CleanLibrary(video))" > /dev/null 2>&1
   		done
   	fi
@@ -1916,10 +1916,15 @@ Do not run this command with sudo."
   	for XBMCIP in ${XBMCIPs[@]}
  	do
  		echo "SENDING REQUESTED COMMANDS TO:$XBMCIP"
-		XBMCcomm=`curl -L -s --connect-timeout 3 "http://"$XBMCIP"/xbmcCmds/xbmcHttp?command=ExecBuiltIn(Notification(mythical%20Librarian%20Test%2CTesting%20Communication%20with%20mythicallibrarian))"|tr -d "</html>i^" `
+		XBMCcomm=$(curl -L -s --connect-timeout 3 --data-binary '{"id":1,"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"MythicalLibrarian","message":"Testing Communications"}}' -H 'content-type: application/json;' "http://"$XBMCIP"/jsonrpc")
+        echo "$XBMCcomm"
 		test "$XBMCcomm" != "" && echo "TESTING:$XBMCcomm" || echo "COMMUNICATIONS NOT ESTABLISHED: $XBMCIP"
  	done
- 	test "`echo $XBMCcomm`" = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
+    #Return should look something like this: {id:1,jsonrpc:2.0,result:OK}
+    #Use slicing magic to get "OK" from it
+    XBMCcomm=${XBMCcomm:${#XBMCcomm}-4:2}
+    echo $XBMCcomm
+ 	test echo ${XBMCcomm:${#XBMCcomm}-4:2} = "OK" && XBMCcomm="***PASSED***" || XBMCcomm="***FAILED***"
  	echo "XBMC Communications $XBMCcomm"
  	read -n1 -p "Press any key to test file system permissions..."
  	echo ""
