@@ -924,7 +924,7 @@
  	if [ ! -e "$InputPath" ]; then
  #Remove recording entry from mysql database
  		echo "REMOVING - $FileBaseName - THUMBNAILS - DATABASE ENTRIES"|tee -a "$mythicalLibrarian"/output.log
- 		mysql -u$MySQLuser -p$MySQLpass -e "use '$MySQLMythDb' ; delete from recorded where basename like '$FileBaseName'; "
+ 		mysql -u$MySQLuser -p$MySQLpass "$MySQLMythDb" -e "delete from recorded where basename like '$FileBaseName';"|tee -a "$mythicalLibrarian"/output.log
   #Remove thumbnails
  		rm -f "$originaldirname/$FileBaseName".*	
  	fi 
